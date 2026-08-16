@@ -27,11 +27,11 @@ function App() {
 
       <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-10">
         <div className="grid w-full max-w-5xl grid-cols-1 items-start gap-16 lg:grid-cols-[1fr_auto_1fr] lg:gap-0">
-          <div className="flex items-start justify-center lg:justify-end lg:overflow-hidden lg:pr-6 xl:pr-10">
+          <div className="flex items-start justify-center overflow-visible lg:justify-end lg:pr-6 xl:pr-10">
             <CrateOpener />
           </div>
           <div className="hidden w-px shrink-0 self-stretch bg-white/10 lg:mx-6 lg:block xl:mx-10" aria-hidden="true" />
-          <div className="flex items-start justify-center lg:justify-start lg:overflow-hidden lg:pl-6 xl:pl-10">
+          <div className="flex items-start justify-center overflow-visible lg:justify-start lg:pl-6 xl:pl-10">
             <WeaponCrateOpener />
           </div>
         </div>
