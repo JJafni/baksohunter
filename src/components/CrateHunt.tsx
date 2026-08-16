@@ -132,7 +132,7 @@ function CrateHunt({
       result={result}
       visible={phase === 'revealed'}
       rarityLabels={rarityLabels}
-      align={reelSide === 'left' ? 'left' : 'right'}
+      align={reelSide === 'left' ? 'right' : 'left'}
     />
   )
 
@@ -160,7 +160,7 @@ function CrateHunt({
 
   const nameSlot =
     phase === 'idle' ? (
-      <div className="w-[140px] shrink-0 sm:w-[170px]" aria-hidden="true" />
+      <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
     ) : (
       namePanel
     )
