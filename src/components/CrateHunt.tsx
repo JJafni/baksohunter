@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CrateEntry, Rarity } from '../data/types'
-import { CENTER_INDEX, OPEN_MS, REEL_LENGTH, REEL_WIDTH } from '../lib/crateConfig'
+import { CENTER_INDEX, OPEN_MS, REEL_LENGTH, REEL_WIDTH, VIEWPORT_HEIGHT } from '../lib/crateConfig'
 import Reel from './Reel'
 import RevealPanel from './RevealPanel'
 import IdleCrate from './IdleCrate'
@@ -109,20 +109,6 @@ function CrateHunt({
     </div>
   )
 
-  const reel = (
-    <div style={{ width: REEL_WIDTH }}>
-      <div className={isEntering ? 'animate-hunt-reel-stretch' : ''}>
-        <Reel
-          key={spinKey}
-          sequence={sequence}
-          onDone={handleLanded}
-          landed={phase === 'revealed'}
-          rarity={rarity}
-        />
-      </div>
-    </div>
-  )
-
   const poolLine = (
     <p
       className="mt-4 text-center text-[10px] uppercase tracking-[0.2em] text-slate-600 sm:text-xs"
@@ -150,6 +136,35 @@ function CrateHunt({
     />
   )
 
+  const reelSlot =
+    phase === 'idle' ? (
+      <div
+        className="flex items-center justify-center"
+        style={{ width: REEL_WIDTH, height: VIEWPORT_HEIGHT }}
+      >
+        <IdleCrate />
+      </div>
+    ) : (
+      <div style={{ width: REEL_WIDTH }}>
+        <div className={isEntering ? 'animate-hunt-reel-stretch' : ''}>
+          <Reel
+            key={spinKey}
+            sequence={sequence}
+            onDone={handleLanded}
+            landed={phase === 'revealed'}
+            rarity={rarity}
+          />
+        </div>
+      </div>
+    )
+
+  const nameSlot =
+    phase === 'idle' ? (
+      <div className="w-[140px] shrink-0 sm:w-[170px]" aria-hidden="true" />
+    ) : (
+      namePanel
+    )
+
   return (
     <div className="relative w-fit max-w-full shrink-0">
       <div
@@ -160,33 +175,21 @@ function CrateHunt({
         }}
       />
 
-      {phase === 'idle' ? (
-        <div className="flex flex-col items-center" style={{ width: REEL_WIDTH }}>
-          <IdleCrate />
-          <div className="flex w-full flex-col items-center pt-6">
-            <StatefulButton layoutId={buttonLayoutId} onClick={startHunt}>
-              {buttonLabel}
-            </StatefulButton>
-            {poolLine}
-          </div>
-        </div>
-      ) : (
-        <div
-          className="grid gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6"
-          style={{
-            gridTemplateColumns: reelOnLeft ? `${REEL_WIDTH}px auto` : `auto ${REEL_WIDTH}px`,
-            gridTemplateRows: `${HEADER_ROW_H} auto auto`,
-          }}
-        >
-          <div className={`${reelColClass} row-start-1 flex justify-center overflow-visible`}>{header}</div>
+      <div
+        className="grid gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6"
+        style={{
+          gridTemplateColumns: reelOnLeft ? `${REEL_WIDTH}px auto` : `auto ${REEL_WIDTH}px`,
+          gridTemplateRows: `${HEADER_ROW_H} auto auto`,
+        }}
+      >
+        <div className={`${reelColClass} row-start-1 flex justify-center overflow-visible`}>{header}</div>
 
-          <div className={`${reelColClass} row-start-2`}>{reel}</div>
+        <div className={`${reelColClass} row-start-2`}>{reelSlot}</div>
 
-          <div className={`${nameColClass} row-start-2 self-center`}>{namePanel}</div>
+        <div className={`${nameColClass} row-start-2 self-center`}>{nameSlot}</div>
 
-          <div className={`${reelColClass} row-start-3`}>{actions}</div>
-        </div>
-      )}
+        <div className={`${reelColClass} row-start-3`}>{actions}</div>
+      </div>
     </div>
   )
 }

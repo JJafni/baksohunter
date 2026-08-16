@@ -6,13 +6,12 @@ type IdleCrateProps = {
 
 function IdleCrate({ spinning = false }: IdleCrateProps) {
   return (
-    <div className="flex flex-col items-center py-4">
-      <div
-        className={`relative flex items-center justify-center transition-opacity duration-500 ${
-          spinning ? 'opacity-40' : 'opacity-100'
-        }`}
-        style={{ width: REEL_WIDTH, height: REEL_WIDTH }}
-      >
+    <div
+      className={`relative flex items-center justify-center transition-opacity duration-500 ${
+        spinning ? 'opacity-40' : 'opacity-100'
+      }`}
+      style={{ width: REEL_WIDTH, height: REEL_WIDTH }}
+    >
         <div className="absolute inset-0 rounded-3xl border-2 border-amber-400/50 bg-gradient-to-br from-amber-500/15 via-slate-900/60 to-slate-950 shadow-[0_0_40px_10px_rgba(251,191,36,0.2)]" />
         <div
           className="absolute inset-3 rounded-2xl opacity-30"
@@ -34,7 +33,6 @@ function IdleCrate({ spinning = false }: IdleCrateProps) {
           <path d="M60 82 C 58 58, 58 38, 62 15" />
           <path d="M80 78 C 74 55, 72 40, 76 20" />
         </svg>
-      </div>
     </div>
   )
 }
