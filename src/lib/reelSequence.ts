@@ -5,18 +5,24 @@ function identityKey(entry: CrateEntry): string {
   return entry.slug
 }
 
-function pickFromPool(pool: CrateEntry[], excludeKeys: Set<string>): CrateEntry | null {
-  const candidates = pool.filter((entry) => !excludeKeys.has(identityKey(entry)))
-  if (candidates.length === 0) return null
-  return candidates[Math.floor(Math.random() * candidates.length)]!
+function pickEntryForSlug(pool: CrateEntry[], slug: string): CrateEntry {
+  const entries = pool.filter((entry) => identityKey(entry) === slug)
+  return entries[Math.floor(Math.random() * entries.length)]!
 }
 
-function blocksCenterNeighbor(pool: CrateEntry[], entry: CrateEntry, target: CrateEntry): boolean {
-  const exclude = new Set([identityKey(entry), identityKey(target)])
-  return pool.every((candidate) => exclude.has(identityKey(candidate)))
+function uniqueSlugs(pool: CrateEntry[]): string[] {
+  return [...new Set(pool.map(identityKey))]
 }
 
-/** Builds a reel sequence with no back-to-back duplicate identities. */
+function pickSlug(slugs: string[], exclude: Set<string>): string {
+  const allowed = slugs.filter((slug) => !exclude.has(slug))
+  if (allowed.length === 0) {
+    throw new Error('No slug available for reel sequence slot')
+  }
+  return allowed[Math.floor(Math.random() * allowed.length)]!
+}
+
+/** Builds a reel sequence with no back-to-back duplicate monster/weapon identities. */
 export function buildReelSequence(
   pool: CrateEntry[],
   target: CrateEntry,
@@ -24,48 +30,33 @@ export function buildReelSequence(
   centerIndex: number,
 ): CrateEntry[] {
   if (pool.length === 0) return []
-  if (pool.length === 1) return Array.from({ length }, () => pool[0]!)
+  if (length <= 0) return []
+
+  const slugs = uniqueSlugs(pool)
+  if (slugs.length === 1) {
+    return Array.from({ length }, () => pickEntryForSlug(pool, slugs[0]!))
+  }
 
   const sequence: CrateEntry[] = new Array(length)
   sequence[centerIndex] = target
-  const targetKey = identityKey(target)
+  const targetSlug = identityKey(target)
 
-  for (let i = 0; i < length; i++) {
-    if (i === centerIndex) continue
+  // Fill backward from the winner so the slot above never repeats it.
+  for (let i = centerIndex - 1; i >= 0; i--) {
+    const nextSlug = identityKey(sequence[i + 1]!)
+    const exclude = new Set([nextSlug])
+    if (i === centerIndex - 1) exclude.add(targetSlug)
+    const slug = pickSlug(slugs, exclude)
+    sequence[i] = pickEntryForSlug(pool, slug)
+  }
 
-    const exclude = new Set<string>()
-
-    if (i > 0 && sequence[i - 1]) {
-      exclude.add(identityKey(sequence[i - 1]!))
-    }
-
-    if (i === centerIndex - 1 || i === centerIndex + 1) {
-      exclude.add(targetKey)
-    }
-
-    // Two-entry (or tight) pools: don't pick a decoy that forces the center neighbor to repeat the winner.
-    if (i === centerIndex - 2) {
-      for (const entry of pool) {
-        if (blocksCenterNeighbor(pool, entry, target)) {
-          exclude.add(identityKey(entry))
-        }
-      }
-    }
-
-    let picked = pickFromPool(pool, exclude)
-
-    if (!picked) {
-      const prevOnly = new Set<string>()
-      if (i > 0 && sequence[i - 1]) {
-        prevOnly.add(identityKey(sequence[i - 1]!))
-      }
-      if (i === centerIndex - 1 || i === centerIndex + 1) {
-        prevOnly.add(targetKey)
-      }
-      picked = pickFromPool(pool, prevOnly)
-    }
-
-    sequence[i] = picked ?? pool[Math.floor(Math.random() * pool.length)]!
+  // Fill forward from the winner so the slot below never repeats it.
+  for (let i = centerIndex + 1; i < length; i++) {
+    const prevSlug = identityKey(sequence[i - 1]!)
+    const exclude = new Set([prevSlug])
+    if (i === centerIndex + 1) exclude.add(targetSlug)
+    const slug = pickSlug(slugs, exclude)
+    sequence[i] = pickEntryForSlug(pool, slug)
   }
 
   return sequence
