@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { motion } from 'motion/react'
 import type { CrateEntry, Rarity } from '../data/types'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import {
@@ -9,6 +10,7 @@ import {
   REEL_WIDTH,
   VIEWPORT_HEIGHT,
 } from '../lib/crateConfig'
+import { buildReelSequence } from '../lib/reelSequence'
 import Reel from './Reel'
 import RevealPanel from './RevealPanel'
 import IdleCrate from './IdleCrate'
@@ -27,19 +29,13 @@ type CrateHuntProps = {
   pickRandom: () => CrateEntry
   /** Which side the reel column (title, spinner, button) sits on. */
   reelSide: 'left' | 'right'
+  /** Optional controls shown beside the reel (e.g. monster rarity filters). */
+  filters?: (ctx: { disabled: boolean; layout: 'sidebar' | 'bar' }) => ReactNode
 }
 
 /** Shared row heights so monster and weapon columns line up horizontally. */
 const HEADER_ROW_H = '6rem'
 const FOOTER_ROW_H = '2.75rem'
-
-function buildSequence(target: CrateEntry, pickRandom: () => CrateEntry): CrateEntry[] {
-  const sequence: CrateEntry[] = []
-  for (let i = 0; i < REEL_LENGTH; i++) {
-    sequence.push(i === CENTER_INDEX ? target : pickRandom())
-  }
-  return sequence
-}
 
 function CrateHunt({
   heading,
@@ -51,6 +47,7 @@ function CrateHunt({
   pool,
   pickRandom,
   reelSide,
+  filters,
 }: CrateHuntProps) {
   const isMobile = useIsMobileLayout()
   const reelOrientation = isMobile ? 'horizontal' : 'vertical'
@@ -62,11 +59,11 @@ function CrateHunt({
   const spinResolverRef = useRef<(() => void) | null>(null)
 
   const startHunt = useCallback(async () => {
-    if (phase === 'spinning') return
+    if (phase === 'spinning' || pool.length === 0) return
 
     const target = pickRandom()
     setResult(target)
-    setSequence(buildSequence(target, pickRandom))
+    setSequence(buildReelSequence(pool, target, REEL_LENGTH, CENTER_INDEX))
 
     if (phase === 'idle') {
       setIsEntering(true)
@@ -78,7 +75,7 @@ function CrateHunt({
     await new Promise<void>((resolve) => {
       spinResolverRef.current = resolve
     })
-  }, [phase, pickRandom])
+  }, [phase, pickRandom, pool])
 
   useEffect(() => {
     if (!isEntering) return
@@ -101,9 +98,18 @@ function CrateHunt({
   }
 
   const buttonLabel = phase === 'revealed' ? buttonLabels.again : buttonLabels.open
+  const canSpin = pool.length > 0
+  const hasFilters = Boolean(filters)
   const reelOnLeft = reelSide === 'left'
-  const reelColClass = reelOnLeft ? 'col-start-1' : 'col-start-2'
-  const nameColClass = reelOnLeft ? 'col-start-2' : 'col-start-1'
+  const filterColClass = reelOnLeft ? 'col-start-1' : 'col-start-3'
+  const reelColClass = hasFilters ? 'col-start-2' : reelOnLeft ? 'col-start-1' : 'col-start-2'
+  const nameColClass = hasFilters
+    ? reelOnLeft
+      ? 'col-start-3'
+      : 'col-start-1'
+    : reelOnLeft
+      ? 'col-start-2'
+      : 'col-start-1'
 
   const blockWidth = isMobile ? '100%' : REEL_WIDTH
   const reelSlotHeight = isMobile ? MOBILE_REEL_HEIGHT : VIEWPORT_HEIGHT
@@ -115,13 +121,21 @@ function CrateHunt({
 
   const header = (
     <div
-      className={`flex flex-col items-center justify-end pb-1 text-center ${isEntering ? 'animate-hunt-side-enter' : ''}`}
-      style={{ width: blockWidth, minHeight: HEADER_ROW_H }}
+      className={`flex flex-col items-center text-center ${isMobile ? 'gap-1' : 'justify-end pb-1'} ${isEntering ? 'animate-hunt-side-enter' : ''}`}
+      style={{ width: blockWidth, minHeight: isMobile ? undefined : HEADER_ROW_H }}
     >
-      <p className="select-none text-3xl font-black uppercase leading-none tracking-tight text-slate-500/40 sm:text-4xl">
+      <p
+        className={`select-none font-black uppercase leading-none tracking-tight text-slate-500/40 ${
+          isMobile ? 'text-2xl' : 'text-3xl sm:text-4xl'
+        }`}
+      >
         {heading}
       </p>
-      <p className="mt-2 w-max max-w-none whitespace-nowrap text-lg font-bold uppercase tracking-[0.15em] text-slate-100 sm:text-xl">
+      <p
+        className={`w-max max-w-none whitespace-nowrap font-bold uppercase tracking-[0.15em] text-slate-100 ${
+          isMobile ? 'text-base' : 'mt-2 text-lg sm:text-xl'
+        }`}
+      >
         {subtitle}
       </p>
     </div>
@@ -129,16 +143,26 @@ function CrateHunt({
 
   const poolLine = (
     <p
-      className="mt-4 text-center text-[10px] uppercase tracking-[0.2em] text-slate-600 sm:text-xs"
-      style={{ minHeight: FOOTER_ROW_H }}
+      className={`mt-3 text-center uppercase tracking-[0.18em] text-slate-600 ${
+        isMobile ? 'max-w-[20rem] px-2 text-[10px] leading-relaxed' : 'text-[10px] sm:text-xs'
+      }`}
+      style={{ minHeight: isMobile ? undefined : FOOTER_ROW_H }}
     >
-      {pool.length} {poolCountLabel}
+      {poolCountLabel}
     </p>
   )
 
+  const filtersDisabled = phase === 'spinning'
+  const filterLayout = isMobile ? 'bar' : 'sidebar'
+  const filtersSlot = filters ? (
+    <div className={isMobile ? 'w-full' : 'self-center'}>
+      {filters({ disabled: filtersDisabled, layout: filterLayout })}
+    </div>
+  ) : null
+
   const actions = (
-    <div className="flex flex-col items-center pt-6" style={{ width: blockWidth }}>
-      <StatefulButton layoutId={buttonLayoutId} onClick={startHunt} disabled={phase === 'spinning'}>
+    <div className={`flex flex-col items-center ${isMobile ? 'pt-2' : 'pt-6'}`} style={{ width: blockWidth }}>
+      <StatefulButton layoutId={buttonLayoutId} onClick={startHunt} disabled={phase === 'spinning' || !canSpin}>
         {buttonLabel}
       </StatefulButton>
       {poolLine}
@@ -151,8 +175,20 @@ function CrateHunt({
       visible={phase === 'revealed'}
       rarityLabels={rarityLabels}
       align={isMobile ? 'center' : reelSide === 'left' ? 'right' : 'left'}
+      variant={isMobile ? 'mobile' : 'desktop'}
     />
   )
+
+  const mobileRevealSlot =
+    phase !== 'idle' ? (
+      <motion.div
+        layout
+        className="w-full transition-[grid-template-rows] duration-[550ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+        style={{ display: 'grid', gridTemplateRows: phase === 'revealed' ? '1fr' : '0fr' }}
+      >
+        <div className="min-h-0 overflow-hidden">{namePanel}</div>
+      </motion.div>
+    ) : null
 
   const reelSlot =
     phase === 'idle' ? (
@@ -179,9 +215,7 @@ function CrateHunt({
 
   const nameSlot =
     phase === 'idle' ? (
-      isMobile ? (
-        <div className="min-h-[4rem]" aria-hidden="true" />
-      ) : (
+      isMobile ? null : (
         <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
       )
     ) : (
@@ -199,18 +233,19 @@ function CrateHunt({
           }}
         />
 
-        <div
-          className="grid w-full gap-y-5"
-          style={{
-            gridTemplateColumns: '1fr',
-            gridTemplateRows: `${HEADER_ROW_H} auto auto auto`,
-          }}
+        <motion.div
+          layout
+          className="flex w-full flex-col items-center gap-4"
+          transition={{ layout: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }}
         >
-          <div className="row-start-1 flex justify-center">{header}</div>
-          <div className="row-start-2 flex justify-center">{reelSlot}</div>
-          <div className="row-start-3 flex justify-center">{nameSlot}</div>
-          <div className="row-start-4 flex justify-center">{actions}</div>
-        </div>
+          {header}
+          {hasFilters ? filtersSlot : null}
+          <div className="w-full">{reelSlot}</div>
+          {mobileRevealSlot}
+          <motion.div layout transition={{ layout: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }}>
+            {actions}
+          </motion.div>
+        </motion.div>
       </div>
     )
   }
@@ -228,11 +263,21 @@ function CrateHunt({
       <div
         className="grid gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6"
         style={{
-          gridTemplateColumns: reelOnLeft ? `${REEL_WIDTH}px auto` : `auto ${REEL_WIDTH}px`,
+          gridTemplateColumns: hasFilters
+            ? reelOnLeft
+              ? `auto ${REEL_WIDTH}px auto`
+              : `auto ${REEL_WIDTH}px auto`
+            : reelOnLeft
+              ? `${REEL_WIDTH}px auto`
+              : `auto ${REEL_WIDTH}px`,
           gridTemplateRows: `${HEADER_ROW_H} auto auto`,
         }}
       >
         <div className={`${reelColClass} row-start-1 flex justify-center overflow-visible`}>{header}</div>
+
+        {hasFilters ? (
+          <div className={`${filterColClass} row-start-2 self-center`}>{filtersSlot}</div>
+        ) : null}
 
         <div className={`${reelColClass} row-start-2`}>{reelSlot}</div>
 

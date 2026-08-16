@@ -31,6 +31,8 @@ type BaseMonster = {
   hasTempered: boolean
   /** Whether an Arch-Tempered variant icon exists for this monster. */
   hasArchTempered?: boolean
+  /** Elder Dragons only exist as large monsters — never Tempered or Arch-Tempered. */
+  isElderDragon?: boolean
 }
 
 // Every base-game Large Monster in Monster Hunter Wilds, including
@@ -68,8 +70,8 @@ const BASE_MONSTERS: BaseMonster[] = [
   { slug: 'uth-duna', name: 'Uth Duna', hasTempered: true, hasArchTempered: true },
   { slug: 'xu-wu', name: 'Xu Wu', hasTempered: true },
   { slug: 'yian-kut-ku', name: 'Yian Kut-Ku', hasTempered: true },
-  { slug: 'zoh-shia', name: 'Zoh Shia', hasTempered: false },
-  { slug: 'gogmazios', name: 'Gogmazios', hasTempered: false },
+  { slug: 'zoh-shia', name: 'Zoh Shia', hasTempered: false, isElderDragon: true },
+  { slug: 'gogmazios', name: 'Gogmazios', hasTempered: false, isElderDragon: true },
 ]
 
 export const MONSTER_POOL: MonsterEntry[] = BASE_MONSTERS.flatMap((m) => {
@@ -87,6 +89,10 @@ export const MONSTER_POOL: MonsterEntry[] = BASE_MONSTERS.flatMap((m) => {
   }
   return entries
 })
+
+export const ELDER_DRAGON_SLUGS = new Set(
+  BASE_MONSTERS.filter((m) => m.isElderDragon).map((m) => m.slug),
+)
 
 export function pickRandomMonster(): MonsterEntry {
   return MONSTER_POOL[Math.floor(Math.random() * MONSTER_POOL.length)]
