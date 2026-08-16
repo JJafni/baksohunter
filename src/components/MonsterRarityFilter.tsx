@@ -23,9 +23,11 @@ function MonsterRarityFilter({ value, onChange, disabled = false }: MonsterRarit
   }
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 sm:text-xs">Pool Filters</p>
-      <div className="flex flex-wrap items-center justify-center gap-2">
+    <div className="flex w-[5.75rem] shrink-0 flex-col items-stretch gap-2 sm:w-[6.25rem]">
+      <p className="text-center text-[9px] font-bold uppercase leading-tight tracking-[0.16em] text-slate-500 sm:text-[10px]">
+        Pool Filters
+      </p>
+      <div className="flex flex-col gap-1.5">
         {FILTER_OPTIONS.map(({ rarity, label, activeClass }) => {
           const on = value[rarity]
           return (
@@ -35,7 +37,7 @@ function MonsterRarityFilter({ value, onChange, disabled = false }: MonsterRarit
               disabled={disabled}
               aria-pressed={on}
               onClick={() => toggle(rarity)}
-              className={`rounded-md border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] transition sm:px-3 sm:py-1.5 sm:text-xs ${
+              className={`rounded-md border px-2 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
                 on
                   ? activeClass
                   : 'border-white/10 bg-black/20 text-slate-500 hover:border-white/20 hover:text-slate-400'

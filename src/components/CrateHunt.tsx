@@ -27,7 +27,7 @@ type CrateHuntProps = {
   pickRandom: () => CrateEntry
   /** Which side the reel column (title, spinner, button) sits on. */
   reelSide: 'left' | 'right'
-  /** Optional controls shown above the reel (e.g. monster rarity filters). */
+  /** Optional controls shown beside the reel (e.g. monster rarity filters). */
   filters?: (ctx: { disabled: boolean }) => ReactNode
 }
 
@@ -105,9 +105,17 @@ function CrateHunt({
 
   const buttonLabel = phase === 'revealed' ? buttonLabels.again : buttonLabels.open
   const canSpin = pool.length > 0
+  const hasFilters = Boolean(filters)
   const reelOnLeft = reelSide === 'left'
-  const reelColClass = reelOnLeft ? 'col-start-1' : 'col-start-2'
-  const nameColClass = reelOnLeft ? 'col-start-2' : 'col-start-1'
+  const filterColClass = reelOnLeft ? 'col-start-1' : 'col-start-3'
+  const reelColClass = hasFilters ? 'col-start-2' : reelOnLeft ? 'col-start-1' : 'col-start-2'
+  const nameColClass = hasFilters
+    ? reelOnLeft
+      ? 'col-start-3'
+      : 'col-start-1'
+    : reelOnLeft
+      ? 'col-start-2'
+      : 'col-start-1'
 
   const blockWidth = isMobile ? '100%' : REEL_WIDTH
   const reelSlotHeight = isMobile ? MOBILE_REEL_HEIGHT : VIEWPORT_HEIGHT
@@ -142,9 +150,7 @@ function CrateHunt({
 
   const filtersDisabled = phase === 'spinning'
   const filtersSlot = filters ? (
-    <div className="flex justify-center pb-1" style={{ width: blockWidth }}>
-      {filters({ disabled: filtersDisabled })}
-    </div>
+    <div className="self-center">{filters({ disabled: filtersDisabled })}</div>
   ) : null
 
   const actions = (
@@ -199,6 +205,15 @@ function CrateHunt({
       namePanel
     )
 
+  const reelWithFilters = hasFilters ? (
+    <div className="flex items-center gap-3 sm:gap-4">
+      {filtersSlot}
+      {reelSlot}
+    </div>
+  ) : (
+    reelSlot
+  )
+
   if (isMobile) {
     return (
       <div className="relative w-full max-w-[620px] shrink-0">
@@ -214,14 +229,13 @@ function CrateHunt({
           className="grid w-full gap-y-5"
           style={{
             gridTemplateColumns: '1fr',
-            gridTemplateRows: filters ? `${HEADER_ROW_H} auto auto auto auto` : `${HEADER_ROW_H} auto auto auto`,
+            gridTemplateRows: `${HEADER_ROW_H} auto auto auto`,
           }}
         >
           <div className="row-start-1 flex justify-center">{header}</div>
-          {filters ? <div className="row-start-2 flex justify-center">{filtersSlot}</div> : null}
-          <div className={`flex justify-center ${filters ? 'row-start-3' : 'row-start-2'}`}>{reelSlot}</div>
-          <div className={`flex justify-center ${filters ? 'row-start-4' : 'row-start-3'}`}>{nameSlot}</div>
-          <div className={`flex justify-center ${filters ? 'row-start-5' : 'row-start-4'}`}>{actions}</div>
+          <div className="row-start-2 flex justify-center">{reelWithFilters}</div>
+          <div className="row-start-3 flex justify-center">{nameSlot}</div>
+          <div className="row-start-4 flex justify-center">{actions}</div>
         </div>
       </div>
     )
@@ -240,21 +254,27 @@ function CrateHunt({
       <div
         className="grid gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6"
         style={{
-          gridTemplateColumns: reelOnLeft ? `${REEL_WIDTH}px auto` : `auto ${REEL_WIDTH}px`,
-          gridTemplateRows: filters ? `${HEADER_ROW_H} auto auto auto` : `${HEADER_ROW_H} auto auto`,
+          gridTemplateColumns: hasFilters
+            ? reelOnLeft
+              ? `auto ${REEL_WIDTH}px auto`
+              : `auto ${REEL_WIDTH}px auto`
+            : reelOnLeft
+              ? `${REEL_WIDTH}px auto`
+              : `auto ${REEL_WIDTH}px`,
+          gridTemplateRows: `${HEADER_ROW_H} auto auto`,
         }}
       >
         <div className={`${reelColClass} row-start-1 flex justify-center overflow-visible`}>{header}</div>
 
-        {filters ? (
-          <div className={`${reelColClass} row-start-2 flex justify-center`}>{filtersSlot}</div>
+        {hasFilters ? (
+          <div className={`${filterColClass} row-start-2 self-center`}>{filtersSlot}</div>
         ) : null}
 
-        <div className={`${reelColClass} ${filters ? 'row-start-3' : 'row-start-2'}`}>{reelSlot}</div>
+        <div className={`${reelColClass} row-start-2`}>{reelSlot}</div>
 
-        <div className={`${nameColClass} ${filters ? 'row-start-3' : 'row-start-2'} self-center`}>{nameSlot}</div>
+        <div className={`${nameColClass} row-start-2 self-center`}>{nameSlot}</div>
 
-        <div className={`${reelColClass} ${filters ? 'row-start-4' : 'row-start-3'}`}>{actions}</div>
+        <div className={`${reelColClass} row-start-3`}>{actions}</div>
       </div>
     </div>
   )
