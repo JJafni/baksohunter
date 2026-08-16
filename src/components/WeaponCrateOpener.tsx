@@ -20,6 +20,7 @@ function WeaponCrateOpener() {
       pool={WEAPON_POOL}
       pickRandom={pickRandomWeapon}
       reelSide="right"
+      spinLabels={['Drawing']}
     />
   )
 }
