@@ -1,9 +1,13 @@
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import AppSkeleton from './components/AppSkeleton'
 import CrateOpener from './components/CrateOpener'
+import type { CrateHuntContext } from './components/CrateHunt'
 import HeaderNav from './components/HeaderNav'
+import MonsterGalleryImage from './components/MonsterGalleryImage'
 import WeaponCrateOpener from './components/WeaponCrateOpener'
 import { useAppReady } from './hooks/useAppReady'
+import { useIsMobileLayout } from './hooks/useIsMobileLayout'
 
 function AppBackground() {
   return (
@@ -24,7 +28,48 @@ function AppBackground() {
   )
 }
 
+function MobileHuntLayout() {
+  return (
+    <div className="grid w-full max-w-6xl grid-cols-1 items-start gap-8">
+      <div className="flex justify-center">
+        <CrateOpener />
+      </div>
+      <div className="flex justify-center">
+        <WeaponCrateOpener />
+      </div>
+    </div>
+  )
+}
+
+function DesktopHuntLayout({
+  monsterHunt,
+  onMonsterHuntChange,
+}: {
+  monsterHunt: CrateHuntContext
+  onMonsterHuntChange: (ctx: CrateHuntContext) => void
+}) {
+  return (
+    <div className="grid h-full min-h-0 w-full max-w-[1400px] grid-cols-1 grid-rows-[auto_minmax(0,1fr)] gap-4 lg:grid-cols-2 lg:grid-rows-1 lg:gap-0">
+      <aside className="flex min-h-0 items-stretch justify-center border-white/10 p-4 lg:border-r lg:p-6">
+        <MonsterGalleryImage
+          result={monsterHunt.result}
+          visible={monsterHunt.phase === 'revealed'}
+          variant="hero"
+        />
+      </aside>
+
+      <div className="grid min-h-0 grid-cols-1 gap-6 px-4 pb-2 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:py-4">
+        <CrateOpener onHuntChange={onMonsterHuntChange} />
+        <WeaponCrateOpener />
+      </div>
+    </div>
+  )
+}
+
 function AppContent() {
+  const isMobile = useIsMobileLayout()
+  const [monsterHunt, setMonsterHunt] = useState<CrateHuntContext>({ result: null, phase: 'idle' })
+
   return (
     <>
       <header className="relative z-10 flex shrink-0 items-center justify-between px-6 py-6 sm:px-10 lg:py-4">
@@ -39,15 +84,12 @@ function AppContent() {
         <HeaderNav activeMode="normal" />
       </header>
 
-      <main className="relative z-10 flex min-h-0 flex-1 flex-col items-center overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:overflow-hidden lg:py-3">
-        <div className="grid w-full max-w-6xl grid-cols-1 items-start gap-8 lg:h-full lg:grid-cols-2 lg:items-center lg:gap-6 xl:gap-8">
-          <div className="flex justify-center lg:justify-end">
-            <CrateOpener />
-          </div>
-          <div className="flex justify-center lg:justify-start">
-            <WeaponCrateOpener />
-          </div>
-        </div>
+      <main className="relative z-10 flex min-h-0 flex-1 flex-col items-center overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:overflow-hidden lg:px-0 lg:py-0">
+        {isMobile ? (
+          <MobileHuntLayout />
+        ) : (
+          <DesktopHuntLayout monsterHunt={monsterHunt} onMonsterHuntChange={setMonsterHunt} />
+        )}
       </main>
 
       <footer className="relative z-10 shrink-0 px-6 py-6 text-center text-[11px] text-slate-600 lg:py-3">

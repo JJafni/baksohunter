@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import {
   MOBILE_REEL_HEIGHT,
   MOBILE_REEL_MAX_WIDTH,
@@ -24,6 +25,7 @@ function HuntColumnSkeleton({ showGallery = false }: { showGallery?: boolean }) 
 }
 
 function AppSkeleton({ progress }: { progress: number }) {
+  const isMobile = useIsMobileLayout()
   const percent = Math.round(progress * 100)
 
   return (
@@ -35,15 +37,27 @@ function AppSkeleton({ progress }: { progress: number }) {
         />
       </div>
 
-      <main className="flex min-h-0 flex-1 flex-col items-center overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:overflow-hidden lg:py-3">
-        <div className="grid w-full max-w-6xl grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-10 xl:gap-12">
-          <div className="flex justify-center lg:justify-end">
-            <HuntColumnSkeleton showGallery />
+      <main className="flex min-h-0 flex-1 flex-col items-center overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:overflow-hidden lg:px-0 lg:py-0">
+        {isMobile ? (
+          <div className="grid w-full max-w-6xl grid-cols-1 gap-8">
+            <div className="flex justify-center">
+              <HuntColumnSkeleton showGallery />
+            </div>
+            <div className="flex justify-center">
+              <HuntColumnSkeleton />
+            </div>
           </div>
-          <div className="flex justify-center lg:justify-start">
-            <HuntColumnSkeleton />
+        ) : (
+          <div className="grid h-full min-h-0 w-full max-w-[1400px] grid-cols-2">
+            <div className="border-r border-white/10 p-6">
+              <SkeletonBlock className="h-full min-h-[320px] w-full rounded-2xl" />
+            </div>
+            <div className="grid grid-cols-2 gap-8 p-8">
+              <HuntColumnSkeleton />
+              <HuntColumnSkeleton />
+            </div>
           </div>
-        </div>
+        )}
       </main>
     </div>
   )

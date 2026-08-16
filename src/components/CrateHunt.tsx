@@ -19,7 +19,7 @@ import { StatefulButton } from './ui/stateful-button'
 
 type Phase = 'idle' | 'spinning' | 'revealed'
 
-type CrateHuntContext = {
+export type CrateHuntContext = {
   result: CrateEntry | null
   phase: Phase
 }
@@ -42,6 +42,9 @@ type CrateHuntProps = {
   buttonIcon?: 'sword' | 'shield'
   reelOrientation?: 'horizontal' | 'vertical'
   belowReel?: (ctx: CrateHuntContext) => ReactNode
+  /** When true, gallery is rendered elsewhere (desktop left panel). */
+  externalGallery?: boolean
+  onHuntChange?: (ctx: CrateHuntContext) => void
 }
 
 /** Shared row heights so monster and weapon columns line up horizontally. */
@@ -63,6 +66,8 @@ function CrateHunt({
   buttonIcon = 'sword',
   reelOrientation = 'horizontal',
   belowReel,
+  externalGallery = false,
+  onHuntChange,
 }: CrateHuntProps) {
   const isMobile = useIsMobileLayout()
   const useStackedLayout = isMobile || reelOrientation === 'horizontal'
@@ -104,6 +109,10 @@ function CrateHunt({
     spinResolverRef.current?.()
     spinResolverRef.current = null
   }, [])
+
+  useEffect(() => {
+    onHuntChange?.({ result, phase })
+  }, [result, phase, onHuntChange])
 
   const visualRarity: VisualRarity = result ? getVisualRarity(result) : 'normal'
   const backgroundGlow = RARITY_BACKGROUND_GLOW
@@ -163,8 +172,8 @@ function CrateHunt({
     </p>
   )
 
-  const huntContext: CrateHuntContext = { result, phase }
-  const belowReelSlot = belowReel?.(huntContext) ?? null
+  const huntContextForRender: CrateHuntContext = { result, phase }
+  const belowReelSlot = externalGallery ? null : belowReel?.(huntContextForRender) ?? null
 
   const filtersDisabled = phase === 'spinning'
   const filterLayout = useStackedLayout ? 'bar' : 'sidebar'
@@ -253,9 +262,9 @@ function CrateHunt({
           }}
         />
 
-        <div className="flex w-full flex-col items-center gap-4 lg:gap-2">
+        <div className="flex w-full flex-col items-center gap-4 lg:gap-3">
           <div className="w-full">{reelSlot}</div>
-          {belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
+          {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
           {header}
           {hasFilters ? filtersSlot : null}
           {mobileRevealSlot}
