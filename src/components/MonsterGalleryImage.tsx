@@ -43,8 +43,7 @@ function MonsterGalleryImage({
             decoding="async"
             initial={{ opacity: 0 }}
             animate={{
-              opacity: visible ? 0.95 : 0,
-              filter: visible && emphasized ? 'brightness(1)' : visible ? 'brightness(0.72)' : 'brightness(1)',
+              opacity: visible ? 1 : 0,
             }}
             transition={{ duration: 0.7, ease: 'easeInOut' }}
             onError={() => {
@@ -81,13 +80,18 @@ function MonsterGalleryImage({
       initial={false}
       animate={{
         opacity: visible ? 1 : 0,
-        filter: visible && emphasized ? 'brightness(1)' : visible ? 'brightness(0.72)' : 'brightness(1)',
       }}
       transition={{ duration: 0.7, ease: 'easeInOut' }}
       className={`relative flex w-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-black/30 ${
         isHero ? 'h-full min-h-[280px] lg:min-h-0' : ''
       }`}
     >
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-20 bg-slate-950/40"
+        initial={false}
+        animate={{ opacity: visible && emphasized ? 1 : 0 }}
+        transition={{ duration: 0.7, ease: 'easeInOut' }}
+      />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(255,255,255,0.06),transparent_70%)]" />
       <div className={`relative flex flex-1 items-center justify-center ${isHero ? 'min-h-0 p-4 lg:p-6' : ''}`}>
         <img

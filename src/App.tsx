@@ -53,11 +53,13 @@ function HuntLayout({
             emphasized={monsterGalleryEmphasized}
             variant="backdrop"
           />
-          <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/90 via-slate-950/65 to-slate-950/88" />
           <motion.div
-            className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80"
+            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80"
             initial={false}
-            animate={{ opacity: monsterGalleryEmphasized ? 1 : 0 }}
+            animate={{
+              opacity:
+                monsterHunt.phase === 'revealed' ? (monsterGalleryEmphasized ? 1 : 0.45) : 1,
+            }}
             transition={{ duration: 0.7, ease: 'easeInOut' }}
           />
         </div>
@@ -75,11 +77,12 @@ function HuntLayout({
             emphasized={weaponGalleryEmphasized}
             variant="backdrop"
           />
-          <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/90 via-slate-950/65 to-slate-950/88" />
           <motion.div
-            className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80"
+            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80"
             initial={false}
-            animate={{ opacity: weaponGalleryEmphasized ? 1 : 0 }}
+            animate={{
+              opacity: weaponHunt.phase === 'revealed' ? (weaponGalleryEmphasized ? 1 : 0.45) : 1,
+            }}
             transition={{ duration: 0.7, ease: 'easeInOut' }}
           />
         </div>
