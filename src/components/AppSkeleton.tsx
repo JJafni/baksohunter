@@ -29,10 +29,10 @@ function AppSkeleton({ progress }: { progress: number }) {
   const percent = Math.round(progress * 100)
 
   return (
-    <div className="relative z-20 flex min-h-svh flex-col bg-slate-950 max-lg:overflow-x-hidden lg:h-svh lg:min-h-0 lg:overflow-hidden">
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-0.5 bg-white/5">
+    <div className="relative z-20 flex min-h-svh flex-col bg-wilds-950 max-lg:overflow-x-hidden lg:h-svh lg:min-h-0 lg:overflow-hidden">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-0.5 bg-wilds-gold/10">
         <div
-          className="h-full bg-amber-400/80 transition-[width] duration-300 ease-out"
+          className="h-full bg-wilds-gold/80 transition-[width] duration-300 ease-out"
           style={{ width: `${percent}%` }}
         />
       </div>
@@ -49,7 +49,7 @@ function AppSkeleton({ progress }: { progress: number }) {
           </div>
         ) : (
           <div className="grid h-full min-h-0 w-full grid-cols-2">
-            <div className="relative border-r border-white/10 p-6">
+            <div className="relative border-r border-wilds-gold/15 p-6">
               <SkeletonBlock className="absolute inset-0 h-full w-full rounded-none opacity-40" />
               <div className="relative z-10 flex h-full flex-col gap-4">
                 <SkeletonBlock className="h-[172px] w-full rounded-2xl" />
