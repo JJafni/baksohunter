@@ -11,16 +11,19 @@ const RARITY_TONE = {
     border: 'border-sky-500/60',
     chip: 'bg-sky-500/15 text-sky-200 border-sky-400/40',
     glow: 'shadow-[0_0_45px_10px_rgba(56,189,248,0.5)]',
+    backlight: 'rgba(56,189,248,0.55)',
   },
   tempered: {
     border: 'border-rose-500/70',
     chip: 'bg-rose-500/15 text-rose-200 border-rose-400/40',
     glow: 'shadow-[0_0_45px_10px_rgba(244,63,94,0.55)]',
+    backlight: 'rgba(244,63,94,0.55)',
   },
   'arch-tempered': {
     border: 'border-amber-400/80',
     chip: 'bg-amber-500/15 text-amber-200 border-amber-400/50',
     glow: 'shadow-[0_0_55px_14px_rgba(251,191,36,0.6)]',
+    backlight: 'rgba(251,191,36,0.55)',
   },
 } as const
 
@@ -30,7 +33,7 @@ function CrateCard({ entry, winner = false }: CrateCardProps) {
   return (
     <div
       className={`relative flex shrink-0 flex-col items-center justify-between overflow-hidden rounded-lg border-2 bg-slate-950/80 p-2.5 transition-transform ${tone.border} ${
-        winner ? `scale-[1.06] ${tone.glow}` : ''
+        winner ? `z-20 scale-[1.06] ${tone.glow}` : ''
       }`}
       style={{ width: CARD_SIZE, height: CARD_SIZE }}
     >
@@ -42,12 +45,19 @@ function CrateCard({ entry, winner = false }: CrateCardProps) {
         }}
       />
       <div className="relative flex flex-1 items-center justify-center">
+        {winner ? (
+          <div
+            className="pointer-events-none absolute h-24 w-24 rounded-full blur-2xl"
+            style={{ backgroundColor: tone.backlight }}
+            aria-hidden="true"
+          />
+        ) : null}
         <img
           src={entry.icon}
           alt={entry.name}
           loading="eager"
           decoding="sync"
-          className="h-[76px] w-[76px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]"
+          className="relative z-10 h-[76px] w-[76px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]"
           draggable={false}
         />
       </div>

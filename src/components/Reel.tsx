@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CrateEntry, Rarity } from '../data/types'
 import CrateCard from './CrateCard'
-import CenterMarker from './CenterMarker'
+import { CenterMarkerFrame, CenterMarkerGlow } from './CenterMarker'
 import {
   CARD_GAP,
   CARD_SIZE,
@@ -100,8 +100,10 @@ function Reel({ sequence, onDone, landed, rarity, orientation = 'vertical' }: Re
           : { height: VIEWPORT_HEIGHT, width: CARD_SIZE + 40 }
       }
     >
+      <CenterMarkerGlow active={landed} rarity={rarity} orientation={orientation} />
+
       <div
-        className={spinning ? 'animate-[reel-blur_4800ms_ease-out_1]' : ''}
+        className={`relative z-10 ${spinning ? 'animate-[reel-blur_4800ms_ease-out_1]' : ''}`}
         style={{
           ...trackStyle,
           transitionProperty: 'transform',
@@ -126,7 +128,7 @@ function Reel({ sequence, onDone, landed, rarity, orientation = 'vertical' }: Re
         </>
       )}
 
-      <CenterMarker active={landed} rarity={rarity} orientation={orientation} />
+      <CenterMarkerFrame active={landed} rarity={rarity} orientation={orientation} />
     </div>
   )
 }
