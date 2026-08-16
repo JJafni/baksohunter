@@ -136,7 +136,7 @@ function CrateHunt({
   )
 
   return (
-    <div className="relative w-fit">
+    <div className="relative w-fit max-w-full shrink-0">
       <div
         className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
         style={{

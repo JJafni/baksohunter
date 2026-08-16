@@ -1,16 +1,19 @@
+import { REEL_WIDTH } from '../lib/crateConfig'
+
 type IdleCrateProps = {
   spinning?: boolean
 }
 
 function IdleCrate({ spinning = false }: IdleCrateProps) {
   return (
-    <div className="flex flex-col items-center py-10">
+    <div className="flex flex-col items-center py-4">
       <div
-        className={`relative flex h-56 w-56 items-center justify-center transition-opacity duration-500 ${
+        className={`relative flex items-center justify-center transition-opacity duration-500 ${
           spinning ? 'opacity-40' : 'opacity-100'
         }`}
+        style={{ width: REEL_WIDTH, height: REEL_WIDTH }}
       >
-        <div className="absolute inset-0 rounded-3xl border-2 border-amber-400/50 bg-gradient-to-br from-amber-500/15 via-slate-900/60 to-slate-950 shadow-[0_0_60px_15px_rgba(251,191,36,0.25)]" />
+        <div className="absolute inset-0 rounded-3xl border-2 border-amber-400/50 bg-gradient-to-br from-amber-500/15 via-slate-900/60 to-slate-950 shadow-[0_0_40px_10px_rgba(251,191,36,0.2)]" />
         <div
           className="absolute inset-3 rounded-2xl opacity-30"
           style={{
@@ -20,7 +23,7 @@ function IdleCrate({ spinning = false }: IdleCrateProps) {
         />
         <svg
           viewBox="0 0 100 100"
-          className="relative h-24 w-24 text-amber-300 drop-shadow-[0_0_18px_rgba(251,191,36,0.6)]"
+          className="relative h-20 w-20 text-amber-300 drop-shadow-[0_0_18px_rgba(251,191,36,0.6)]"
           fill="none"
           stroke="currentColor"
           strokeWidth={5}
