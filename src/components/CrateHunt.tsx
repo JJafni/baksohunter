@@ -103,7 +103,7 @@ function CrateHunt({
       <p className="select-none text-3xl font-black uppercase leading-none tracking-tight text-slate-500/40 sm:text-4xl">
         {heading}
       </p>
-      <p className="mt-2 w-max max-w-none whitespace-nowrap text-sm font-bold uppercase tracking-[0.12em] text-slate-100 sm:text-base">
+      <p className="mt-2 w-max max-w-none whitespace-nowrap text-base font-bold uppercase tracking-[0.15em] text-slate-100 sm:text-lg">
         {subtitle}
       </p>
     </div>

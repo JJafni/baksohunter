@@ -12,7 +12,7 @@ function CrateOpener() {
   return (
     <CrateHunt
       heading="Hunting"
-      subtitle="Crate · Large Monsters"
+      subtitle="Large Monsters"
       poolCountLabel="Large, Tempered & Arch-Tempered Monsters in the pool"
       buttonLayoutId="monster-crate-button"
       buttonLabels={{ open: 'Open Crate', again: 'Hunt Again' }}

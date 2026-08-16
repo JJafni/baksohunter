@@ -12,7 +12,7 @@ function WeaponCrateOpener() {
   return (
     <CrateHunt
       heading="Forging"
-      subtitle="Crate · Weapons"
+      subtitle="Weapons"
       poolCountLabel="Weapon Types in the pool"
       buttonLayoutId="weapon-crate-button"
       buttonLabels={{ open: 'Open Crate', again: 'Forge Again' }}
