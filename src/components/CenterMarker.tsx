@@ -45,7 +45,7 @@ function CenterMarkerGlow({ active, rarity = 'normal', orientation = 'vertical' 
 
 function CenterMarkerFrame({ active, rarity = 'normal', orientation = 'vertical' }: CenterMarkerProps) {
   const color = RARITY_COLOR[rarity]
-  const idleColor = 'rgba(148,163,184,0.55)'
+  const idleColor = 'rgba(138, 127, 110, 0.55)'
   const isHorizontal = orientation === 'horizontal'
 
   if (isHorizontal) {

@@ -53,7 +53,7 @@ function RevealPanel({
       {show ? (
         <div className={isMobile ? 'animate-hunt-reveal-enter-mobile' : 'animate-hunt-reveal-enter'}>
           <h2
-            className={`font-black uppercase leading-[0.95] tracking-tight text-white ${nameSizeClass}`}
+            className={`font-black uppercase leading-[0.95] tracking-tight text-wilds-parchment ${nameSizeClass}`}
           >
             {result.name}
           </h2>

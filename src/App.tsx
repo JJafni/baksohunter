@@ -8,22 +8,16 @@ import MonsterGalleryImage from './components/MonsterGalleryImage'
 import WeaponCrateOpener from './components/WeaponCrateOpener'
 import WeaponGalleryImage from './components/WeaponGalleryImage'
 import { useAppReady } from './hooks/useAppReady'
+import { WILDS_BACKDROP_OVERLAY } from './lib/wildsTheme'
 
 function AppBackground() {
   return (
     <>
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_-10%,rgba(59,130,246,0.16),transparent_45%),radial-gradient(circle_at_100%_10%,rgba(249,115,22,0.12),transparent_40%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_-5%,rgba(107,127,82,0.22),transparent_42%),radial-gradient(circle_at_88%_15%,rgba(184,101,58,0.16),transparent_38%),radial-gradient(circle_at_50%_100%,rgba(201,162,77,0.08),transparent_50%)]"
         aria-hidden="true"
       />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.05]"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(115deg, rgba(255,255,255,0.6) 0px, rgba(255,255,255,0.6) 1px, transparent 1px, transparent 26px)',
-        }}
-        aria-hidden="true"
-      />
+      <div className="pointer-events-none absolute inset-0 wilds-leather-texture opacity-80" aria-hidden="true" />
     </>
   )
 }
@@ -35,12 +29,11 @@ function GalleryBackdropOverlay({
   revealed: boolean
   emphasized: boolean
 }) {
-  // Single layer: dark while spinner is up, lighter once it fades. No stacked fades on reveal.
   const opacity = !revealed ? 1 : emphasized ? 1 : 0.45
 
   return (
     <motion.div
-      className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/92 via-slate-950/78 to-slate-950/90"
+      className={`pointer-events-none absolute inset-0 z-[1] ${WILDS_BACKDROP_OVERLAY}`}
       initial={false}
       animate={{ opacity }}
       transition={{ duration: 0.7, ease: 'easeInOut' }}
@@ -65,7 +58,7 @@ function HuntLayout({
 
   return (
     <div className="grid h-full min-h-0 w-full grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:items-stretch lg:gap-0">
-      <section className="relative flex min-h-0 w-full justify-center lg:overflow-hidden lg:border-r lg:border-white/10">
+      <section className="relative flex min-h-0 w-full justify-center lg:overflow-hidden lg:border-r lg:border-wilds-gold/15">
         <div className="pointer-events-none absolute inset-0 hidden lg:block">
           <MonsterGalleryImage
             result={monsterHunt.result}
@@ -120,12 +113,12 @@ function AppContent() {
 
   return (
     <>
-      <header className="relative z-10 flex shrink-0 items-center justify-between px-6 py-6 sm:px-10 lg:py-4">
+      <header className="relative z-10 flex shrink-0 items-center justify-between border-b border-wilds-gold/10 bg-wilds-950/60 px-6 py-6 backdrop-blur-sm sm:px-10 lg:py-4">
         <div className="flex items-center gap-3">
-          <span className="text-lg font-black uppercase tracking-widest text-white">
-            MH<span className="text-amber-400">Wilds</span>
+          <span className="text-lg font-black uppercase tracking-widest text-wilds-parchment">
+            MH<span className="text-wilds-gold-light">Wilds</span>
           </span>
-          <span className="hidden text-xs uppercase tracking-[0.3em] text-slate-500 sm:inline">
+          <span className="hidden text-xs uppercase tracking-[0.3em] text-wilds-muted sm:inline">
             Faith Hunt
           </span>
         </div>
@@ -141,7 +134,7 @@ function AppContent() {
         />
       </main>
 
-      <footer className="relative z-10 shrink-0 px-6 py-6 text-center text-[11px] text-slate-600 lg:py-3">
+      <footer className="relative z-10 shrink-0 border-t border-wilds-gold/10 px-6 py-6 text-center text-[11px] text-wilds-muted lg:py-3">
         Fan-made tool for Monster Hunter Wilds &middot; Monster &amp; weapon icons &copy; Capcom &middot; Not
         affiliated with Capcom or Psyonix
       </footer>
@@ -153,7 +146,7 @@ function App() {
   const { ready, progress } = useAppReady()
 
   return (
-    <div className="relative flex min-h-svh flex-col bg-slate-950 text-slate-100 max-lg:overflow-x-hidden lg:h-svh lg:min-h-0 lg:overflow-hidden">
+    <div className="relative flex min-h-svh flex-col bg-wilds-950 text-wilds-parchment max-lg:overflow-x-hidden lg:h-svh lg:min-h-0 lg:overflow-hidden">
       <AnimatePresence mode="wait">
         {!ready ? (
           <motion.div
@@ -161,7 +154,7 @@ function App() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: 'easeInOut' }}
-            className="absolute inset-0 bg-slate-950"
+            className="absolute inset-0 bg-wilds-950"
           >
             <AppSkeleton progress={progress} />
           </motion.div>

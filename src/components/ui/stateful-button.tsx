@@ -78,7 +78,7 @@ export function StatefulButton({
       aria-busy={isLoading}
       disabled={isButtonDisabled}
       className={cn(
-        'group flex w-full max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-lg border-2 px-6 py-3.5 text-sm font-bold uppercase tracking-[0.12em] ring-offset-2 ring-offset-stone-950 transition-colors duration-200',
+        'group flex w-full max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-lg border-2 px-6 py-3.5 text-sm font-bold uppercase tracking-[0.12em] ring-offset-2 ring-offset-wilds-950 transition-colors duration-200',
         'border-[#9a7b3c] bg-[#2c261f] text-[#ede0c8] shadow-[0_0_18px_rgba(154,123,60,0.22)]',
         'enabled:cursor-pointer enabled:hover:border-[#b8954a] enabled:hover:bg-[#3a3228] enabled:hover:shadow-[0_0_24px_rgba(184,149,74,0.28)]',
         'disabled:cursor-not-allowed disabled:border-[#4a4234] disabled:bg-[#1a1714] disabled:text-[#7a7268] disabled:shadow-none disabled:hover:border-[#4a4234] disabled:hover:bg-[#1a1714] disabled:hover:shadow-none',

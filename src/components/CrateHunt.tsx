@@ -200,14 +200,14 @@ function CrateHunt({
       style={{ width: blockWidth, minHeight: useStackedLayout ? undefined : HEADER_ROW_H }}
     >
       <p
-        className={`select-none font-black uppercase leading-none tracking-tight text-slate-500/40 ${
+        className={`select-none font-black uppercase leading-none tracking-tight text-wilds-muted/50 ${
           useStackedLayout ? 'text-2xl' : 'text-3xl sm:text-4xl'
         }`}
       >
         {heading}
       </p>
       <p
-        className={`w-max max-w-none whitespace-nowrap font-bold uppercase tracking-[0.15em] text-slate-100 ${
+        className={`w-max max-w-none whitespace-nowrap font-bold uppercase tracking-[0.15em] text-wilds-parchment ${
           useStackedLayout ? 'text-base' : 'mt-2 text-lg sm:text-xl'
         }`}
       >
@@ -218,7 +218,7 @@ function CrateHunt({
 
   const poolLine = (
     <p
-      className={`mt-3 flex items-center justify-center whitespace-nowrap text-center uppercase tracking-[0.18em] text-slate-600 ${
+      className={`mt-3 flex items-center justify-center whitespace-nowrap text-center uppercase tracking-[0.18em] text-wilds-muted ${
         useStackedLayout ? 'px-2 text-[10px]' : 'text-[10px] sm:text-xs'
       }`}
       style={{ minHeight: FOOTER_ROW_H }}

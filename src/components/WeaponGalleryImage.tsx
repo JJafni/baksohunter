@@ -54,7 +54,7 @@ function WeaponGalleryImage({
             className="h-full w-full scale-105 object-contain object-center"
           />
         ) : (
-          <div className="h-full w-full bg-slate-950/80" />
+          <div className="h-full w-full bg-wilds-950/80" />
         )}
       </div>
     )
@@ -63,8 +63,8 @@ function WeaponGalleryImage({
   if (!displayedResult) {
     if (isHero) {
       return (
-        <div className="flex h-full min-h-[280px] w-full items-center justify-center rounded-2xl border border-dashed border-white/10 bg-black/20 lg:min-h-0">
-          <p className="px-6 text-center text-xs uppercase tracking-[0.2em] text-slate-600">
+        <div className="flex h-full min-h-[280px] w-full items-center justify-center rounded-2xl border border-dashed border-wilds-gold/20 bg-wilds-900/40 lg:min-h-0">
+          <p className="px-6 text-center text-xs uppercase tracking-[0.2em] text-wilds-muted">
             Draw a weapon to reveal its showcase
           </p>
         </div>
@@ -84,12 +84,12 @@ function WeaponGalleryImage({
         opacity: visible ? 1 : 0,
       }}
       transition={GALLERY_FADE}
-      className={`relative flex w-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-black/30 ${
+      className={`relative flex w-full flex-col overflow-hidden rounded-2xl border border-wilds-gold/20 bg-wilds-900/50 ${
         isHero ? 'h-full min-h-[280px] lg:min-h-0' : ''
       }`}
     >
       <motion.div
-        className="pointer-events-none absolute inset-0 z-20 bg-slate-950/65"
+        className="pointer-events-none absolute inset-0 z-20 bg-wilds-950/65"
         initial={false}
         animate={{ opacity: visible ? (emphasized ? 0.65 : 0.3) : 0 }}
         transition={GALLERY_FADE}
@@ -114,7 +114,7 @@ function WeaponGalleryImage({
           }`}
         />
       </div>
-      <figcaption className="shrink-0 border-t border-white/5 px-3 py-2 text-center text-[9px] uppercase tracking-[0.14em] text-slate-600 sm:text-[10px]">
+      <figcaption className="shrink-0 border-t border-wilds-gold/10 px-3 py-2 text-center text-[9px] uppercase tracking-[0.14em] text-wilds-muted sm:text-[10px]">
         {showHd ? (
           <>
             Showcase via{' '}
@@ -122,13 +122,13 @@ function WeaponGalleryImage({
               href={WEAPON_GALLERY_SOURCE_URL}
               target="_blank"
               rel="noreferrer"
-              className="text-slate-500 underline-offset-2 hover:text-slate-400 hover:underline"
+              className="text-wilds-muted underline-offset-2 hover:text-wilds-gold-light hover:underline"
             >
               IGN Nordic Weapons Gallery
             </a>
           </>
         ) : (
-          <span className="text-slate-500">Showcase not available — showing weapon icon</span>
+          <span className="text-wilds-muted">Showcase not available — showing weapon icon</span>
         )}
       </figcaption>
     </motion.figure>
