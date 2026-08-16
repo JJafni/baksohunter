@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from 'motion/react'
-import BackgroundSlideshow from './components/BackgroundSlideshow'
 import AppSkeleton from './components/AppSkeleton'
 import CrateOpener from './components/CrateOpener'
 import WeaponCrateOpener from './components/WeaponCrateOpener'
@@ -8,21 +7,16 @@ import { useAppReady } from './hooks/useAppReady'
 function AppBackground() {
   return (
     <>
-      <BackgroundSlideshow />
       <div
-        className="pointer-events-none absolute inset-0 bg-slate-950/65"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_-10%,rgba(59,130,246,0.16),transparent_45%),radial-gradient(circle_at_100%_10%,rgba(249,115,22,0.12),transparent_40%)]"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/50 to-slate-950/75"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_75%_65%_at_50%_50%,transparent_32%,rgba(2,6,23,0.48)_75%,rgba(2,6,23,0.72)_100%)]"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_-10%,rgba(59,130,246,0.08),transparent_45%),radial-gradient(circle_at_100%_10%,rgba(249,115,22,0.06),transparent_40%)]"
+        className="pointer-events-none absolute inset-0 opacity-[0.05]"
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(115deg, rgba(255,255,255,0.6) 0px, rgba(255,255,255,0.6) 1px, transparent 1px, transparent 26px)',
+        }}
         aria-hidden="true"
       />
     </>

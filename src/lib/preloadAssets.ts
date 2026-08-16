@@ -1,24 +1,18 @@
-import { backgroundSlides } from '../data/backgroundSlides'
 import { MONSTER_POOL } from '../data/monsters'
 import { WEAPON_POOL } from '../data/weapons'
 
 export function getAppAssetUrls(): string[] {
-  const iconUrls = new Set<string>()
-  const backgroundUrls = new Set<string>()
+  const urls = new Set<string>()
 
   for (const entry of MONSTER_POOL) {
-    iconUrls.add(entry.icon)
+    urls.add(entry.icon)
   }
 
   for (const entry of WEAPON_POOL) {
-    iconUrls.add(entry.icon)
+    urls.add(entry.icon)
   }
 
-  for (const slide of backgroundSlides) {
-    backgroundUrls.add(slide.src)
-  }
-
-  return [...iconUrls, ...backgroundUrls]
+  return [...urls]
 }
 
 async function preloadImage(src: string): Promise<void> {
