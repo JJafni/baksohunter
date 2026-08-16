@@ -21,6 +21,10 @@ type CrateHuntProps = {
   reelSide: 'left' | 'right'
 }
 
+/** Shared row heights so monster and weapon columns line up horizontally. */
+const HEADER_ROW_H = '4.75rem'
+const FOOTER_ROW_H = '2.75rem'
+
 function buildSequence(target: CrateEntry, pickRandom: () => CrateEntry): CrateEntry[] {
   const sequence: CrateEntry[] = []
   for (let i = 0; i < REEL_LENGTH; i++) {
@@ -88,12 +92,11 @@ function CrateHunt({
 
   const buttonLabel = phase === 'revealed' ? buttonLabels.again : buttonLabels.open
   const reelOnLeft = reelSide === 'left'
+  const reelColClass = reelOnLeft ? 'col-start-1' : 'col-start-2'
+  const nameColClass = reelOnLeft ? 'col-start-2' : 'col-start-1'
 
   const header = (
-    <div
-      className={`mb-5 text-center ${isEntering ? 'animate-hunt-side-enter' : ''}`}
-      style={{ width: REEL_WIDTH }}
-    >
+    <div className={`text-center ${isEntering ? 'animate-hunt-side-enter' : ''}`} style={{ width: REEL_WIDTH }}>
       <p className="select-none text-3xl font-black uppercase leading-none tracking-tight text-slate-500/40 sm:text-4xl">
         {heading}
       </p>
@@ -115,14 +118,21 @@ function CrateHunt({
     </div>
   )
 
+  const poolLine = (
+    <p
+      className="mt-4 text-center text-[10px] uppercase tracking-[0.2em] text-slate-600 sm:text-xs"
+      style={{ minHeight: FOOTER_ROW_H }}
+    >
+      {pool.length} {poolCountLabel}
+    </p>
+  )
+
   const actions = (
-    <div className="mt-6 flex flex-col items-center" style={{ width: REEL_WIDTH }}>
+    <div className="flex flex-col items-center pt-6" style={{ width: REEL_WIDTH }}>
       <StatefulButton layoutId={buttonLayoutId} onClick={startHunt} disabled={phase === 'spinning'}>
         {buttonLabel}
       </StatefulButton>
-      <p className="mt-4 text-center text-[10px] uppercase tracking-[0.2em] text-slate-600 sm:text-xs">
-        {pool.length} {poolCountLabel}
-      </p>
+      {poolLine}
     </div>
   )
 
@@ -148,32 +158,33 @@ function CrateHunt({
       {phase === 'idle' ? (
         <div className="flex flex-col items-center" style={{ width: REEL_WIDTH }}>
           <IdleCrate />
-          <div className="mt-6 flex w-full flex-col items-center gap-4">
+          <div className="flex w-full flex-col items-center pt-6">
             <StatefulButton layoutId={buttonLayoutId} onClick={startHunt}>
               {buttonLabel}
             </StatefulButton>
-            <p className="text-center text-[10px] uppercase tracking-[0.2em] text-slate-600 sm:text-xs">
-              {pool.length} {poolCountLabel}
-            </p>
+            {poolLine}
           </div>
-        </div>
-      ) : reelOnLeft ? (
-        <div className="flex items-center gap-3 sm:gap-4">
-          <div className="flex shrink-0 flex-col items-center">
-            {header}
-            {reel}
-            {actions}
-          </div>
-          <div className="self-center">{namePanel}</div>
         </div>
       ) : (
-        <div className="flex items-center gap-3 sm:gap-4">
-          <div className="self-center">{namePanel}</div>
-          <div className="flex shrink-0 flex-col items-center">
+        <div
+          className="grid gap-x-3 sm:gap-x-4"
+          style={{
+            gridTemplateColumns: reelOnLeft ? `${REEL_WIDTH}px auto` : `auto ${REEL_WIDTH}px`,
+            gridTemplateRows: `${HEADER_ROW_H} auto auto`,
+          }}
+        >
+          <div
+            className={`${reelColClass} row-start-1 flex items-start justify-center`}
+            style={{ width: REEL_WIDTH, minHeight: HEADER_ROW_H }}
+          >
             {header}
-            {reel}
-            {actions}
           </div>
+
+          <div className={`${reelColClass} row-start-2`}>{reel}</div>
+
+          <div className={`${nameColClass} row-start-2 self-center`}>{namePanel}</div>
+
+          <div className={`${reelColClass} row-start-3`}>{actions}</div>
         </div>
       )}
     </div>
