@@ -70,11 +70,7 @@ function CrateOpener() {
       {phase === 'idle' ? (
         <IdleCrate />
       ) : (
-        <div
-          className={`flex w-full flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16 ${
-            isEntering ? 'animate-hunt-stage-enter' : ''
-          }`}
-        >
+        <div className="flex w-full flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16">
           <div className={`w-full max-w-[320px] text-center lg:w-[320px] lg:text-right ${isEntering ? 'animate-hunt-side-enter' : ''}`}>
             <p className="select-none text-4xl font-black uppercase tracking-tight text-slate-500/40 sm:text-5xl">
               Hunting
@@ -84,7 +80,9 @@ function CrateOpener() {
             </p>
           </div>
 
-          <Reel key={spinKey} sequence={sequence} onDone={handleLanded} landed={phase === 'revealed'} rarity={rarity} />
+          <div className={isEntering ? 'animate-hunt-reel-stretch' : ''}>
+            <Reel key={spinKey} sequence={sequence} onDone={handleLanded} landed={phase === 'revealed'} rarity={rarity} />
+          </div>
 
           <div className={isEntering ? 'animate-hunt-reveal-enter' : ''}>
             <RevealPanel result={result} visible={phase === 'revealed'} />
