@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
+import { motion } from 'motion/react'
 import type { CrateEntry } from '../data/types'
+import { useGalleryDisplayResult } from '../hooks/useGalleryDisplayResult'
 import { getWeaponGalleryImageUrl, WEAPON_GALLERY_SOURCE_URL } from '../lib/weaponGalleryImages'
 
 type WeaponGalleryImageProps = {
@@ -10,31 +12,35 @@ type WeaponGalleryImageProps = {
 
 function WeaponGalleryImage({ result, visible, variant = 'inline' }: WeaponGalleryImageProps) {
   const [useIconFallback, setUseIconFallback] = useState(false)
+  const displayedResult = useGalleryDisplayResult(result, visible)
   const isHero = variant === 'hero'
   const isBackdrop = variant === 'backdrop'
 
   useEffect(() => {
     setUseIconFallback(false)
-  }, [result?.slug])
+  }, [displayedResult?.slug])
 
   if (isBackdrop) {
-    const galleryUrl = result ? getWeaponGalleryImageUrl(result.slug) : undefined
+    const galleryUrl = displayedResult ? getWeaponGalleryImageUrl(displayedResult.slug) : undefined
     const showHd = Boolean(galleryUrl) && !useIconFallback
-    const imageUrl = result && showHd ? galleryUrl! : result?.icon
+    const imageUrl = displayedResult && showHd ? galleryUrl! : displayedResult?.icon
 
     return (
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden={!visible || !result}>
-        {visible && result && imageUrl ? (
-          <img
-            key={`${result.slug}-${showHd ? 'hd' : 'icon'}`}
+        {displayedResult && imageUrl ? (
+          <motion.img
+            key={`${displayedResult.slug}-${showHd ? 'hd' : 'icon'}`}
             src={imageUrl}
             alt=""
             loading="lazy"
             decoding="async"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: visible ? 0.95 : 0 }}
+            transition={{ duration: 0.7, ease: 'easeInOut' }}
             onError={() => {
               if (showHd) setUseIconFallback(true)
             }}
-            className="h-full w-full scale-105 object-contain object-center opacity-95"
+            className="h-full w-full scale-105 object-contain object-center"
           />
         ) : (
           <div className="h-full w-full bg-slate-950/80" />
@@ -43,7 +49,7 @@ function WeaponGalleryImage({ result, visible, variant = 'inline' }: WeaponGalle
     )
   }
 
-  if (!visible || !result) {
+  if (!displayedResult) {
     if (isHero) {
       return (
         <div className="flex h-full min-h-[280px] w-full items-center justify-center rounded-2xl border border-dashed border-white/10 bg-black/20 lg:min-h-0">
@@ -56,12 +62,15 @@ function WeaponGalleryImage({ result, visible, variant = 'inline' }: WeaponGalle
     return null
   }
 
-  const galleryUrl = getWeaponGalleryImageUrl(result.slug)
+  const galleryUrl = getWeaponGalleryImageUrl(displayedResult.slug)
   const showHd = Boolean(galleryUrl) && !useIconFallback
-  const imageUrl = showHd ? galleryUrl! : result.icon
+  const imageUrl = showHd ? galleryUrl! : displayedResult.icon
 
   return (
-    <figure
+    <motion.figure
+      initial={false}
+      animate={{ opacity: visible ? 1 : 0 }}
+      transition={{ duration: 0.7, ease: 'easeInOut' }}
       className={`relative flex w-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-black/30 ${
         isHero ? 'h-full min-h-[280px] lg:min-h-0' : ''
       }`}
@@ -69,9 +78,9 @@ function WeaponGalleryImage({ result, visible, variant = 'inline' }: WeaponGalle
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(255,255,255,0.06),transparent_70%)]" />
       <div className={`relative flex flex-1 items-center justify-center ${isHero ? 'min-h-0 p-4 lg:p-6' : ''}`}>
         <img
-          key={`${result.slug}-${showHd ? 'hd' : 'icon'}`}
+          key={`${displayedResult.slug}-${showHd ? 'hd' : 'icon'}`}
           src={imageUrl}
-          alt={`${result.name} ${showHd ? 'showcase' : 'icon'}`}
+          alt={`${displayedResult.name} ${showHd ? 'showcase' : 'icon'}`}
           loading="lazy"
           decoding="async"
           onError={() => {
@@ -103,7 +112,7 @@ function WeaponGalleryImage({ result, visible, variant = 'inline' }: WeaponGalle
           <span className="text-slate-500">Showcase not available — showing weapon icon</span>
         )}
       </figcaption>
-    </figure>
+    </motion.figure>
   )
 }
 
