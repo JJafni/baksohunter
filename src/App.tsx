@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import AppSkeleton from './components/AppSkeleton'
 import CrateOpener from './components/CrateOpener'
+import HeaderNav from './components/HeaderNav'
 import WeaponCrateOpener from './components/WeaponCrateOpener'
 import { useAppReady } from './hooks/useAppReady'
 
@@ -35,7 +36,7 @@ function AppContent() {
             Faith Hunt
           </span>
         </div>
-        <span className="text-xs uppercase tracking-[0.3em] text-slate-500">Forbidden Lands</span>
+        <HeaderNav activeMode="normal" />
       </header>
 
       <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
