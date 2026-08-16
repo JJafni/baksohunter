@@ -74,7 +74,7 @@ function CrateHunt({
     await new Promise<void>((resolve) => {
       spinResolverRef.current = resolve
     })
-  }, [phase, pickRandom, pool.length])
+  }, [phase, pickRandom, pool])
 
   useEffect(() => {
     if (!isEntering) return
