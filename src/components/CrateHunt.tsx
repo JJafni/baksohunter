@@ -223,7 +223,7 @@ function CrateHunt({
       </motion.div>
     ) : null
 
-  const columnMaxWidth = overlayMode ? undefined : HUNT_COLUMN_MAX_WIDTH
+  const columnMaxWidth = HUNT_COLUMN_MAX_WIDTH
 
   const reelSlot =
     phase === 'idle' ? (
@@ -260,7 +260,8 @@ function CrateHunt({
   if (useStackedLayout) {
     return (
       <div
-        className={`relative shrink-0 ${overlayMode ? 'flex h-full w-full max-w-none flex-col' : 'w-full max-w-[620px]'}`}
+        className={`relative mx-auto w-full shrink-0 ${overlayMode ? 'flex h-full flex-col' : ''}`}
+        style={{ maxWidth: HUNT_COLUMN_MAX_WIDTH }}
       >
         <div
           className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"

@@ -40,7 +40,7 @@ function HuntLayout({
   onWeaponHuntChange: (ctx: CrateHuntContext) => void
 }) {
   return (
-    <div className="grid w-full max-w-6xl grid-cols-1 items-start gap-8 lg:h-full lg:min-h-0 lg:max-w-[1600px] lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-stretch lg:gap-0">
+    <div className="grid w-full max-w-6xl grid-cols-1 items-start gap-8 lg:h-full lg:min-h-0 lg:max-w-[1600px] lg:grid-cols-2 lg:items-stretch lg:gap-0">
       <section className="relative flex justify-center lg:min-h-0 lg:overflow-hidden lg:border-r lg:border-white/10">
         <div className="pointer-events-none absolute inset-0 hidden lg:block">
           <MonsterGalleryImage
