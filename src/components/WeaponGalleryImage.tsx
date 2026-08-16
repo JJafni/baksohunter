@@ -78,12 +78,7 @@ function WeaponGalleryImage({
   const imageUrl = showHd ? galleryUrl! : displayedResult.icon
 
   return (
-    <motion.figure
-      initial={{ opacity: 0 }}
-      animate={{
-        opacity: visible ? 1 : 0,
-      }}
-      transition={GALLERY_FADE}
+    <figure
       className={`relative flex w-full flex-col overflow-hidden rounded-2xl border border-wilds-gold/20 bg-wilds-900/50 ${
         isHero ? 'h-full min-h-[280px] lg:min-h-0' : ''
       }`}
@@ -96,12 +91,15 @@ function WeaponGalleryImage({
       />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(255,255,255,0.06),transparent_70%)]" />
       <div className={`relative flex flex-1 items-center justify-center ${isHero ? 'min-h-0 p-4 lg:p-6' : ''}`}>
-        <img
+        <motion.img
           key={`${displayedResult.slug}-${showHd ? 'hd' : 'icon'}`}
           src={imageUrl}
           alt={`${displayedResult.name} ${showHd ? 'showcase' : 'icon'}`}
           loading="lazy"
           decoding="async"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: visible ? 1 : 0 }}
+          transition={GALLERY_FADE}
           onError={() => {
             if (showHd) setUseIconFallback(true)
           }}
@@ -131,7 +129,7 @@ function WeaponGalleryImage({
           <span className="text-wilds-muted">Showcase not available — showing weapon icon</span>
         )}
       </figcaption>
-    </motion.figure>
+    </figure>
   )
 }
 
