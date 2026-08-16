@@ -1,10 +1,13 @@
+import { AnimatePresence, motion } from 'motion/react'
 import BackgroundSlideshow from './components/BackgroundSlideshow'
+import AppSkeleton from './components/AppSkeleton'
 import CrateOpener from './components/CrateOpener'
 import WeaponCrateOpener from './components/WeaponCrateOpener'
+import { useAppReady } from './hooks/useAppReady'
 
-function App() {
+function AppBackground() {
   return (
-    <div className="relative flex min-h-svh flex-col overflow-hidden bg-slate-950 text-slate-100">
+    <>
       <BackgroundSlideshow />
       <div
         className="pointer-events-none absolute inset-0 bg-slate-950/65"
@@ -22,7 +25,13 @@ function App() {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_-10%,rgba(59,130,246,0.08),transparent_45%),radial-gradient(circle_at_100%_10%,rgba(249,115,22,0.06),transparent_40%)]"
         aria-hidden="true"
       />
+    </>
+  )
+}
 
+function AppContent() {
+  return (
+    <>
       <header className="relative z-10 flex items-center justify-between px-6 py-6 sm:px-10">
         <div className="flex items-center gap-3">
           <span className="text-lg font-black uppercase tracking-widest text-white">
@@ -51,6 +60,39 @@ function App() {
         Fan-made tool for Monster Hunter Wilds &middot; Monster &amp; weapon icons &copy; Capcom &middot; Not
         affiliated with Capcom or Psyonix
       </footer>
+    </>
+  )
+}
+
+function App() {
+  const { ready, progress } = useAppReady()
+
+  return (
+    <div className="relative flex min-h-svh flex-col overflow-hidden bg-slate-950 text-slate-100">
+      <AnimatePresence mode="wait">
+        {!ready ? (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, ease: 'easeInOut' }}
+            className="absolute inset-0 bg-slate-950"
+          >
+            <AppSkeleton progress={progress} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="content"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+            className="relative flex min-h-svh flex-col"
+          >
+            <AppBackground />
+            <AppContent />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
