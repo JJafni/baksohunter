@@ -87,10 +87,21 @@ function CrateHunt({
   }
 
   const buttonLabel = phase === 'revealed' ? buttonLabels.again : buttonLabels.open
-  const columnAlign = revealSide === 'right' ? 'items-end' : 'items-start'
+  const blockAlign = revealSide === 'left' ? 'items-end' : 'items-start'
+
+  const actions = (
+    <>
+      <StatefulButton layoutId={buttonLayoutId} onClick={startHunt} disabled={phase === 'spinning'}>
+        {buttonLabel}
+      </StatefulButton>
+      <p className="mt-4 text-center text-[10px] uppercase tracking-[0.2em] text-slate-600 sm:text-xs">
+        {pool.length} {poolCountLabel}
+      </p>
+    </>
+  )
 
   return (
-    <div className={`relative flex w-full flex-col ${columnAlign}`}>
+    <div className={`relative flex w-fit flex-col ${blockAlign}`}>
       <div
         className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
         style={{
@@ -100,13 +111,14 @@ function CrateHunt({
       />
 
       {phase === 'idle' ? (
-        <div style={{ width: REEL_WIDTH }}>
+        <div className="flex flex-col items-center" style={{ width: REEL_WIDTH }}>
           <IdleCrate />
+          <div className="mt-6 flex w-full flex-col items-center">{actions}</div>
         </div>
       ) : (
-        <div className={`flex w-fit flex-col gap-5 ${columnAlign}`}>
+        <>
           <div
-            className={`text-center ${isEntering ? 'animate-hunt-side-enter' : ''}`}
+            className={`mb-5 text-center ${isEntering ? 'animate-hunt-side-enter' : ''}`}
             style={{ width: REEL_WIDTH }}
           >
             <p className="select-none text-3xl font-black uppercase tracking-tight text-slate-500/40 sm:text-4xl">
@@ -118,11 +130,11 @@ function CrateHunt({
           </div>
 
           <div
-            className={`flex items-center gap-2 sm:gap-3 ${
+            className={`flex items-center gap-3 ${
               revealSide === 'right' ? 'flex-row' : 'flex-row-reverse'
             }`}
           >
-            <div className={isEntering ? 'animate-hunt-reel-stretch' : ''}>
+            <div className={isEntering ? 'animate-hunt-reel-stretch' : ''} style={{ width: REEL_WIDTH }}>
               <Reel
                 key={spinKey}
                 sequence={sequence}
@@ -139,22 +151,12 @@ function CrateHunt({
               align={revealSide === 'left' ? 'right' : 'left'}
             />
           </div>
-        </div>
+
+          <div className="mt-6 flex flex-col items-center" style={{ width: REEL_WIDTH }}>
+            {actions}
+          </div>
+        </>
       )}
-
-      <div className="mt-6 flex flex-col items-center" style={{ width: REEL_WIDTH }}>
-        <StatefulButton
-          layoutId={buttonLayoutId}
-          onClick={startHunt}
-          disabled={phase === 'spinning'}
-        >
-          {buttonLabel}
-        </StatefulButton>
-
-        <p className="mt-6 text-center text-[10px] uppercase tracking-[0.2em] text-slate-600 sm:text-xs">
-          {pool.length} {poolCountLabel}
-        </p>
-      </div>
     </div>
   )
 }
