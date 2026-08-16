@@ -7,10 +7,6 @@ import {
   VIEWPORT_HEIGHT,
 } from '../lib/crateConfig'
 
-type AppSkeletonProps = {
-  progress: number
-}
-
 function SkeletonBlock({ className, style }: { className?: string; style?: CSSProperties }) {
   return <div className={`skeleton ${className ?? ''}`} style={style} />
 }
@@ -36,20 +32,12 @@ function HuntColumnSkeleton({
   )
 }
 
-function AppSkeleton({ progress }: AppSkeletonProps) {
+function AppSkeleton() {
   const isMobile = useIsMobileLayout()
   const reelHeight = isMobile ? MOBILE_REEL_HEIGHT : VIEWPORT_HEIGHT
-  const percent = Math.round(progress * 100)
 
   return (
     <div className="relative z-20 flex min-h-svh flex-col bg-slate-950">
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-0.5 bg-white/5">
-        <div
-          className="h-full bg-amber-400/80 transition-[width] duration-300 ease-out"
-          style={{ width: `${percent}%` }}
-        />
-      </div>
-
       <main className="flex flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
         <div className="w-full max-w-5xl">
           <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-0">

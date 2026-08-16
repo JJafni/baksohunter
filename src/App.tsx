@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import BackgroundSlideshow from './components/BackgroundSlideshow'
 import AppSkeleton from './components/AppSkeleton'
+import LoadingProgressBar from './components/LoadingProgressBar'
 import CrateOpener from './components/CrateOpener'
 import WeaponCrateOpener from './components/WeaponCrateOpener'
 import { useAppReady } from './hooks/useAppReady'
@@ -69,6 +70,8 @@ function App() {
 
   return (
     <div className="relative flex min-h-svh flex-col overflow-hidden bg-slate-950 text-slate-100">
+      {!ready ? <LoadingProgressBar progress={progress} /> : null}
+
       <AnimatePresence mode="wait">
         {!ready ? (
           <motion.div
@@ -78,7 +81,7 @@ function App() {
             transition={{ duration: 0.35, ease: 'easeInOut' }}
             className="absolute inset-0 bg-slate-950"
           >
-            <AppSkeleton progress={progress} />
+            <AppSkeleton />
           </motion.div>
         ) : (
           <motion.div
