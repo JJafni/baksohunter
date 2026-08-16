@@ -1,48 +1,37 @@
+import CrateOpener from './components/CrateOpener'
+
 function App() {
   return (
-    <div className="min-h-svh bg-gradient-to-b from-orange-950 via-stone-950 to-stone-950 text-stone-100">
-      <header className="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
-        <div className="text-xl font-bold tracking-tight">
-          Bakso<span className="text-orange-400">Hunter</span>
+    <div className="relative flex min-h-svh flex-col overflow-hidden bg-slate-950 text-slate-100">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_-10%,rgba(59,130,246,0.16),transparent_45%),radial-gradient(circle_at_100%_10%,rgba(249,115,22,0.12),transparent_40%)]" />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.05]"
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(115deg, rgba(255,255,255,0.6) 0px, rgba(255,255,255,0.6) 1px, transparent 1px, transparent 26px)',
+        }}
+      />
+
+      <header className="relative z-10 flex items-center justify-between px-6 py-6 sm:px-10">
+        <div className="flex items-center gap-3">
+          <span className="text-lg font-black uppercase tracking-widest text-white">
+            MH<span className="text-amber-400">Wilds</span>
+          </span>
+          <span className="hidden text-xs uppercase tracking-[0.3em] text-slate-500 sm:inline">
+            Crate Hunt
+          </span>
         </div>
-        <nav className="flex gap-4 text-sm text-stone-400">
-          <a href="#" className="transition hover:text-stone-100">
-            Explore
-          </a>
-          <a href="#" className="transition hover:text-stone-100">
-            About
-          </a>
-        </nav>
+        <span className="text-xs uppercase tracking-[0.3em] text-slate-500">Forbidden Lands</span>
       </header>
 
-      <main className="mx-auto flex max-w-5xl flex-col items-center px-6 py-24 text-center">
-        <p className="rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-1 text-sm text-orange-300">
-          Find the best bakso near you
-        </p>
-
-        <h1 className="mt-6 max-w-2xl text-5xl font-bold tracking-tight sm:text-6xl">
-          Hunt down your next bowl of bakso
-        </h1>
-
-        <p className="mt-6 max-w-xl text-lg text-stone-400">
-          Discover local bakso spots, compare ratings, and never miss a great bowl again.
-        </p>
-
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <button
-            type="button"
-            className="rounded-lg bg-orange-500 px-6 py-3 font-medium text-stone-950 transition hover:bg-orange-400"
-          >
-            Start exploring
-          </button>
-          <button
-            type="button"
-            className="rounded-lg border border-stone-700 px-6 py-3 font-medium text-stone-200 transition hover:border-stone-500 hover:bg-stone-900"
-          >
-            Add a spot
-          </button>
-        </div>
+      <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-10">
+        <CrateOpener />
       </main>
+
+      <footer className="relative z-10 px-6 py-6 text-center text-[11px] text-slate-600">
+        Fan-made tool for Monster Hunter Wilds &middot; Monster icons &copy; Capcom &middot; Not affiliated with
+        Capcom or Psyonix
+      </footer>
     </div>
   )
 }

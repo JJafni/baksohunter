@@ -1,3 +1,24 @@
 @import 'tailwindcss';
 @source '../index.html';
 @source './**/*.{js,ts,jsx,tsx}';
+
+@layer base {
+  body {
+    font-family: 'Rajdhani', ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+@keyframes reel-blur {
+  0% {
+    filter: blur(0);
+  }
+  8% {
+    filter: blur(7px);
+  }
+  55% {
+    filter: blur(4px);
+  }
+  100% {
+    filter: blur(0);
+  }
+}
