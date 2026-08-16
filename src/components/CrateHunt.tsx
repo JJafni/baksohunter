@@ -9,6 +9,7 @@ import {
   REEL_WIDTH,
   VIEWPORT_HEIGHT,
 } from '../lib/crateConfig'
+import { buildReelSequence } from '../lib/reelSequence'
 import Reel from './Reel'
 import RevealPanel from './RevealPanel'
 import IdleCrate from './IdleCrate'
@@ -34,14 +35,6 @@ type CrateHuntProps = {
 /** Shared row heights so monster and weapon columns line up horizontally. */
 const HEADER_ROW_H = '6rem'
 const FOOTER_ROW_H = '2.75rem'
-
-function buildSequence(target: CrateEntry, pickRandom: () => CrateEntry): CrateEntry[] {
-  const sequence: CrateEntry[] = []
-  for (let i = 0; i < REEL_LENGTH; i++) {
-    sequence.push(i === CENTER_INDEX ? target : pickRandom())
-  }
-  return sequence
-}
 
 function CrateHunt({
   heading,
@@ -69,7 +62,7 @@ function CrateHunt({
 
     const target = pickRandom()
     setResult(target)
-    setSequence(buildSequence(target, pickRandom))
+    setSequence(buildReelSequence(pool, target, REEL_LENGTH, CENTER_INDEX))
 
     if (phase === 'idle') {
       setIsEntering(true)
