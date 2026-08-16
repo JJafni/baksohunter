@@ -56,6 +56,8 @@ type CrateHuntProps = {
 /** Shared row heights so monster and weapon columns line up horizontally. */
 const HEADER_ROW_H = '6rem'
 const FOOTER_ROW_H = '2.75rem'
+/** Fixed mobile reveal row — keeps filters/button from jumping when the name appears. */
+const MOBILE_REVEAL_ROW_H = '4.75rem'
 
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 
@@ -268,8 +270,16 @@ function CrateHunt({
     />
   )
 
-  const mobileRevealSlot =
-    phase !== 'idle' ? (
+  const mobileRevealSlot = !useStackedLayout ? null : isMobile ? (
+    <motion.div
+      className="flex w-full shrink-0 items-center justify-center overflow-hidden"
+      initial={false}
+      animate={{ height: phase === 'idle' ? 0 : MOBILE_REVEAL_ROW_H }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {phase !== 'idle' ? namePanel : null}
+    </motion.div>
+  ) : phase !== 'idle' ? (
       <motion.div
         layout
         className="w-full transition-[grid-template-rows] duration-[550ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
