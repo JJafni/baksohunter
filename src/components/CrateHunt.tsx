@@ -278,10 +278,10 @@ function CrateHunt({
           <div className="w-full shrink-0">{reelSlot}</div>
           {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
           <div className={`flex w-full flex-col items-center gap-2 ${overlayMode ? 'mt-auto' : ''}`}>
+            {mobileRevealSlot}
             {hasFilters ? filtersSlot : null}
             {actions}
           </div>
-          {mobileRevealSlot}
         </div>
       </div>
     )
