@@ -143,10 +143,10 @@ function CrateHunt({
 
   const poolLine = (
     <p
-      className={`mt-3 text-center uppercase tracking-[0.18em] text-slate-600 ${
-        isMobile ? 'max-w-[20rem] px-2 text-[10px] leading-relaxed' : 'text-[10px] sm:text-xs'
+      className={`mt-3 flex items-center justify-center whitespace-nowrap text-center uppercase tracking-[0.18em] text-slate-600 ${
+        isMobile ? 'px-2 text-[10px]' : 'text-[10px] sm:text-xs'
       }`}
-      style={{ minHeight: isMobile ? undefined : FOOTER_ROW_H }}
+      style={{ minHeight: FOOTER_ROW_H }}
     >
       {poolCountLabel}
     </p>

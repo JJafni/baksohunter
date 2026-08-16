@@ -32,20 +32,7 @@ export function pickRandomFromPool<T extends CrateEntry>(pool: T[]): T {
   return pool[Math.floor(Math.random() * pool.length)]
 }
 
-export function formatPoolCountLabel(count: number, filters: MonsterPoolFilterState): string {
-  if (count === 0) return 'No monsters match the current filters'
-
-  const parts: string[] = []
-  if (filters.large) parts.push('Large')
-  if (filters.tempered) parts.push('Tempered')
-  if (filters['arch-tempered']) parts.push('Arch-Tempered')
-  if (filters.elderDragon) parts.push('Elder Dragon')
-
-  if (parts.length === 0) return 'No monsters match the current filters'
-  if (parts.length === 4) return `${count} Large, Tempered, Arch-Tempered & Elder Dragon Monsters in the pool`
-
-  const joined =
-    parts.length === 1 ? parts[0] : parts.length === 2 ? `${parts[0]} & ${parts[1]}` : parts.join(', ')
-
-  return `${count} ${joined} Monsters in the pool`
+export function formatPoolCountLabel(count: number): string {
+  if (count === 0) return 'No monsters in pool'
+  return `${count} monsters in the pool`
 }

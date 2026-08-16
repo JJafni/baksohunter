@@ -24,7 +24,7 @@ function CrateOpener() {
 
   const pickRandom = useCallback(() => pickRandomFromPool(filteredPool), [filteredPool])
 
-  const poolCountLabel = formatPoolCountLabel(filteredPool.length, poolFilter)
+  const poolCountLabel = formatPoolCountLabel(filteredPool.length)
 
   return (
     <CrateHunt
