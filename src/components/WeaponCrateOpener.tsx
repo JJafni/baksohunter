@@ -19,7 +19,7 @@ function WeaponCrateOpener() {
       rarityLabels={RARITY_LABELS}
       pool={WEAPON_POOL}
       pickRandom={pickRandomWeapon}
-      infoSide="left"
+      reelSide="right"
     />
   )
 }

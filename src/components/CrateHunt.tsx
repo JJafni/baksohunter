@@ -17,8 +17,8 @@ type CrateHuntProps = {
   rarityLabels: Record<Rarity, string>
   pool: CrateEntry[]
   pickRandom: () => CrateEntry
-  /** Side the reveal name sits on relative to the reel. */
-  infoSide: 'left' | 'right'
+  /** Which side the reel column (title, spinner, button) sits on. */
+  reelSide: 'left' | 'right'
 }
 
 function buildSequence(target: CrateEntry, pickRandom: () => CrateEntry): CrateEntry[] {
@@ -38,7 +38,7 @@ function CrateHunt({
   rarityLabels,
   pool,
   pickRandom,
-  infoSide,
+  reelSide,
 }: CrateHuntProps) {
   const [phase, setPhase] = useState<Phase>('idle')
   const [result, setResult] = useState<CrateEntry | null>(null)
@@ -87,7 +87,7 @@ function CrateHunt({
   }
 
   const buttonLabel = phase === 'revealed' ? buttonLabels.again : buttonLabels.open
-  const reelOnLeft = infoSide === 'right'
+  const reelOnLeft = reelSide === 'left'
 
   const header = (
     <div
@@ -131,7 +131,7 @@ function CrateHunt({
       result={result}
       visible={phase === 'revealed'}
       rarityLabels={rarityLabels}
-      align={infoSide === 'left' ? 'right' : 'left'}
+      align={reelSide === 'left' ? 'left' : 'right'}
     />
   )
 
@@ -146,7 +146,10 @@ function CrateHunt({
       />
 
       {phase === 'idle' ? (
-        <div className="flex flex-col items-center" style={{ width: REEL_WIDTH }}>
+        <div
+          className={`flex flex-col items-center ${reelSide === 'right' ? 'ml-auto' : ''}`}
+          style={{ width: REEL_WIDTH }}
+        >
           <IdleCrate />
           <div className="mt-6 flex w-full flex-col items-center gap-4">
             <StatefulButton layoutId={buttonLayoutId} onClick={startHunt}>
