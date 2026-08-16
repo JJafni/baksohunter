@@ -63,7 +63,7 @@ function SpinnerUiFade({ visible, children }: { visible: boolean; children: Reac
       initial={false}
       animate={{ opacity: visible ? 1 : 0 }}
       transition={SPINNER_UI_FADE}
-      className={visible ? undefined : 'pointer-events-none'}
+      className={`w-full ${visible ? '' : 'pointer-events-none'}`}
     >
       {children}
     </motion.div>
@@ -323,10 +323,10 @@ function CrateHunt({
         <div
           className={`flex w-full flex-col items-center ${overlayMode ? 'h-full min-h-0 gap-3 py-2' : 'gap-4 lg:gap-3'}`}
         >
-        <SpinnerUiFade visible={spinnerUiVisible}>
-          {header}
-          <div className="w-full shrink-0">{reelSlot}</div>
-        </SpinnerUiFade>
+          <SpinnerUiFade visible={spinnerUiVisible}>
+            {header}
+            <div className="w-full shrink-0">{reelSlot}</div>
+          </SpinnerUiFade>
           {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
           <div className={`flex w-full flex-col items-center gap-2 ${overlayMode ? 'mt-auto' : ''}`}>
             {mobileRevealSlot}
