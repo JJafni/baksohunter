@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'motion/react'
+import type { QuestType } from '../data/questTypes'
 import type { CrateEntry, Rarity } from '../data/types'
 import { getVisualRarity, RARITY_BACKGROUND_GLOW, type VisualRarity } from '../lib/rarityColors'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
@@ -23,6 +24,8 @@ type Phase = 'idle' | 'spinning' | 'revealed'
 
 export type CrateHuntContext = {
   result: CrateEntry | null
+  /** Random capture / slay / hunt objective; null for weapon hunts. */
+  questType: QuestType | null
   phase: Phase
   /** False after post-reveal fade; true while idle, spinning, or before fade completes. */
   spinnerUiVisible: boolean
@@ -37,6 +40,8 @@ type CrateHuntProps = {
   rarityLabels: Record<Rarity, string>
   pool: CrateEntry[]
   pickRandom: () => CrateEntry
+  /** When set, a random quest objective is chosen on each spin. */
+  pickRandomQuestType?: () => QuestType
   /** Which side the reel column (title, spinner, button) sits on. */
   reelSide: 'left' | 'right'
   /** Optional controls shown beside the reel (e.g. monster rarity filters). */
@@ -57,7 +62,7 @@ type CrateHuntProps = {
 const HEADER_ROW_H = '6rem'
 const FOOTER_ROW_H = '2.75rem'
 /** Fixed mobile reveal row — keeps filters/button from jumping when the name appears. */
-const MOBILE_REVEAL_ROW_H = '4.75rem'
+const MOBILE_REVEAL_ROW_H = '6.25rem'
 
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 
@@ -83,6 +88,7 @@ function CrateHunt({
   rarityLabels,
   pool,
   pickRandom,
+  pickRandomQuestType,
   reelSide,
   filters,
   spinLabels,
@@ -98,6 +104,7 @@ function CrateHunt({
   const spinnerFadeEnabled = !isMobile
   const [phase, setPhase] = useState<Phase>('idle')
   const [result, setResult] = useState<CrateEntry | null>(null)
+  const [questType, setQuestType] = useState<QuestType | null>(null)
   const [sequence, setSequence] = useState<CrateEntry[]>([])
   const [spinKey, setSpinKey] = useState(0)
   const [isEntering, setIsEntering] = useState(false)
@@ -119,9 +126,11 @@ function CrateHunt({
     setSpinnerUiVisible(true)
 
     const target = pickRandom()
+    const nextQuestType = pickRandomQuestType?.() ?? null
     setPhase('spinning')
     setSpinKey((k) => k + 1)
     setResult(target)
+    setQuestType(nextQuestType)
     setSequence(buildReelSequence(pool, target, REEL_LENGTH, CENTER_INDEX))
 
     if (phase === 'idle') {
@@ -131,7 +140,7 @@ function CrateHunt({
     await new Promise<void>((resolve) => {
       spinResolverRef.current = resolve
     })
-  }, [phase, pickRandom, pool, clearSpinnerFadeTimer])
+  }, [phase, pickRandom, pickRandomQuestType, pool, clearSpinnerFadeTimer])
 
   useEffect(() => {
     if (!isEntering) return
@@ -172,8 +181,8 @@ function CrateHunt({
   const showSpinnerUi = spinnerFadeEnabled ? spinnerUiVisible : true
 
   useEffect(() => {
-    onHuntChange?.({ result, phase, spinnerUiVisible })
-  }, [result, phase, spinnerUiVisible, onHuntChange])
+    onHuntChange?.({ result, questType, phase, spinnerUiVisible })
+  }, [result, questType, phase, spinnerUiVisible, onHuntChange])
 
   const visualRarity: VisualRarity = result ? getVisualRarity(result) : 'normal'
   const backgroundGlow = RARITY_BACKGROUND_GLOW
@@ -233,7 +242,7 @@ function CrateHunt({
     </p>
   )
 
-  const huntContextForRender: CrateHuntContext = { result, phase, spinnerUiVisible }
+  const huntContextForRender: CrateHuntContext = { result, questType, phase, spinnerUiVisible }
   const belowReelSlot = externalGallery ? null : belowReel?.(huntContextForRender) ?? null
 
   const filtersDisabled = phase === 'spinning'
@@ -262,6 +271,7 @@ function CrateHunt({
   const namePanel = (
     <RevealPanel
       result={result}
+      questType={questType}
       visible={phase === 'revealed'}
       revealKey={spinKey}
       rarityLabels={rarityLabels}
@@ -317,7 +327,7 @@ function CrateHunt({
   const nameSlot =
     phase === 'idle' ? (
       useStackedLayout ? null : (
-        <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
+        <div className="w-[170px] shrink-0 sm:w-[210px]" aria-hidden="true" />
       )
     ) : (
       namePanel
