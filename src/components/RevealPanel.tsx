@@ -27,6 +27,14 @@ function RevealPanel({
         ? rarityLabels[result.rarity]
         : ''
   const isMobile = variant === 'mobile'
+  const isLongName = show && result.name.length >= 8
+  const nameSizeClass = isMobile
+    ? isLongName
+      ? 'text-xl sm:text-2xl'
+      : 'text-2xl sm:text-3xl'
+    : isLongName
+      ? 'text-2xl sm:text-3xl lg:text-[2.25rem]'
+      : 'text-3xl sm:text-4xl lg:text-[2.75rem]'
   const alignClass =
     align === 'center'
       ? 'items-center text-center'
@@ -45,9 +53,7 @@ function RevealPanel({
       {show ? (
         <div className={isMobile ? 'animate-hunt-reveal-enter-mobile' : 'animate-hunt-reveal-enter'}>
           <h2
-            className={`font-black uppercase leading-[0.95] tracking-tight text-white ${
-              isMobile ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl lg:text-[2.75rem]'
-            }`}
+            className={`font-black uppercase leading-[0.95] tracking-tight text-white ${nameSizeClass}`}
           >
             {result.name}
           </h2>
