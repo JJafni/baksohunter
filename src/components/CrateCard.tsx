@@ -1,34 +1,14 @@
 import type { CrateEntry } from '../data/types'
 import { CARD_SIZE } from '../lib/crateConfig'
+import { getVisualRarity, RARITY_CARD_TONE } from '../lib/rarityColors'
 
 type CrateCardProps = {
   entry: CrateEntry
   winner?: boolean
 }
 
-const RARITY_TONE = {
-  normal: {
-    border: 'border-sky-500/60',
-    chip: 'bg-sky-500/15 text-sky-200 border-sky-400/40',
-    glow: 'shadow-[0_0_45px_10px_rgba(56,189,248,0.5)]',
-    backlight: 'rgba(56,189,248,0.55)',
-  },
-  tempered: {
-    border: 'border-rose-500/70',
-    chip: 'bg-rose-500/15 text-rose-200 border-rose-400/40',
-    glow: 'shadow-[0_0_45px_10px_rgba(244,63,94,0.55)]',
-    backlight: 'rgba(244,63,94,0.55)',
-  },
-  'arch-tempered': {
-    border: 'border-amber-400/80',
-    chip: 'bg-amber-500/15 text-amber-200 border-amber-400/50',
-    glow: 'shadow-[0_0_55px_14px_rgba(251,191,36,0.6)]',
-    backlight: 'rgba(251,191,36,0.55)',
-  },
-} as const
-
 function CrateCard({ entry, winner = false }: CrateCardProps) {
-  const tone = RARITY_TONE[entry.rarity]
+  const tone = RARITY_CARD_TONE[getVisualRarity(entry)]
 
   return (
     <div

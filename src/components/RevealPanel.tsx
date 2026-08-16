@@ -1,5 +1,6 @@
 import type { CrateEntry, Rarity } from '../data/types'
 import { ELDER_DRAGON_SLUGS } from '../data/monsters'
+import { getVisualRarity, RARITY_TEXT_CLASS } from '../lib/rarityColors'
 
 type RevealPanelProps = {
   result: CrateEntry | null
@@ -9,11 +10,7 @@ type RevealPanelProps = {
   variant?: 'desktop' | 'mobile'
 }
 
-const RARITY_TEXT: Record<Rarity, string> = {
-  normal: 'text-sky-400',
-  tempered: 'text-rose-400',
-  'arch-tempered': 'text-amber-400',
-}
+const RARITY_TEXT = RARITY_TEXT_CLASS
 
 function RevealPanel({
   result,
@@ -55,7 +52,7 @@ function RevealPanel({
             {result.name}
           </h2>
           <p
-            className={`mt-2 font-bold uppercase tracking-[0.2em] ${isMobile ? 'text-[11px]' : 'mt-2.5 text-xs sm:text-sm'} ${RARITY_TEXT[result.rarity]}`}
+            className={`mt-2 font-bold uppercase tracking-[0.2em] ${isMobile ? 'text-[11px]' : 'mt-2.5 text-xs sm:text-sm'} ${RARITY_TEXT[getVisualRarity(result)]}`}
           >
             {rarityLabel}
           </p>
