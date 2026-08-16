@@ -1,25 +1,32 @@
-import type { Rarity } from '../data/types'
-import type { RarityFilterState } from '../lib/rarityFilter'
+import type { MonsterPoolFilterState } from '../lib/rarityFilter'
 
 type MonsterRarityFilterProps = {
-  value: RarityFilterState
-  onChange: (next: RarityFilterState) => void
+  value: MonsterPoolFilterState
+  onChange: (next: MonsterPoolFilterState) => void
   disabled?: boolean
 }
 
-const FILTER_OPTIONS: { rarity: Rarity; label: string; activeClass: string }[] = [
-  { rarity: 'normal', label: 'Large', activeClass: 'border-sky-400/60 bg-sky-400/10 text-sky-300' },
-  { rarity: 'tempered', label: 'Tempered', activeClass: 'border-rose-400/60 bg-rose-400/10 text-rose-300' },
+const FILTER_OPTIONS: {
+  key: keyof MonsterPoolFilterState
+  label: string
+  activeClass: string
+}[] = [
+  { key: 'tempered', label: 'Tempered', activeClass: 'border-rose-400/60 bg-rose-400/10 text-rose-300' },
   {
-    rarity: 'arch-tempered',
+    key: 'arch-tempered',
     label: 'Arch-Tempered',
     activeClass: 'border-amber-400/60 bg-amber-400/10 text-amber-300',
+  },
+  {
+    key: 'elderDragon',
+    label: 'Elder Dragon',
+    activeClass: 'border-violet-400/60 bg-violet-400/10 text-violet-300',
   },
 ]
 
 function MonsterRarityFilter({ value, onChange, disabled = false }: MonsterRarityFilterProps) {
-  const toggle = (rarity: Rarity) => {
-    onChange({ ...value, [rarity]: !value[rarity] })
+  const toggle = (key: keyof MonsterPoolFilterState) => {
+    onChange({ ...value, [key]: !value[key] })
   }
 
   return (
@@ -28,15 +35,15 @@ function MonsterRarityFilter({ value, onChange, disabled = false }: MonsterRarit
         Pool Filters
       </p>
       <div className="flex flex-col gap-1.5">
-        {FILTER_OPTIONS.map(({ rarity, label, activeClass }) => {
-          const on = value[rarity]
+        {FILTER_OPTIONS.map(({ key, label, activeClass }) => {
+          const on = value[key]
           return (
             <button
-              key={rarity}
+              key={key}
               type="button"
               disabled={disabled}
               aria-pressed={on}
-              onClick={() => toggle(rarity)}
+              onClick={() => toggle(key)}
               className={`rounded-md border px-2 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
                 on
                   ? activeClass

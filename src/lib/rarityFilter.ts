@@ -1,35 +1,47 @@
-import type { CrateEntry, Rarity } from '../data/types'
+import type { CrateEntry } from '../data/types'
+import { ELDER_DRAGON_SLUGS, type MonsterEntry } from '../data/monsters'
 
-export type RarityFilterState = Record<Rarity, boolean>
-
-export const DEFAULT_RARITY_FILTER: RarityFilterState = {
-  normal: true,
-  tempered: true,
-  'arch-tempered': true,
+/** User-facing pool filters for the monster hunt (no separate "Large" tier — all are large). */
+export type MonsterPoolFilterState = {
+  tempered: boolean
+  'arch-tempered': boolean
+  elderDragon: boolean
 }
 
-export function filterPoolByRarity<T extends CrateEntry>(pool: T[], filters: RarityFilterState): T[] {
-  return pool.filter((entry) => filters[entry.rarity])
+export const DEFAULT_MONSTER_POOL_FILTER: MonsterPoolFilterState = {
+  tempered: true,
+  'arch-tempered': true,
+  elderDragon: true,
+}
+
+export function filterMonsterPool(pool: MonsterEntry[], filters: MonsterPoolFilterState): MonsterEntry[] {
+  return pool.filter((entry) => {
+    if (entry.rarity === 'tempered') return filters.tempered
+    if (entry.rarity === 'arch-tempered') return filters['arch-tempered']
+    if (entry.rarity === 'normal') {
+      return filters.elderDragon && ELDER_DRAGON_SLUGS.has(entry.slug)
+    }
+    return false
+  })
 }
 
 export function pickRandomFromPool<T extends CrateEntry>(pool: T[]): T {
   return pool[Math.floor(Math.random() * pool.length)]
 }
 
-export function formatPoolCountLabel(count: number, filters: RarityFilterState): string {
-  const enabled = (Object.entries(filters) as [Rarity, boolean][])
-    .filter(([, on]) => on)
-    .map(([rarity]) => {
-      if (rarity === 'normal') return 'Large'
-      if (rarity === 'tempered') return 'Tempered'
-      return 'Arch-Tempered'
-    })
+export function formatPoolCountLabel(count: number, filters: MonsterPoolFilterState): string {
+  if (count === 0) return 'No monsters match the current filters'
 
-  if (enabled.length === 0) return 'No monsters match the current filters'
-  if (enabled.length === 3) return `${count} Large, Tempered & Arch-Tempered Monsters in the pool`
+  const parts: string[] = []
+  if (filters.tempered) parts.push('Tempered')
+  if (filters['arch-tempered']) parts.push('Arch-Tempered')
+  if (filters.elderDragon) parts.push('Elder Dragon')
+
+  if (parts.length === 0) return 'No monsters match the current filters'
+  if (parts.length === 3) return `${count} Tempered, Arch-Tempered & Elder Dragon Monsters in the pool`
 
   const joined =
-    enabled.length === 1 ? enabled[0] : enabled.length === 2 ? `${enabled[0]} & ${enabled[1]}` : enabled.join(', ')
+    parts.length === 1 ? parts[0] : parts.length === 2 ? `${parts[0]} & ${parts[1]}` : parts.join(', ')
 
   return `${count} ${joined} Monsters in the pool`
 }

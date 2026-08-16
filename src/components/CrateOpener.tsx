@@ -4,27 +4,27 @@ import MonsterRarityFilter from './MonsterRarityFilter'
 import { MONSTER_POOL } from '../data/monsters'
 import type { Rarity } from '../data/types'
 import {
-  DEFAULT_RARITY_FILTER,
-  filterPoolByRarity,
+  DEFAULT_MONSTER_POOL_FILTER,
+  filterMonsterPool,
   formatPoolCountLabel,
   pickRandomFromPool,
-  type RarityFilterState,
+  type MonsterPoolFilterState,
 } from '../lib/rarityFilter'
 
 const RARITY_LABELS: Record<Rarity, string> = {
-  normal: 'Large Monster',
+  normal: 'Elder Dragon',
   tempered: 'Tempered Large Monster',
   'arch-tempered': 'Arch-Tempered Large Monster',
 }
 
 function CrateOpener() {
-  const [rarityFilter, setRarityFilter] = useState<RarityFilterState>(DEFAULT_RARITY_FILTER)
+  const [poolFilter, setPoolFilter] = useState<MonsterPoolFilterState>(DEFAULT_MONSTER_POOL_FILTER)
 
-  const filteredPool = useMemo(() => filterPoolByRarity(MONSTER_POOL, rarityFilter), [rarityFilter])
+  const filteredPool = useMemo(() => filterMonsterPool(MONSTER_POOL, poolFilter), [poolFilter])
 
   const pickRandom = useCallback(() => pickRandomFromPool(filteredPool), [filteredPool])
 
-  const poolCountLabel = formatPoolCountLabel(filteredPool.length, rarityFilter)
+  const poolCountLabel = formatPoolCountLabel(filteredPool.length, poolFilter)
 
   return (
     <CrateHunt
@@ -38,7 +38,7 @@ function CrateOpener() {
       pickRandom={pickRandom}
       reelSide="left"
       filters={({ disabled }) => (
-        <MonsterRarityFilter value={rarityFilter} onChange={setRarityFilter} disabled={disabled} />
+        <MonsterRarityFilter value={poolFilter} onChange={setPoolFilter} disabled={disabled} />
       )}
     />
   )
