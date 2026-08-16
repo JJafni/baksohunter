@@ -1,4 +1,7 @@
+import type { CrateHuntContext } from './CrateHunt'
 import CrateHunt from './CrateHunt'
+import WeaponGalleryImage from './WeaponGalleryImage'
+import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import { WEAPON_POOL, pickRandomWeapon } from '../data/weapons'
 import type { Rarity } from '../data/types'
 
@@ -8,7 +11,14 @@ const RARITY_LABELS: Record<Rarity, string> = {
   'arch-tempered': 'Weapon Type',
 }
 
-function WeaponCrateOpener() {
+type WeaponCrateOpenerProps = {
+  onHuntChange?: (ctx: CrateHuntContext) => void
+}
+
+function WeaponCrateOpener({ onHuntChange }: WeaponCrateOpenerProps) {
+  const isMobile = useIsMobileLayout()
+  const overlayMode = !isMobile && Boolean(onHuntChange)
+
   return (
     <CrateHunt
       heading="Forging"
@@ -22,6 +32,14 @@ function WeaponCrateOpener() {
       reelSide="right"
       spinLabels={['Drawing']}
       buttonIcon="shield"
+      externalGallery={overlayMode}
+      overlayMode={overlayMode}
+      onHuntChange={onHuntChange}
+      belowReel={
+        isMobile
+          ? ({ result, phase }) => <WeaponGalleryImage result={result} visible={phase === 'revealed'} />
+          : undefined
+      }
     />
   )
 }

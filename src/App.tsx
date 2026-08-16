@@ -6,6 +6,7 @@ import type { CrateHuntContext } from './components/CrateHunt'
 import HeaderNav from './components/HeaderNav'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
 import WeaponCrateOpener from './components/WeaponCrateOpener'
+import WeaponGalleryImage from './components/WeaponGalleryImage'
 import { useAppReady } from './hooks/useAppReady'
 
 function AppBackground() {
@@ -30,9 +31,13 @@ function AppBackground() {
 function HuntLayout({
   monsterHunt,
   onMonsterHuntChange,
+  weaponHunt,
+  onWeaponHuntChange,
 }: {
   monsterHunt: CrateHuntContext
   onMonsterHuntChange: (ctx: CrateHuntContext) => void
+  weaponHunt: CrateHuntContext
+  onWeaponHuntChange: (ctx: CrateHuntContext) => void
 }) {
   return (
     <div className="grid w-full max-w-6xl grid-cols-1 items-start gap-8 lg:h-full lg:min-h-0 lg:max-w-[1600px] lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-stretch lg:gap-0">
@@ -51,8 +56,19 @@ function HuntLayout({
         </div>
       </section>
 
-      <section className="flex justify-center lg:min-h-0 lg:items-center lg:px-8 lg:py-5">
-        <WeaponCrateOpener />
+      <section className="relative flex justify-center lg:min-h-0 lg:overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 hidden lg:block">
+          <WeaponGalleryImage
+            result={weaponHunt.result}
+            visible={weaponHunt.phase === 'revealed'}
+            variant="backdrop"
+          />
+          <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80" />
+        </div>
+
+        <div className="relative z-10 flex h-full min-h-0 w-full flex-col items-center lg:px-8 lg:py-5">
+          <WeaponCrateOpener onHuntChange={onWeaponHuntChange} />
+        </div>
       </section>
     </div>
   )
@@ -60,6 +76,7 @@ function HuntLayout({
 
 function AppContent() {
   const [monsterHunt, setMonsterHunt] = useState<CrateHuntContext>({ result: null, phase: 'idle' })
+  const [weaponHunt, setWeaponHunt] = useState<CrateHuntContext>({ result: null, phase: 'idle' })
 
   return (
     <>
@@ -76,7 +93,12 @@ function AppContent() {
       </header>
 
       <main className="relative z-10 flex min-h-0 flex-1 flex-col items-center overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:overflow-hidden lg:px-0 lg:py-0">
-        <HuntLayout monsterHunt={monsterHunt} onMonsterHuntChange={setMonsterHunt} />
+        <HuntLayout
+          monsterHunt={monsterHunt}
+          onMonsterHuntChange={setMonsterHunt}
+          weaponHunt={weaponHunt}
+          onWeaponHuntChange={setWeaponHunt}
+        />
       </main>
 
       <footer className="relative z-10 shrink-0 px-6 py-6 text-center text-[11px] text-slate-600 lg:py-3">
