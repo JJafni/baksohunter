@@ -132,7 +132,7 @@ function CrateHunt({
       result={result}
       visible={phase === 'revealed'}
       rarityLabels={rarityLabels}
-      align={reelSide === 'left' ? 'left' : 'right'}
+      reelSide={reelSide}
     />
   )
 

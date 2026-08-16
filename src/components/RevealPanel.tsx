@@ -4,7 +4,7 @@ type RevealPanelProps = {
   result: CrateEntry | null
   visible: boolean
   rarityLabels: Record<Rarity, string>
-  align?: 'left' | 'right'
+  reelSide: 'left' | 'right'
 }
 
 const RARITY_TEXT: Record<Rarity, string> = {
@@ -13,14 +13,30 @@ const RARITY_TEXT: Record<Rarity, string> = {
   'arch-tempered': 'text-amber-400',
 }
 
-function RevealPanel({ result, visible, rarityLabels, align = 'left' }: RevealPanelProps) {
+const SHORT_NAME_MAX_LEN = 12
+
+function isShortName(name: string): boolean {
+  return name.length <= SHORT_NAME_MAX_LEN
+}
+
+function revealAlign(reelSide: 'left' | 'right', name: string): 'left' | 'right' {
+  const short = isShortName(name)
+  if (reelSide === 'left') {
+    return short ? 'right' : 'left'
+  }
+  return short ? 'left' : 'right'
+}
+
+function RevealPanel({ result, visible, rarityLabels, reelSide }: RevealPanelProps) {
   const show = visible && result !== null
+  const align = result ? revealAlign(reelSide, result.name) : reelSide === 'left' ? 'left' : 'right'
+  const compact = show && isShortName(result.name)
 
   return (
     <div
-      className={`flex min-h-[6rem] w-[140px] shrink-0 flex-col justify-center sm:w-[170px] ${
-        align === 'right' ? 'items-end text-right' : 'items-start text-left'
-      }`}
+      className={`flex min-h-[6rem] shrink-0 flex-col justify-center ${
+        compact ? 'w-auto' : 'w-[140px] sm:w-[170px]'
+      } ${align === 'right' ? 'items-end text-right' : 'items-start text-left'}`}
     >
       {show ? (
         <div className="animate-hunt-reveal-enter">
