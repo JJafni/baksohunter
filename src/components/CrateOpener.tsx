@@ -1,11 +1,12 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { MONSTER_POOL, pickRandomMonster, type MonsterEntry, type Rarity } from '../data/monsters'
-import { CENTER_INDEX, REEL_LENGTH } from '../lib/crateConfig'
+import { CENTER_INDEX, OPEN_MS, REEL_LENGTH } from '../lib/crateConfig'
 import Reel from './Reel'
 import RevealPanel from './RevealPanel'
+import OpeningReel from './OpeningReel'
 import IdleCrate from './IdleCrate'
 
-type Phase = 'idle' | 'spinning' | 'revealed'
+type Phase = 'idle' | 'opening' | 'spinning' | 'revealed'
 
 function buildSequence(target: MonsterEntry): MonsterEntry[] {
   const sequence: MonsterEntry[] = []
@@ -22,12 +23,30 @@ function CrateOpener() {
   const [spinKey, setSpinKey] = useState(0)
 
   const startHunt = useCallback(() => {
-    if (phase === 'spinning') return
+    if (phase === 'spinning' || phase === 'opening') return
+
     const target = pickRandomMonster()
     setResult(target)
     setSequence(buildSequence(target))
+
+    if (phase === 'idle') {
+      setPhase('opening')
+      return
+    }
+
     setPhase('spinning')
     setSpinKey((k) => k + 1)
+  }, [phase])
+
+  useEffect(() => {
+    if (phase !== 'opening') return
+
+    const timer = window.setTimeout(() => {
+      setPhase('spinning')
+      setSpinKey((k) => k + 1)
+    }, OPEN_MS)
+
+    return () => window.clearTimeout(timer)
   }, [phase])
 
   const handleLanded = useCallback(() => {
@@ -41,8 +60,9 @@ function CrateOpener() {
     'arch-tempered': 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(251,191,36,0.22), transparent 70%)',
   }
 
-  const isSpinning = phase === 'spinning'
+  const isBusy = phase === 'spinning' || phase === 'opening'
   const buttonLabel = phase === 'revealed' ? 'Hunt Again' : 'Open Crate'
+  const isFirstOpen = phase === 'opening'
 
   return (
     <div className="relative flex w-full flex-col items-center">
@@ -57,8 +77,16 @@ function CrateOpener() {
       {phase === 'idle' ? (
         <IdleCrate />
       ) : (
-        <div className="flex w-full flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16">
-          <div className="w-full max-w-[320px] text-center lg:w-[320px] lg:text-right">
+        <div
+          className={`flex w-full flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16 ${
+            isFirstOpen ? 'animate-hunt-stage-enter' : ''
+          }`}
+        >
+          <div
+            className={`w-full max-w-[320px] text-center lg:w-[320px] lg:text-right ${
+              isFirstOpen ? 'animate-hunt-side-enter' : ''
+            }`}
+          >
             <p className="select-none text-4xl font-black uppercase tracking-tight text-slate-500/40 sm:text-5xl">
               Hunting
             </p>
@@ -67,23 +95,29 @@ function CrateOpener() {
             </p>
           </div>
 
-          <Reel key={spinKey} sequence={sequence} onDone={handleLanded} landed={phase === 'revealed'} rarity={rarity} />
+          {phase === 'opening' ? (
+            <OpeningReel />
+          ) : (
+            <Reel key={spinKey} sequence={sequence} onDone={handleLanded} landed={phase === 'revealed'} rarity={rarity} />
+          )}
 
-          <RevealPanel result={result} visible={phase === 'revealed'} />
+          <div className={isFirstOpen ? 'animate-hunt-reveal-enter' : ''}>
+            <RevealPanel result={result} visible={phase === 'revealed'} />
+          </div>
         </div>
       )}
 
       <button
         type="button"
         onClick={startHunt}
-        disabled={isSpinning}
+        disabled={isBusy}
         className={`mt-8 rounded-lg px-10 py-3.5 text-sm font-bold uppercase tracking-[0.2em] transition-all ${
-          isSpinning
+          isBusy
             ? 'cursor-not-allowed bg-slate-800 text-slate-500 shadow-none'
             : 'cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-[0_0_30px_rgba(251,146,60,0.4)] hover:scale-105 active:scale-95'
         }`}
       >
-        {isSpinning ? 'Opening...' : buttonLabel}
+        {isBusy ? 'Opening...' : buttonLabel}
       </button>
 
       <p className="mt-10 text-center text-xs uppercase tracking-[0.2em] text-slate-600">

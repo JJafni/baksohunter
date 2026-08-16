@@ -5,3 +5,5 @@ export const REEL_LENGTH = 56
 export const CENTER_INDEX = 46
 export const VIEWPORT_HEIGHT = 620
 export const SPIN_MS = 4800
+export const OPEN_MS = 700
+export const REEL_WIDTH = CARD_SIZE + 40
