@@ -93,6 +93,7 @@ function CrateHunt({
 }: CrateHuntProps) {
   const isMobile = useIsMobileLayout()
   const useStackedLayout = isMobile || reelOrientation === 'horizontal'
+  const spinnerFadeEnabled = !isMobile
   const [phase, setPhase] = useState<Phase>('idle')
   const [result, setResult] = useState<CrateEntry | null>(null)
   const [sequence, setSequence] = useState<CrateEntry[]>([])
@@ -157,13 +158,17 @@ function CrateHunt({
     }
 
     setSpinnerUiVisible(true)
+    if (!spinnerFadeEnabled) return
+
     spinnerFadeTimerRef.current = window.setTimeout(() => {
       setSpinnerUiVisible(false)
       spinnerFadeTimerRef.current = null
     }, REVEAL_UI_FADE_DELAY_MS)
 
     return clearSpinnerFadeTimer
-  }, [phase, spinKey, clearSpinnerFadeTimer])
+  }, [phase, spinKey, clearSpinnerFadeTimer, spinnerFadeEnabled])
+
+  const showSpinnerUi = spinnerFadeEnabled ? spinnerUiVisible : true
 
   useEffect(() => {
     onHuntChange?.({ result, phase, spinnerUiVisible })
@@ -325,7 +330,7 @@ function CrateHunt({
         <div
           className={`flex w-full flex-col items-center ${overlayMode ? 'h-full min-h-0 gap-3 py-2' : 'gap-4 lg:gap-3'}`}
         >
-          <SpinnerUiFade visible={spinnerUiVisible}>
+          <SpinnerUiFade visible={showSpinnerUi}>
             {header}
             <div className="w-full shrink-0">{reelSlot}</div>
           </SpinnerUiFade>
@@ -364,7 +369,7 @@ function CrateHunt({
         }}
       >
         <div className={`${reelColClass} row-start-1 flex justify-center overflow-visible`}>
-          <SpinnerUiFade visible={spinnerUiVisible}>{header}</SpinnerUiFade>
+          <SpinnerUiFade visible={showSpinnerUi}>{header}</SpinnerUiFade>
         </div>
 
         {hasFilters ? (
@@ -372,7 +377,7 @@ function CrateHunt({
         ) : null}
 
         <div className={`${reelColClass} row-start-2`}>
-          <SpinnerUiFade visible={spinnerUiVisible}>{reelSlot}</SpinnerUiFade>
+          <SpinnerUiFade visible={showSpinnerUi}>{reelSlot}</SpinnerUiFade>
         </div>
 
         <div className={`${nameColClass} row-start-2 self-center`}>{nameSlot}</div>

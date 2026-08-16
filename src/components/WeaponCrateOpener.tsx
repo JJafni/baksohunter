@@ -37,11 +37,11 @@ function WeaponCrateOpener({ onHuntChange }: WeaponCrateOpenerProps) {
       onHuntChange={onHuntChange}
       belowReel={
         isMobile
-          ? ({ result, phase, spinnerUiVisible }) => (
+          ? ({ result, phase }) => (
               <WeaponGalleryImage
                 result={result}
                 visible={phase === 'revealed'}
-                emphasized={phase === 'revealed' && spinnerUiVisible}
+                emphasized={false}
               />
             )
           : undefined

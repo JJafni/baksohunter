@@ -91,7 +91,7 @@ function WeaponGalleryImage({
       <motion.div
         className="pointer-events-none absolute inset-0 z-20 bg-wilds-950/65"
         initial={false}
-        animate={{ opacity: visible ? (emphasized ? 0.65 : 0.3) : 0 }}
+        animate={{ opacity: visible && emphasized ? 0.65 : 0 }}
         transition={GALLERY_FADE}
       />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(255,255,255,0.06),transparent_70%)]" />

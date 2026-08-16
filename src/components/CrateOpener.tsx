@@ -61,11 +61,11 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
       )}
       belowReel={
         isMobile
-          ? ({ result, phase, spinnerUiVisible }) => (
+          ? ({ result, phase }) => (
               <MonsterGalleryImage
                 result={result}
                 visible={phase === 'revealed'}
-                emphasized={phase === 'revealed' && spinnerUiVisible}
+                emphasized={false}
               />
             )
           : undefined
