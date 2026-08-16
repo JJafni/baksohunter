@@ -1,4 +1,5 @@
 import type { CrateEntry, Rarity } from '../data/types'
+import { ELDER_DRAGON_SLUGS } from '../data/monsters'
 
 type RevealPanelProps = {
   result: CrateEntry | null
@@ -22,6 +23,12 @@ function RevealPanel({
   variant = 'desktop',
 }: RevealPanelProps) {
   const show = visible && result !== null
+  const rarityLabel =
+    show && result.rarity === 'normal' && ELDER_DRAGON_SLUGS.has(result.slug)
+      ? 'Elder Dragon'
+      : show
+        ? rarityLabels[result.rarity]
+        : ''
   const isMobile = variant === 'mobile'
   const alignClass =
     align === 'center'
@@ -50,7 +57,7 @@ function RevealPanel({
           <p
             className={`mt-2 font-bold uppercase tracking-[0.2em] ${isMobile ? 'text-[11px]' : 'mt-2.5 text-xs sm:text-sm'} ${RARITY_TEXT[result.rarity]}`}
           >
-            {rarityLabels[result.rarity]}
+            {rarityLabel}
           </p>
         </div>
       ) : null}

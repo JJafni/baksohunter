@@ -12,7 +12,7 @@ import {
 } from '../lib/rarityFilter'
 
 const RARITY_LABELS: Record<Rarity, string> = {
-  normal: 'Elder Dragon',
+  normal: 'Large Monster',
   tempered: 'Tempered Large Monster',
   'arch-tempered': 'Arch-Tempered Large Monster',
 }
