@@ -119,15 +119,14 @@ function CrateHunt({
     setSpinnerUiVisible(true)
 
     const target = pickRandom()
+    setPhase('spinning')
+    setSpinKey((k) => k + 1)
     setResult(target)
     setSequence(buildReelSequence(pool, target, REEL_LENGTH, CENTER_INDEX))
 
     if (phase === 'idle') {
       setIsEntering(true)
     }
-
-    setPhase('spinning')
-    setSpinKey((k) => k + 1)
 
     await new Promise<void>((resolve) => {
       spinResolverRef.current = resolve
