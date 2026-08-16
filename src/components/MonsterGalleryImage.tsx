@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { CrateEntry } from '../data/types'
 import { getMonsterGalleryImageUrl, MONSTER_GALLERY_SOURCE_URL } from '../lib/monsterGalleryImages'
 
@@ -8,7 +8,11 @@ type MonsterGalleryImageProps = {
 }
 
 function MonsterGalleryImage({ result, visible }: MonsterGalleryImageProps) {
-  const [failed, setFailed] = useState(false)
+  const [useIconFallback, setUseIconFallback] = useState(false)
+
+  useEffect(() => {
+    setUseIconFallback(false)
+  }, [result?.slug])
 
   if (!visible || !result) {
     return (
@@ -19,47 +23,42 @@ function MonsterGalleryImage({ result, visible }: MonsterGalleryImageProps) {
     )
   }
 
-  if (failed) {
-    return (
-      <div className="flex aspect-[16/10] w-full flex-col items-center justify-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 text-center">
-        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">HD render unavailable</p>
-        <a
-          href={MONSTER_GALLERY_SOURCE_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="text-[10px] uppercase tracking-[0.12em] text-slate-600 underline-offset-2 hover:text-slate-400 hover:underline"
-        >
-          MHWilds Image Gallery
-        </a>
-      </div>
-    )
-  }
-
-  const imageUrl = getMonsterGalleryImageUrl(result.slug, result.name)
+  const galleryUrl = getMonsterGalleryImageUrl(result.slug)
+  const showHd = Boolean(galleryUrl) && !useIconFallback
+  const imageUrl = showHd ? galleryUrl! : result.icon
 
   return (
     <figure className="relative w-full overflow-hidden rounded-2xl border border-white/10 bg-black/30">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(255,255,255,0.06),transparent_70%)]" />
       <img
-        key={imageUrl}
+        key={`${result.slug}-${showHd ? 'hd' : 'icon'}`}
         src={imageUrl}
-        alt={`${result.name} render`}
+        alt={`${result.name} ${showHd ? 'render' : 'icon'}`}
         loading="lazy"
         decoding="async"
-        referrerPolicy="no-referrer"
-        onError={() => setFailed(true)}
-        className="relative z-10 mx-auto max-h-[min(42vh,360px)] w-full object-contain p-3 sm:p-4"
+        onError={() => {
+          if (showHd) setUseIconFallback(true)
+        }}
+        className={`relative z-10 mx-auto w-full object-contain p-3 sm:p-4 ${
+          showHd ? 'max-h-[min(42vh,360px)]' : 'max-h-[min(32vh,280px)] opacity-90'
+        }`}
       />
       <figcaption className="border-t border-white/5 px-3 py-2 text-center text-[9px] uppercase tracking-[0.14em] text-slate-600 sm:text-[10px]">
-        Render via{' '}
-        <a
-          href={MONSTER_GALLERY_SOURCE_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="text-slate-500 underline-offset-2 hover:text-slate-400 hover:underline"
-        >
-          Monster Hunter Wiki
-        </a>
+        {showHd ? (
+          <>
+            HD render via{' '}
+            <a
+              href={MONSTER_GALLERY_SOURCE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="text-slate-500 underline-offset-2 hover:text-slate-400 hover:underline"
+            >
+              MHWilds Image Gallery
+            </a>
+          </>
+        ) : (
+          <span className="text-slate-500">HD render not available — showing hunt icon</span>
+        )}
       </figcaption>
     </figure>
   )
