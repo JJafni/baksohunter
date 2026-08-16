@@ -51,36 +51,39 @@ function AppSkeleton({ progress }: AppSkeletonProps) {
       </div>
 
       <main className="flex flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
-        <div className="grid w-full max-w-5xl grid-cols-1 items-start gap-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-0">
-          <div className="flex justify-center lg:justify-end lg:pr-6 xl:pr-10">
-            {isMobile ? (
-              <HuntColumnSkeleton reelHeight={reelHeight} isMobile={isMobile} />
-            ) : (
-              <div className="flex items-start gap-3 sm:gap-4">
-                <div className="w-[5.75rem] shrink-0 sm:w-[6.25rem]" aria-hidden="true" />
+        <div className="w-full max-w-5xl">
+          <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-0">
+            <div className="flex justify-center lg:justify-end lg:pr-6 xl:pr-10">
+              {isMobile ? (
                 <HuntColumnSkeleton reelHeight={reelHeight} isMobile={isMobile} />
-                <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
-              </div>
-            )}
+              ) : (
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="w-[5.75rem] shrink-0 sm:w-[6.25rem]" aria-hidden="true" />
+                  <HuntColumnSkeleton reelHeight={reelHeight} isMobile={isMobile} />
+                  <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
+                </div>
+              )}
+            </div>
+
+            <div className="hidden w-px shrink-0 self-stretch bg-white/10 lg:mx-6 lg:block xl:mx-10" aria-hidden="true" />
+
+            <div className="flex justify-center lg:justify-start lg:pl-6 xl:pl-10">
+              {isMobile ? (
+                <HuntColumnSkeleton reelHeight={reelHeight} isMobile={isMobile} />
+              ) : (
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
+                  <HuntColumnSkeleton reelHeight={reelHeight} isMobile={isMobile} />
+                  <div className="w-[5.75rem] shrink-0 sm:w-[6.25rem]" aria-hidden="true" />
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="hidden w-px shrink-0 self-stretch bg-white/10 lg:mx-6 lg:block xl:mx-10" aria-hidden="true" />
-
-          <div className="flex justify-center lg:justify-start lg:pl-6 xl:pl-10">
-            {isMobile ? (
-              <HuntColumnSkeleton reelHeight={reelHeight} isMobile={isMobile} />
-            ) : (
-              <div className="flex items-start gap-3 sm:gap-4">
-                <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
-                <HuntColumnSkeleton reelHeight={reelHeight} isMobile={isMobile} />
-              </div>
-            )}
-          </div>
+          <p className="mx-auto mt-10 w-full text-center text-[11px] font-bold uppercase tracking-[0.22em] text-slate-500">
+            Loading hunt assets {percent}%
+          </p>
         </div>
-
-        <p className="mt-10 text-center text-[11px] font-bold uppercase tracking-[0.22em] text-slate-500">
-          Loading hunt assets {percent}%
-        </p>
       </main>
     </div>
   )
