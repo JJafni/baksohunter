@@ -22,7 +22,7 @@ type CrateHuntProps = {
 }
 
 /** Shared row heights so monster and weapon columns line up horizontally. */
-const HEADER_ROW_H = '5.75rem'
+const HEADER_ROW_H = '6rem'
 const FOOTER_ROW_H = '2.75rem'
 
 function buildSequence(target: CrateEntry, pickRandom: () => CrateEntry): CrateEntry[] {
@@ -103,7 +103,7 @@ function CrateHunt({
       <p className="select-none text-3xl font-black uppercase leading-none tracking-tight text-slate-500/40 sm:text-4xl">
         {heading}
       </p>
-      <p className="mt-2 w-max max-w-none whitespace-nowrap text-[11px] font-bold uppercase tracking-[0.08em] text-slate-100 sm:text-xs">
+      <p className="mt-2 w-max max-w-none whitespace-nowrap text-sm font-bold uppercase tracking-[0.12em] text-slate-100 sm:text-base">
         {subtitle}
       </p>
     </div>
