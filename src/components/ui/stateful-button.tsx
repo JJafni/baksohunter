@@ -56,41 +56,46 @@ export function StatefulButton({ className, children, ...props }: StatefulButton
 function IconSlot() {
   return (
     <div className="relative h-[18px] w-[18px] shrink-0" aria-hidden="true">
-      <motion.svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="sword absolute inset-0 text-[#d4b86a]"
-        initial={{ opacity: 1, scale: 1 }}
-      >
-        <path d="M14.5 17.5 3 6V3h3l11.5 11.5" />
-        <path d="M13 19l6-6" />
-        <path d="M16 16l4 4" />
-        <path d="M19 21l2-2" />
-      </motion.svg>
+      <motion.div className="sword absolute inset-0" initial={{ opacity: 1, scale: 1 }}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="text-[#d4b86a]"
+        >
+          <path d="M14.5 17.5 3 6V3h3l11.5 11.5" />
+          <path d="M13 19l6-6" />
+          <path d="M16 16l4 4" />
+          <path d="M19 21l2-2" />
+        </svg>
+      </motion.div>
 
-      <motion.svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="loader pointer-events-none absolute inset-0 animate-spin text-[#d4b86a]"
+      <motion.div
+        className="loader pointer-events-none absolute inset-0"
         initial={{ opacity: 0, scale: 0.8 }}
       >
-        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-        <path d="M12 3a9 9 0 1 0 9 9" />
-      </motion.svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="animate-spin text-[#d4b86a]"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M12 3a9 9 0 1 0 9 9" />
+        </svg>
+      </motion.div>
     </div>
   )
 }
