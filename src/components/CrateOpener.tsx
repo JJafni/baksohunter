@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { MONSTER_POOL, pickRandomMonster, type MonsterEntry, type Rarity } from '../data/monsters'
 import { CENTER_INDEX, OPEN_MS, REEL_LENGTH } from '../lib/crateConfig'
 import Reel from './Reel'
 import RevealPanel from './RevealPanel'
 import IdleCrate from './IdleCrate'
+import { StatefulButton } from './ui/stateful-button'
 
 type Phase = 'idle' | 'spinning' | 'revealed'
 
@@ -21,19 +22,25 @@ function CrateOpener() {
   const [sequence, setSequence] = useState<MonsterEntry[]>([])
   const [spinKey, setSpinKey] = useState(0)
   const [isEntering, setIsEntering] = useState(false)
+  const spinResolverRef = useRef<(() => void) | null>(null)
 
-  const startHunt = useCallback(() => {
+  const startHunt = useCallback(async () => {
     if (phase === 'spinning') return
 
     const target = pickRandomMonster()
     setResult(target)
     setSequence(buildSequence(target))
-    setPhase('spinning')
-    setSpinKey((k) => k + 1)
 
     if (phase === 'idle') {
       setIsEntering(true)
     }
+
+    setPhase('spinning')
+    setSpinKey((k) => k + 1)
+
+    await new Promise<void>((resolve) => {
+      spinResolverRef.current = resolve
+    })
   }, [phase])
 
   useEffect(() => {
@@ -45,6 +52,8 @@ function CrateOpener() {
 
   const handleLanded = useCallback(() => {
     setPhase('revealed')
+    spinResolverRef.current?.()
+    spinResolverRef.current = null
   }, [])
 
   const rarity: Rarity = result?.rarity ?? 'normal'
@@ -54,7 +63,6 @@ function CrateOpener() {
     'arch-tempered': 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(251,191,36,0.22), transparent 70%)',
   }
 
-  const isBusy = phase === 'spinning'
   const buttonLabel = phase === 'revealed' ? 'Hunt Again' : 'Open Crate'
 
   return (
@@ -90,18 +98,9 @@ function CrateOpener() {
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={startHunt}
-        disabled={isBusy}
-        className={`mt-8 rounded-lg px-10 py-3.5 text-sm font-bold uppercase tracking-[0.2em] transition-all ${
-          isBusy
-            ? 'cursor-not-allowed bg-slate-800 text-slate-500 shadow-none'
-            : 'cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-[0_0_30px_rgba(251,146,60,0.4)] hover:scale-105 active:scale-95'
-        }`}
-      >
-        {isBusy ? 'Opening...' : buttonLabel}
-      </button>
+      <StatefulButton className="mt-8" onClick={startHunt} disabled={phase === 'spinning'}>
+        {buttonLabel}
+      </StatefulButton>
 
       <p className="mt-10 text-center text-xs uppercase tracking-[0.2em] text-slate-600">
         {MONSTER_POOL.length} Large, Tempered &amp; Arch-Tempered Monsters in the pool
