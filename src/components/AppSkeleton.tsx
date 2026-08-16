@@ -14,9 +14,9 @@ function HuntColumnSkeleton({ showGallery = false }: { showGallery?: boolean }) 
       className="flex w-full max-w-[620px] shrink-0 flex-col items-stretch gap-4"
       style={{ maxWidth: MOBILE_REEL_MAX_WIDTH }}
     >
-      <SkeletonBlock className="h-14 w-full rounded-lg" />
       <SkeletonBlock className="w-full rounded-2xl" style={{ height: MOBILE_REEL_HEIGHT }} />
       {showGallery ? <SkeletonBlock className="aspect-[16/10] w-full rounded-2xl" /> : null}
+      <SkeletonBlock className="h-14 w-full rounded-lg" />
       <SkeletonBlock className="h-10 w-full max-w-md rounded-lg" />
       <SkeletonBlock className="h-12 w-full rounded-lg" />
     </div>

@@ -254,9 +254,9 @@ function CrateHunt({
         />
 
         <div className="flex w-full flex-col items-center gap-4">
-          {header}
           <div className="w-full">{reelSlot}</div>
           {belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
+          {header}
           {hasFilters ? filtersSlot : null}
           {mobileRevealSlot}
           <div>{actions}</div>
