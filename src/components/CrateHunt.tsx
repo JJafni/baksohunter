@@ -19,6 +19,11 @@ import { StatefulButton } from './ui/stateful-button'
 
 type Phase = 'idle' | 'spinning' | 'revealed'
 
+type CrateHuntContext = {
+  result: CrateEntry | null
+  phase: Phase
+}
+
 type CrateHuntProps = {
   heading: string
   subtitle: string
@@ -35,6 +40,8 @@ type CrateHuntProps = {
   /** Random labels shown on the button while spinning. Omit for a static label. */
   spinLabels?: string[]
   buttonIcon?: 'sword' | 'shield'
+  reelOrientation?: 'horizontal' | 'vertical'
+  belowReel?: (ctx: CrateHuntContext) => ReactNode
 }
 
 /** Shared row heights so monster and weapon columns line up horizontally. */
@@ -54,9 +61,11 @@ function CrateHunt({
   filters,
   spinLabels,
   buttonIcon = 'sword',
+  reelOrientation = 'horizontal',
+  belowReel,
 }: CrateHuntProps) {
   const isMobile = useIsMobileLayout()
-  const reelOrientation = isMobile ? 'horizontal' : 'vertical'
+  const useStackedLayout = isMobile || reelOrientation === 'horizontal'
   const [phase, setPhase] = useState<Phase>('idle')
   const [result, setResult] = useState<CrateEntry | null>(null)
   const [sequence, setSequence] = useState<CrateEntry[]>([])
@@ -113,29 +122,29 @@ function CrateHunt({
       ? 'col-start-2'
       : 'col-start-1'
 
-  const blockWidth = isMobile ? '100%' : REEL_WIDTH
-  const reelSlotHeight = isMobile ? MOBILE_REEL_HEIGHT : VIEWPORT_HEIGHT
+  const blockWidth = useStackedLayout ? '100%' : REEL_WIDTH
+  const reelSlotHeight = useStackedLayout ? MOBILE_REEL_HEIGHT : VIEWPORT_HEIGHT
   const stretchClass = isEntering
-    ? isMobile
+    ? useStackedLayout
       ? 'animate-hunt-reel-stretch-x'
       : 'animate-hunt-reel-stretch-y'
     : ''
 
   const header = (
     <div
-      className={`flex flex-col items-center text-center ${isMobile ? 'gap-1' : 'justify-end pb-1'} ${isEntering ? 'animate-hunt-side-enter' : ''}`}
-      style={{ width: blockWidth, minHeight: isMobile ? undefined : HEADER_ROW_H }}
+      className={`flex flex-col items-center text-center ${useStackedLayout ? 'gap-1' : 'justify-end pb-1'} ${isEntering ? 'animate-hunt-side-enter' : ''}`}
+      style={{ width: blockWidth, minHeight: useStackedLayout ? undefined : HEADER_ROW_H }}
     >
       <p
         className={`select-none font-black uppercase leading-none tracking-tight text-slate-500/40 ${
-          isMobile ? 'text-2xl' : 'text-3xl sm:text-4xl'
+          useStackedLayout ? 'text-2xl' : 'text-3xl sm:text-4xl'
         }`}
       >
         {heading}
       </p>
       <p
         className={`w-max max-w-none whitespace-nowrap font-bold uppercase tracking-[0.15em] text-slate-100 ${
-          isMobile ? 'text-base' : 'mt-2 text-lg sm:text-xl'
+          useStackedLayout ? 'text-base' : 'mt-2 text-lg sm:text-xl'
         }`}
       >
         {subtitle}
@@ -146,7 +155,7 @@ function CrateHunt({
   const poolLine = (
     <p
       className={`mt-3 flex items-center justify-center whitespace-nowrap text-center uppercase tracking-[0.18em] text-slate-600 ${
-        isMobile ? 'px-2 text-[10px]' : 'text-[10px] sm:text-xs'
+        useStackedLayout ? 'px-2 text-[10px]' : 'text-[10px] sm:text-xs'
       }`}
       style={{ minHeight: FOOTER_ROW_H }}
     >
@@ -154,16 +163,19 @@ function CrateHunt({
     </p>
   )
 
+  const huntContext: CrateHuntContext = { result, phase }
+  const belowReelSlot = belowReel?.(huntContext) ?? null
+
   const filtersDisabled = phase === 'spinning'
-  const filterLayout = isMobile ? 'bar' : 'sidebar'
+  const filterLayout = useStackedLayout ? 'bar' : 'sidebar'
   const filtersSlot = filters ? (
-    <div className={isMobile ? 'w-full' : 'self-center'}>
+    <div className={useStackedLayout ? 'w-full' : 'self-center'}>
       {filters({ disabled: filtersDisabled, layout: filterLayout })}
     </div>
   ) : null
 
   const actions = (
-    <div className={`flex flex-col items-center ${isMobile ? 'pt-2' : 'pt-6'}`} style={{ width: blockWidth }}>
+    <div className={`flex flex-col items-center ${useStackedLayout ? 'pt-2' : 'pt-6'}`} style={{ width: blockWidth }}>
       <StatefulButton
         layoutId={buttonLayoutId}
         loadingLabels={spinLabels}
@@ -182,8 +194,8 @@ function CrateHunt({
       result={result}
       visible={phase === 'revealed'}
       rarityLabels={rarityLabels}
-      align={isMobile ? 'center' : reelSide === 'left' ? 'right' : 'left'}
-      variant={isMobile ? 'mobile' : 'desktop'}
+      align={useStackedLayout ? 'center' : reelSide === 'left' ? 'right' : 'left'}
+      variant={useStackedLayout ? 'mobile' : 'desktop'}
     />
   )
 
@@ -201,13 +213,13 @@ function CrateHunt({
   const reelSlot =
     phase === 'idle' ? (
       <div
-        className={`flex items-center justify-center ${isMobile ? 'w-full max-w-[620px]' : ''}`}
+        className={`flex items-center justify-center ${useStackedLayout ? 'w-full max-w-[620px]' : ''}`}
         style={{ width: blockWidth, height: reelSlotHeight }}
       >
         <IdleCrate orientation={reelOrientation} />
       </div>
     ) : (
-      <div className={isMobile ? 'w-full max-w-[620px]' : ''} style={{ width: blockWidth }}>
+      <div className={useStackedLayout ? 'w-full max-w-[620px]' : ''} style={{ width: blockWidth }}>
         <div className={stretchClass}>
           <Reel
             key={`${spinKey}-${reelOrientation}`}
@@ -223,14 +235,14 @@ function CrateHunt({
 
   const nameSlot =
     phase === 'idle' ? (
-      isMobile ? null : (
+      useStackedLayout ? null : (
         <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
       )
     ) : (
       namePanel
     )
 
-  if (isMobile) {
+  if (useStackedLayout) {
     return (
       <div className="relative w-full max-w-[620px] shrink-0">
         <div
@@ -243,8 +255,9 @@ function CrateHunt({
 
         <div className="flex w-full flex-col items-center gap-4">
           {header}
-          {hasFilters ? filtersSlot : null}
           <div className="w-full">{reelSlot}</div>
+          {belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
+          {hasFilters ? filtersSlot : null}
           {mobileRevealSlot}
           <div>{actions}</div>
         </div>

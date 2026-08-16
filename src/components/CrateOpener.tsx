@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import CrateHunt from './CrateHunt'
+import MonsterGalleryImage from './MonsterGalleryImage'
 import MonsterRarityFilter from './MonsterRarityFilter'
 import { MONSTER_POOL } from '../data/monsters'
 import type { Rarity } from '../data/types'
@@ -46,6 +47,9 @@ function CrateOpener() {
           disabled={disabled}
           variant={layout}
         />
+      )}
+      belowReel={({ result, phase }) => (
+        <MonsterGalleryImage result={result} visible={phase === 'revealed'} />
       )}
     />
   )

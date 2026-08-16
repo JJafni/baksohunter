@@ -39,13 +39,12 @@ function AppContent() {
         <HeaderNav activeMode="normal" />
       </header>
 
-      <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
-        <div className="grid w-full max-w-5xl grid-cols-1 items-start gap-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-0">
-          <div className="flex items-start justify-center overflow-visible lg:justify-end lg:pr-6 xl:pr-10">
+      <main className="relative z-10 flex flex-1 flex-col items-center px-4 py-6 sm:px-6 sm:py-8">
+        <div className="grid w-full max-w-6xl grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-10 xl:gap-12">
+          <div className="flex justify-center lg:justify-end">
             <CrateOpener />
           </div>
-          <div className="hidden w-px shrink-0 self-stretch bg-white/10 lg:mx-6 lg:block xl:mx-10" aria-hidden="true" />
-          <div className="flex items-start justify-center overflow-visible lg:justify-start lg:pl-6 xl:pl-10">
+          <div className="flex justify-center lg:justify-start">
             <WeaponCrateOpener />
           </div>
         </div>
