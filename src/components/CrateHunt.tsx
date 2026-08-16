@@ -272,14 +272,16 @@ function CrateHunt({
         />
 
         <div
-          className={`flex w-full flex-col items-center ${overlayMode ? 'h-full min-h-0 justify-between gap-3 py-2' : 'gap-4 lg:gap-3'}`}
+          className={`flex w-full flex-col items-center ${overlayMode ? 'h-full min-h-0 gap-3 py-2' : 'gap-4 lg:gap-3'}`}
         >
+          {header}
           <div className="w-full shrink-0">{reelSlot}</div>
           {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
-          {header}
-          {hasFilters ? filtersSlot : null}
           {mobileRevealSlot}
-          <div className="w-full">{actions}</div>
+          <div className={`flex w-full flex-col items-center gap-2 ${overlayMode ? 'mt-auto' : ''}`}>
+            {hasFilters ? filtersSlot : null}
+            {actions}
+          </div>
         </div>
       </div>
     )
