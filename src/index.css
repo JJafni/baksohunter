@@ -81,6 +81,21 @@
   animation: hunt-side-enter 600ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
 }
 
+@keyframes hunt-reveal-enter-mobile {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hunt-reveal-enter-mobile {
+  animation: hunt-reveal-enter-mobile 550ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 .animate-hunt-reveal-enter {
   animation: hunt-reveal-enter 600ms cubic-bezier(0.22, 1, 0.36, 1) 180ms both;
 }

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { motion } from 'motion/react'
 import type { CrateEntry, Rarity } from '../data/types'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import {
@@ -174,8 +175,20 @@ function CrateHunt({
       visible={phase === 'revealed'}
       rarityLabels={rarityLabels}
       align={isMobile ? 'center' : reelSide === 'left' ? 'right' : 'left'}
+      variant={isMobile ? 'mobile' : 'desktop'}
     />
   )
+
+  const mobileRevealSlot =
+    phase !== 'idle' ? (
+      <motion.div
+        layout
+        className="w-full transition-[grid-template-rows] duration-[550ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+        style={{ display: 'grid', gridTemplateRows: phase === 'revealed' ? '1fr' : '0fr' }}
+      >
+        <div className="min-h-0 overflow-hidden">{namePanel}</div>
+      </motion.div>
+    ) : null
 
   const reelSlot =
     phase === 'idle' ? (
@@ -220,13 +233,19 @@ function CrateHunt({
           }}
         />
 
-        <div className="flex w-full flex-col items-center gap-4">
+        <motion.div
+          layout
+          className="flex w-full flex-col items-center gap-4"
+          transition={{ layout: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }}
+        >
           {header}
           {hasFilters ? filtersSlot : null}
           <div className="w-full">{reelSlot}</div>
-          {nameSlot}
-          {actions}
-        </div>
+          {mobileRevealSlot}
+          <motion.div layout transition={{ layout: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }}>
+            {actions}
+          </motion.div>
+        </motion.div>
       </div>
     )
   }
