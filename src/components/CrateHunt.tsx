@@ -110,7 +110,7 @@ function CrateHunt({
             <Reel key={spinKey} sequence={sequence} onDone={handleLanded} landed={phase === 'revealed'} rarity={rarity} />
           </div>
 
-          <div className={isEntering ? 'animate-hunt-reveal-enter' : ''}>
+          <div>
             <RevealPanel result={result} visible={phase === 'revealed'} rarityLabels={rarityLabels} />
           </div>
         </div>
