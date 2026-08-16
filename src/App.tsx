@@ -7,15 +7,15 @@ function App() {
     <div className="relative flex min-h-svh flex-col overflow-hidden bg-slate-950 text-slate-100">
       <BackgroundSlideshow />
       <div
-        className="pointer-events-none absolute inset-0 bg-slate-950/80"
+        className="pointer-events-none absolute inset-0 bg-slate-950/55"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/70 to-slate-950/95"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/40 to-slate-950/65"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(2,6,23,0.75)_100%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(2,6,23,0.45)_100%)]"
         aria-hidden="true"
       />
       <div
