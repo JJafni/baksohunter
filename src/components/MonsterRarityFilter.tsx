@@ -41,7 +41,7 @@ function MonsterRarityFilter({ value, onChange, disabled = false, variant = 'sid
           : 'flex w-[5.75rem] shrink-0 flex-col items-stretch gap-2 sm:w-[6.25rem]'
       }
     >
-      <p className="text-center text-[9px] font-bold uppercase leading-tight tracking-[0.16em] text-slate-500 sm:text-[10px]">
+      <p className="text-center text-[9px] font-bold uppercase leading-tight tracking-[0.16em] text-wilds-muted sm:text-[10px]">
         Pool Filters
       </p>
       <div className={isBar ? 'flex flex-wrap items-center justify-center gap-2' : 'flex flex-col gap-1.5'}>
@@ -57,7 +57,7 @@ function MonsterRarityFilter({ value, onChange, disabled = false, variant = 'sid
               className={`cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
                 on
                   ? activeClass
-                  : 'border-white/10 bg-black/20 text-slate-500 hover:border-white/20 hover:text-slate-400'
+                  : 'border-wilds-gold/15 bg-wilds-850/60 text-wilds-muted hover:border-wilds-gold/30 hover:text-wilds-parchment'
               } disabled:cursor-not-allowed disabled:opacity-50`}
             >
               {label}

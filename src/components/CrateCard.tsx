@@ -12,7 +12,7 @@ function CrateCard({ entry, winner = false }: CrateCardProps) {
 
   return (
     <div
-      className={`relative flex shrink-0 flex-col items-center justify-between overflow-hidden rounded-lg border-2 bg-slate-950/80 p-2.5 transition-transform ${tone.border} ${
+      className={`relative flex shrink-0 flex-col items-center justify-between overflow-hidden rounded-lg border-2 bg-wilds-900/90 p-2.5 transition-transform ${tone.border} ${
         winner ? `z-20 scale-[1.06] ${tone.glow}` : ''
       }`}
       style={{ width: CARD_SIZE, height: CARD_SIZE }}
@@ -21,7 +21,7 @@ function CrateCard({ entry, winner = false }: CrateCardProps) {
         className="pointer-events-none absolute inset-0 opacity-[0.15]"
         style={{
           backgroundImage:
-            'repeating-linear-gradient(115deg, rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 1px, transparent 1px, transparent 10px)',
+            'repeating-linear-gradient(115deg, rgba(201,162,77,0.35) 0px, rgba(201,162,77,0.35) 1px, transparent 1px, transparent 10px)',
         }}
       />
       <div className="relative flex flex-1 items-center justify-center">

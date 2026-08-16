@@ -3,6 +3,7 @@ import type { CrateEntry } from '../data/types'
 import type { VisualRarity } from '../lib/rarityColors'
 import CrateCard from './CrateCard'
 import { CenterMarkerFrame, CenterMarkerGlow } from './CenterMarker'
+import { WILDS_REEL_FADE, WILDS_REEL_FRAME } from '../lib/wildsTheme'
 import {
   CARD_GAP,
   CARD_SIZE,
@@ -92,8 +93,8 @@ function Reel({ sequence, onDone, landed, rarity, orientation = 'vertical' }: Re
       ref={containerRef}
       className={
         isHorizontal
-          ? 'relative w-full overflow-hidden rounded-2xl border border-white/10 bg-black/40'
-          : 'relative overflow-hidden rounded-2xl border border-white/10 bg-black/40'
+          ? `relative w-full overflow-hidden rounded-2xl ${WILDS_REEL_FRAME}`
+          : `relative overflow-hidden rounded-2xl ${WILDS_REEL_FRAME}`
       }
       style={
         isHorizontal
@@ -119,13 +120,13 @@ function Reel({ sequence, onDone, landed, rarity, orientation = 'vertical' }: Re
 
       {isHorizontal ? (
         <>
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-slate-950 via-slate-950/80 to-transparent" />
+          <div className={`pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r ${WILDS_REEL_FADE} to-transparent`} />
+          <div className={`pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l ${WILDS_REEL_FADE} to-transparent`} />
         </>
       ) : (
         <>
-          <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-28 bg-gradient-to-b from-slate-950 via-slate-950/80 to-transparent" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-28 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent" />
+          <div className={`pointer-events-none absolute inset-x-0 top-0 z-10 h-28 bg-gradient-to-b ${WILDS_REEL_FADE} to-transparent`} />
+          <div className={`pointer-events-none absolute inset-x-0 bottom-0 z-10 h-28 bg-gradient-to-t ${WILDS_REEL_FADE} to-transparent`} />
         </>
       )}
 
