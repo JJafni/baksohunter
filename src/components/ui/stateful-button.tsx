@@ -40,15 +40,15 @@ export function StatefulButton({ className, children, layoutId = 'crate-hunt-but
       layoutId={layoutId}
       ref={scope}
       className={cn(
-        'flex min-w-[160px] cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-[#9a7b3c] bg-[#2c261f] px-10 py-3.5 text-sm font-bold uppercase tracking-[0.2em] text-[#ede0c8] shadow-[0_0_18px_rgba(154,123,60,0.22)] ring-offset-2 ring-offset-stone-950 transition duration-200 hover:border-[#b8954a] hover:bg-[#3a3228] hover:shadow-[0_0_24px_rgba(184,149,74,0.28)] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none',
+        'flex w-max max-w-none cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border-2 border-[#9a7b3c] bg-[#2c261f] px-6 py-3.5 text-sm font-bold uppercase tracking-[0.12em] text-[#ede0c8] shadow-[0_0_18px_rgba(154,123,60,0.22)] ring-offset-2 ring-offset-stone-950 transition duration-200 hover:border-[#b8954a] hover:bg-[#3a3228] hover:shadow-[0_0_24px_rgba(184,149,74,0.28)] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none',
         className,
       )}
       {...buttonProps}
       onClick={handleClick}
     >
-      <motion.div layout className="flex items-center gap-2">
+      <motion.div layout className="flex shrink-0 items-center gap-2 whitespace-nowrap">
         <IconSlot />
-        <motion.span layout>{children}</motion.span>
+        <motion.span layout className="whitespace-nowrap">{children}</motion.span>
       </motion.div>
     </motion.button>
   )
