@@ -33,7 +33,7 @@ function CrateOpener() {
       subtitle="Large Monsters"
       poolCountLabel={poolCountLabel}
       buttonLayoutId="monster-crate-button"
-      buttonLabels={{ open: 'Draw', again: 'Draw' }}
+      buttonLabels={{ open: 'Hunt', again: 'Hunt' }}
       rarityLabels={RARITY_LABELS}
       pool={filteredPool}
       pickRandom={pickRandom}
