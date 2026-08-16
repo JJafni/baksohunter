@@ -1,0 +1,16 @@
+{
+  "name": "baksohunter",
+  "install": "npm install",
+  "ports": [
+    {
+      "name": "vite dev server",
+      "port": 5173
+    }
+  ],
+  "terminals": [
+    {
+      "name": "dev server",
+      "command": "npm run dev"
+    }
+  ]
+}
