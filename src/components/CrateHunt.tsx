@@ -263,6 +263,7 @@ function CrateHunt({
     <RevealPanel
       result={result}
       visible={phase === 'revealed'}
+      revealKey={spinKey}
       rarityLabels={rarityLabels}
       align={useStackedLayout ? 'center' : reelSide === 'left' ? 'right' : 'left'}
       variant={useStackedLayout ? 'mobile' : 'desktop'}
