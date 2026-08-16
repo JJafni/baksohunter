@@ -32,7 +32,7 @@ function AppContent() {
             MH<span className="text-amber-400">Wilds</span>
           </span>
           <span className="hidden text-xs uppercase tracking-[0.3em] text-slate-500 sm:inline">
-            Crate Hunt
+            Faith Hunt
           </span>
         </div>
         <span className="text-xs uppercase tracking-[0.3em] text-slate-500">Forbidden Lands</span>
