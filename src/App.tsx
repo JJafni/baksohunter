@@ -25,8 +25,8 @@ function App() {
         <span className="text-xs uppercase tracking-[0.3em] text-slate-500">Forbidden Lands</span>
       </header>
 
-      <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-10">
-        <div className="grid w-full max-w-5xl grid-cols-1 items-start gap-16 lg:grid-cols-[1fr_auto_1fr] lg:gap-0">
+      <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
+        <div className="grid w-full max-w-5xl grid-cols-1 items-start gap-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-0">
           <div className="flex items-start justify-center overflow-visible lg:justify-end lg:pr-6 xl:pr-10">
             <CrateOpener />
           </div>

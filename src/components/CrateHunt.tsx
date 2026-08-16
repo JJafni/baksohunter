@@ -29,7 +29,7 @@ type CrateHuntProps = {
   /** Which side the reel column (title, spinner, button) sits on. */
   reelSide: 'left' | 'right'
   /** Optional controls shown beside the reel (e.g. monster rarity filters). */
-  filters?: (ctx: { disabled: boolean }) => ReactNode
+  filters?: (ctx: { disabled: boolean; layout: 'sidebar' | 'bar' }) => ReactNode
 }
 
 /** Shared row heights so monster and weapon columns line up horizontally. */
@@ -120,13 +120,21 @@ function CrateHunt({
 
   const header = (
     <div
-      className={`flex flex-col items-center justify-end pb-1 text-center ${isEntering ? 'animate-hunt-side-enter' : ''}`}
-      style={{ width: blockWidth, minHeight: HEADER_ROW_H }}
+      className={`flex flex-col items-center text-center ${isMobile ? 'gap-1' : 'justify-end pb-1'} ${isEntering ? 'animate-hunt-side-enter' : ''}`}
+      style={{ width: blockWidth, minHeight: isMobile ? undefined : HEADER_ROW_H }}
     >
-      <p className="select-none text-3xl font-black uppercase leading-none tracking-tight text-slate-500/40 sm:text-4xl">
+      <p
+        className={`select-none font-black uppercase leading-none tracking-tight text-slate-500/40 ${
+          isMobile ? 'text-2xl' : 'text-3xl sm:text-4xl'
+        }`}
+      >
         {heading}
       </p>
-      <p className="mt-2 w-max max-w-none whitespace-nowrap text-lg font-bold uppercase tracking-[0.15em] text-slate-100 sm:text-xl">
+      <p
+        className={`w-max max-w-none whitespace-nowrap font-bold uppercase tracking-[0.15em] text-slate-100 ${
+          isMobile ? 'text-base' : 'mt-2 text-lg sm:text-xl'
+        }`}
+      >
         {subtitle}
       </p>
     </div>
@@ -134,20 +142,25 @@ function CrateHunt({
 
   const poolLine = (
     <p
-      className="mt-4 text-center text-[10px] uppercase tracking-[0.2em] text-slate-600 sm:text-xs"
-      style={{ minHeight: FOOTER_ROW_H }}
+      className={`mt-3 text-center uppercase tracking-[0.18em] text-slate-600 ${
+        isMobile ? 'max-w-[20rem] px-2 text-[10px] leading-relaxed' : 'text-[10px] sm:text-xs'
+      }`}
+      style={{ minHeight: isMobile ? undefined : FOOTER_ROW_H }}
     >
       {poolCountLabel}
     </p>
   )
 
   const filtersDisabled = phase === 'spinning'
+  const filterLayout = isMobile ? 'bar' : 'sidebar'
   const filtersSlot = filters ? (
-    <div className="self-center">{filters({ disabled: filtersDisabled })}</div>
+    <div className={isMobile ? 'w-full' : 'self-center'}>
+      {filters({ disabled: filtersDisabled, layout: filterLayout })}
+    </div>
   ) : null
 
   const actions = (
-    <div className="flex flex-col items-center pt-6" style={{ width: blockWidth }}>
+    <div className={`flex flex-col items-center ${isMobile ? 'pt-2' : 'pt-6'}`} style={{ width: blockWidth }}>
       <StatefulButton layoutId={buttonLayoutId} onClick={startHunt} disabled={phase === 'spinning' || !canSpin}>
         {buttonLabel}
       </StatefulButton>
@@ -189,23 +202,12 @@ function CrateHunt({
 
   const nameSlot =
     phase === 'idle' ? (
-      isMobile ? (
-        <div className="min-h-[4rem]" aria-hidden="true" />
-      ) : (
+      isMobile ? null : (
         <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
       )
     ) : (
       namePanel
     )
-
-  const reelWithFilters = hasFilters ? (
-    <div className="flex items-center gap-3 sm:gap-4">
-      {filtersSlot}
-      {reelSlot}
-    </div>
-  ) : (
-    reelSlot
-  )
 
   if (isMobile) {
     return (
@@ -218,17 +220,12 @@ function CrateHunt({
           }}
         />
 
-        <div
-          className="grid w-full gap-y-5"
-          style={{
-            gridTemplateColumns: '1fr',
-            gridTemplateRows: `${HEADER_ROW_H} auto auto auto`,
-          }}
-        >
-          <div className="row-start-1 flex justify-center">{header}</div>
-          <div className="row-start-2 flex justify-center">{reelWithFilters}</div>
-          <div className="row-start-3 flex justify-center">{nameSlot}</div>
-          <div className="row-start-4 flex justify-center">{actions}</div>
+        <div className="flex w-full flex-col items-center gap-4">
+          {header}
+          {hasFilters ? filtersSlot : null}
+          <div className="w-full">{reelSlot}</div>
+          {nameSlot}
+          {actions}
         </div>
       </div>
     )

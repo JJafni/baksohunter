@@ -37,8 +37,13 @@ function CrateOpener() {
       pool={filteredPool}
       pickRandom={pickRandom}
       reelSide="left"
-      filters={({ disabled }) => (
-        <MonsterRarityFilter value={poolFilter} onChange={setPoolFilter} disabled={disabled} />
+      filters={({ disabled, layout }) => (
+        <MonsterRarityFilter
+          value={poolFilter}
+          onChange={setPoolFilter}
+          disabled={disabled}
+          variant={layout}
+        />
       )}
     />
   )
