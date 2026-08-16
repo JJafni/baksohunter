@@ -10,6 +10,7 @@ import {
   OPEN_MS,
   REEL_LENGTH,
   REEL_WIDTH,
+  REVEAL_UI_FADE_DELAY_MS,
   VIEWPORT_HEIGHT,
 } from '../lib/crateConfig'
 import { buildReelSequence } from '../lib/reelSequence'
@@ -54,6 +55,21 @@ type CrateHuntProps = {
 const HEADER_ROW_H = '6rem'
 const FOOTER_ROW_H = '2.75rem'
 
+const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
+
+function SpinnerUiFade({ visible, children }: { visible: boolean; children: ReactNode }) {
+  return (
+    <motion.div
+      initial={false}
+      animate={{ opacity: visible ? 1 : 0 }}
+      transition={SPINNER_UI_FADE}
+      className={visible ? undefined : 'pointer-events-none'}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
 function CrateHunt({
   heading,
   subtitle,
@@ -80,10 +96,22 @@ function CrateHunt({
   const [sequence, setSequence] = useState<CrateEntry[]>([])
   const [spinKey, setSpinKey] = useState(0)
   const [isEntering, setIsEntering] = useState(false)
+  const [spinnerUiVisible, setSpinnerUiVisible] = useState(true)
   const spinResolverRef = useRef<(() => void) | null>(null)
+  const spinnerFadeTimerRef = useRef<number | null>(null)
+
+  const clearSpinnerFadeTimer = useCallback(() => {
+    if (spinnerFadeTimerRef.current !== null) {
+      window.clearTimeout(spinnerFadeTimerRef.current)
+      spinnerFadeTimerRef.current = null
+    }
+  }, [])
 
   const startHunt = useCallback(async () => {
     if (phase === 'spinning' || pool.length === 0) return
+
+    clearSpinnerFadeTimer()
+    setSpinnerUiVisible(true)
 
     const target = pickRandom()
     setResult(target)
@@ -99,7 +127,7 @@ function CrateHunt({
     await new Promise<void>((resolve) => {
       spinResolverRef.current = resolve
     })
-  }, [phase, pickRandom, pool])
+  }, [phase, pickRandom, pool, clearSpinnerFadeTimer])
 
   useEffect(() => {
     if (!isEntering) return
@@ -113,6 +141,27 @@ function CrateHunt({
     spinResolverRef.current?.()
     spinResolverRef.current = null
   }, [])
+
+  useEffect(() => {
+    if (phase === 'idle') {
+      clearSpinnerFadeTimer()
+      setSpinnerUiVisible(true)
+      return
+    }
+
+    if (phase !== 'revealed') {
+      clearSpinnerFadeTimer()
+      return
+    }
+
+    setSpinnerUiVisible(true)
+    spinnerFadeTimerRef.current = window.setTimeout(() => {
+      setSpinnerUiVisible(false)
+      spinnerFadeTimerRef.current = null
+    }, REVEAL_UI_FADE_DELAY_MS)
+
+    return clearSpinnerFadeTimer
+  }, [phase, spinKey, clearSpinnerFadeTimer])
 
   useEffect(() => {
     onHuntChange?.({ result, phase })
@@ -274,8 +323,10 @@ function CrateHunt({
         <div
           className={`flex w-full flex-col items-center ${overlayMode ? 'h-full min-h-0 gap-3 py-2' : 'gap-4 lg:gap-3'}`}
         >
+        <SpinnerUiFade visible={spinnerUiVisible}>
           {header}
           <div className="w-full shrink-0">{reelSlot}</div>
+        </SpinnerUiFade>
           {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
           <div className={`flex w-full flex-col items-center gap-2 ${overlayMode ? 'mt-auto' : ''}`}>
             {mobileRevealSlot}
@@ -310,13 +361,17 @@ function CrateHunt({
           gridTemplateRows: `${HEADER_ROW_H} auto auto`,
         }}
       >
-        <div className={`${reelColClass} row-start-1 flex justify-center overflow-visible`}>{header}</div>
+        <div className={`${reelColClass} row-start-1 flex justify-center overflow-visible`}>
+          <SpinnerUiFade visible={spinnerUiVisible}>{header}</SpinnerUiFade>
+        </div>
 
         {hasFilters ? (
           <div className={`${filterColClass} row-start-2 self-center`}>{filtersSlot}</div>
         ) : null}
 
-        <div className={`${reelColClass} row-start-2`}>{reelSlot}</div>
+        <div className={`${reelColClass} row-start-2`}>
+          <SpinnerUiFade visible={spinnerUiVisible}>{reelSlot}</SpinnerUiFade>
+        </div>
 
         <div className={`${nameColClass} row-start-2 self-center`}>{nameSlot}</div>
 
