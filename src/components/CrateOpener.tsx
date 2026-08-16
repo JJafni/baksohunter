@@ -80,7 +80,7 @@ function CrateOpener() {
         className={`mt-8 rounded-lg px-10 py-3.5 text-sm font-bold uppercase tracking-[0.2em] transition-all ${
           isSpinning
             ? 'cursor-not-allowed bg-slate-800 text-slate-500 shadow-none'
-            : 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-[0_0_30px_rgba(251,146,60,0.4)] hover:scale-105 active:scale-95'
+            : 'cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-[0_0_30px_rgba(251,146,60,0.4)] hover:scale-105 active:scale-95'
         }`}
       >
         {isSpinning ? 'Opening...' : buttonLabel}
