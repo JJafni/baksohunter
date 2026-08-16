@@ -49,7 +49,7 @@ function DesktopHuntLayout({
   onMonsterHuntChange: (ctx: CrateHuntContext) => void
 }) {
   return (
-    <div className="grid h-full min-h-0 w-full max-w-[1400px] grid-cols-2">
+    <div className="grid h-full min-h-0 w-full max-w-[1600px] grid-cols-1 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
       <section className="relative min-h-0 overflow-hidden border-r border-white/10">
         <MonsterGalleryImage
           result={monsterHunt.result}

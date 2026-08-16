@@ -6,6 +6,7 @@ import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import {
   CENTER_INDEX,
   MOBILE_REEL_HEIGHT,
+  HUNT_COLUMN_MAX_WIDTH,
   OPEN_MS,
   REEL_LENGTH,
   REEL_WIDTH,
@@ -222,16 +223,18 @@ function CrateHunt({
       </motion.div>
     ) : null
 
+  const columnMaxWidth = overlayMode ? undefined : HUNT_COLUMN_MAX_WIDTH
+
   const reelSlot =
     phase === 'idle' ? (
       <div
-        className={`flex items-center justify-center ${useStackedLayout ? 'w-full max-w-[620px]' : ''}`}
-        style={{ width: blockWidth, height: reelSlotHeight }}
+        className="flex w-full items-center justify-center"
+        style={{ width: blockWidth, maxWidth: columnMaxWidth, height: reelSlotHeight }}
       >
         <IdleCrate orientation={reelOrientation} />
       </div>
     ) : (
-      <div className={useStackedLayout ? 'w-full max-w-[620px]' : ''} style={{ width: blockWidth }}>
+      <div className="w-full" style={{ width: blockWidth, maxWidth: columnMaxWidth }}>
         <div className={stretchClass}>
           <Reel
             key={`${spinKey}-${reelOrientation}`}

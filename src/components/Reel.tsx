@@ -92,7 +92,7 @@ function Reel({ sequence, onDone, landed, rarity, orientation = 'vertical' }: Re
       ref={containerRef}
       className={
         isHorizontal
-          ? 'relative w-full max-w-[620px] overflow-hidden rounded-2xl border border-white/10 bg-black/40'
+          ? 'relative w-full overflow-hidden rounded-2xl border border-white/10 bg-black/40'
           : 'relative overflow-hidden rounded-2xl border border-white/10 bg-black/40'
       }
       style={

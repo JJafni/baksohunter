@@ -11,5 +11,7 @@ export const OPEN_MS = 700
 export const REEL_WIDTH = CARD_SIZE + 40
 /** Horizontal reel frame height on mobile. */
 export const MOBILE_REEL_HEIGHT = CARD_SIZE + 40
-/** Max width of the horizontal reel on mobile. */
+/** Max width of the horizontal reel on mobile. Desktop overlay reels use full column width. */
 export const MOBILE_REEL_MAX_WIDTH = 620
+/** Default cap for stacked hunt columns (mobile). */
+export const HUNT_COLUMN_MAX_WIDTH = 620

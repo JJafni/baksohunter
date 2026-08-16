@@ -37,7 +37,7 @@ function MonsterRarityFilter({ value, onChange, disabled = false, variant = 'sid
     <div
       className={
         isBar
-          ? 'flex w-full max-w-[620px] flex-col items-center gap-2'
+          ? 'flex w-full flex-col items-center gap-2'
           : 'flex w-[5.75rem] shrink-0 flex-col items-stretch gap-2 sm:w-[6.25rem]'
       }
     >
