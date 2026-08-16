@@ -88,10 +88,10 @@ export function StatefulButton({
       {...buttonProps}
       onClick={handleClick}
     >
-      <div className="flex w-full min-w-0 items-center justify-center gap-2">
+      <span className="inline-flex items-center justify-center gap-1.5">
         <IconSlot icon={icon} />
         {useSpinLabels ? (
-          <span className="relative min-w-0 flex-1 overflow-hidden text-center">
+          <span className="relative inline-block overflow-hidden text-center">
             <AnimatePresence mode="wait" initial={false}>
               <motion.span
                 key={String(label)}
@@ -99,7 +99,7 @@ export function StatefulButton({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, ease: 'easeInOut' }}
-                className="block truncate whitespace-nowrap"
+                className="block whitespace-nowrap"
               >
                 {label}
               </motion.span>
@@ -108,7 +108,7 @@ export function StatefulButton({
         ) : (
           <span className="whitespace-nowrap">{children}</span>
         )}
-      </div>
+      </span>
     </motion.button>
   )
 }
