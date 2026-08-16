@@ -1,5 +1,6 @@
 import type { CrateEntry, Rarity } from '../data/types'
 import { ELDER_DRAGON_SLUGS } from '../data/monsters'
+import { getVisualRarity, RARITY_TEXT_CLASS } from '../lib/rarityColors'
 
 type RevealPanelProps = {
   result: CrateEntry | null
@@ -9,11 +10,7 @@ type RevealPanelProps = {
   variant?: 'desktop' | 'mobile'
 }
 
-const RARITY_TEXT: Record<Rarity, string> = {
-  normal: 'text-sky-400',
-  tempered: 'text-rose-400',
-  'arch-tempered': 'text-amber-400',
-}
+const RARITY_TEXT = RARITY_TEXT_CLASS
 
 function RevealPanel({
   result,
@@ -30,6 +27,14 @@ function RevealPanel({
         ? rarityLabels[result.rarity]
         : ''
   const isMobile = variant === 'mobile'
+  const isLongName = show && result.name.length >= 8
+  const nameSizeClass = isMobile
+    ? isLongName
+      ? 'text-xl sm:text-2xl'
+      : 'text-2xl sm:text-3xl'
+    : isLongName
+      ? 'text-2xl sm:text-3xl lg:text-[2.25rem]'
+      : 'text-3xl sm:text-4xl lg:text-[2.75rem]'
   const alignClass =
     align === 'center'
       ? 'items-center text-center'
@@ -48,14 +53,12 @@ function RevealPanel({
       {show ? (
         <div className={isMobile ? 'animate-hunt-reveal-enter-mobile' : 'animate-hunt-reveal-enter'}>
           <h2
-            className={`font-black uppercase leading-[0.95] tracking-tight text-white ${
-              isMobile ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl lg:text-[2.75rem]'
-            }`}
+            className={`font-black uppercase leading-[0.95] tracking-tight text-white ${nameSizeClass}`}
           >
             {result.name}
           </h2>
           <p
-            className={`mt-2 font-bold uppercase tracking-[0.2em] ${isMobile ? 'text-[11px]' : 'mt-2.5 text-xs sm:text-sm'} ${RARITY_TEXT[result.rarity]}`}
+            className={`mt-2 font-bold uppercase tracking-[0.2em] ${isMobile ? 'text-[11px]' : 'mt-2.5 text-xs sm:text-sm'} ${RARITY_TEXT[getVisualRarity(result)]}`}
           >
             {rarityLabel}
           </p>

@@ -13,7 +13,7 @@ const FILTER_OPTIONS: {
   activeClass: string
 }[] = [
   { key: 'large', label: 'Base', activeClass: 'border-sky-400/60 bg-sky-400/10 text-sky-300' },
-  { key: 'tempered', label: 'Tempered', activeClass: 'border-rose-400/60 bg-rose-400/10 text-rose-300' },
+  { key: 'tempered', label: 'Tempered', activeClass: 'border-violet-400/60 bg-violet-400/10 text-violet-300' },
   {
     key: 'arch-tempered',
     label: 'Arch-Tempered',
@@ -22,7 +22,7 @@ const FILTER_OPTIONS: {
   {
     key: 'elderDragon',
     label: 'Elder Dragon',
-    activeClass: 'border-violet-400/60 bg-violet-400/10 text-violet-300',
+    activeClass: 'border-rose-400/60 bg-rose-400/10 text-rose-300',
   },
 ]
 

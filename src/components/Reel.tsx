@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import type { CrateEntry, Rarity } from '../data/types'
+import type { CrateEntry } from '../data/types'
+import type { VisualRarity } from '../lib/rarityColors'
 import CrateCard from './CrateCard'
 import { CenterMarkerFrame, CenterMarkerGlow } from './CenterMarker'
 import {
@@ -19,7 +20,7 @@ type ReelProps = {
   sequence: CrateEntry[]
   onDone: () => void
   landed: boolean
-  rarity: Rarity
+  rarity: VisualRarity
   orientation?: ReelOrientation
 }
 

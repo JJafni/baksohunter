@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'motion/react'
 import type { CrateEntry, Rarity } from '../data/types'
+import { getVisualRarity, RARITY_BACKGROUND_GLOW, type VisualRarity } from '../lib/rarityColors'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import {
   CENTER_INDEX,
@@ -95,12 +96,8 @@ function CrateHunt({
     spinResolverRef.current = null
   }, [])
 
-  const rarity: Rarity = result?.rarity ?? 'normal'
-  const backgroundGlow: Record<Rarity, string> = {
-    normal: 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(56,189,248,0.18), transparent 70%)',
-    tempered: 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(244,63,94,0.18), transparent 70%)',
-    'arch-tempered': 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(251,191,36,0.22), transparent 70%)',
-  }
+  const visualRarity: VisualRarity = result ? getVisualRarity(result) : 'normal'
+  const backgroundGlow = RARITY_BACKGROUND_GLOW
 
   const buttonLabel = phase === 'revealed' ? buttonLabels.again : buttonLabels.open
   const canSpin = pool.length > 0
@@ -217,7 +214,7 @@ function CrateHunt({
             sequence={sequence}
             onDone={handleLanded}
             landed={phase === 'revealed'}
-            rarity={rarity}
+            rarity={visualRarity}
             orientation={reelOrientation}
           />
         </div>
@@ -240,7 +237,7 @@ function CrateHunt({
           className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
           style={{
             opacity: phase === 'revealed' ? 1 : 0,
-            background: backgroundGlow[rarity],
+            background: backgroundGlow[visualRarity],
           }}
         />
 
@@ -261,7 +258,7 @@ function CrateHunt({
         className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
         style={{
           opacity: phase === 'revealed' ? 1 : 0,
-          background: backgroundGlow[rarity],
+          background: backgroundGlow[visualRarity],
         }}
       />
 

@@ -1,17 +1,14 @@
-import type { Rarity } from '../data/types'
+import type { VisualRarity } from '../lib/rarityColors'
+import { RARITY_MARKER_COLOR } from '../lib/rarityColors'
 import type { ReelOrientation } from './Reel'
 
 type CenterMarkerProps = {
   active: boolean
-  rarity?: Rarity
+  rarity?: VisualRarity
   orientation?: ReelOrientation
 }
 
-const RARITY_COLOR: Record<Rarity, string> = {
-  normal: 'rgba(56,189,248,0.95)',
-  tempered: 'rgba(244,63,94,0.95)',
-  'arch-tempered': 'rgba(251,191,36,0.95)',
-}
+const RARITY_COLOR = RARITY_MARKER_COLOR
 
 function CenterMarkerGlow({ active, rarity = 'normal', orientation = 'vertical' }: CenterMarkerProps) {
   const color = RARITY_COLOR[rarity]
