@@ -11,31 +11,17 @@ export function StatefulButton({ className, children, ...props }: StatefulButton
   const [scope, animate] = useAnimate()
 
   const animateLoading = async () => {
-    await animate(
-      '.loader',
-      {
-        width: '18px',
-        scale: 1,
-        display: 'block',
-      },
-      {
-        duration: 0.2,
-      },
-    )
+    await Promise.all([
+      animate('.sword', { opacity: 0, scale: 0.8 }, { duration: 0.25, ease: 'easeInOut' }),
+      animate('.loader', { opacity: 1, scale: 1 }, { duration: 0.25, ease: 'easeInOut' }),
+    ])
   }
 
   const animateComplete = async () => {
-    await animate(
-      '.loader',
-      {
-        width: '0px',
-        scale: 0,
-        display: 'none',
-      },
-      {
-        duration: 0.2,
-      },
-    )
+    await Promise.all([
+      animate('.loader', { opacity: 0, scale: 0.8 }, { duration: 0.25, ease: 'easeInOut' }),
+      animate('.sword', { opacity: 1, scale: 1 }, { duration: 0.25, ease: 'easeInOut' }),
+    ])
   }
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -60,70 +46,51 @@ export function StatefulButton({ className, children, ...props }: StatefulButton
       onClick={handleClick}
     >
       <motion.div layout className="flex items-center gap-2">
-        <SwordIcon />
-        <Loader />
+        <IconSlot />
         <motion.span layout>{children}</motion.span>
       </motion.div>
     </motion.button>
   )
 }
 
-function Loader() {
+function IconSlot() {
   return (
-    <motion.svg
-      animate={{
-        rotate: [0, 360],
-      }}
-      initial={{
-        scale: 0,
-        width: 0,
-        display: 'none',
-      }}
-      style={{
-        scale: 0.5,
-        display: 'none',
-      }}
-      transition={{
-        duration: 0.3,
-        repeat: Infinity,
-        ease: 'linear',
-      }}
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="loader text-[#d4b86a]"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 3a9 9 0 1 0 9 9" />
-    </motion.svg>
-  )
-}
+    <div className="relative h-[18px] w-[18px] shrink-0" aria-hidden="true">
+      <motion.svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="sword absolute inset-0 text-[#d4b86a]"
+        initial={{ opacity: 1, scale: 1 }}
+      >
+        <path d="M14.5 17.5 3 6V3h3l11.5 11.5" />
+        <path d="M13 19l6-6" />
+        <path d="M16 16l4 4" />
+        <path d="M19 21l2-2" />
+      </motion.svg>
 
-function SwordIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="sword shrink-0 text-[#d4b86a]"
-      aria-hidden="true"
-    >
-      <path d="M14.5 17.5 3 6V3h3l11.5 11.5" />
-      <path d="M13 19l6-6" />
-      <path d="M16 16l4 4" />
-      <path d="M19 21l2-2" />
-    </svg>
+      <motion.svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="loader pointer-events-none absolute inset-0 animate-spin text-[#d4b86a]"
+        initial={{ opacity: 0, scale: 0.8 }}
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M12 3a9 9 0 1 0 9 9" />
+      </motion.svg>
+    </div>
   )
 }
