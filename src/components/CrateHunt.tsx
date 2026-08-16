@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import type { CrateEntry, Rarity } from '../data/types'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import {
@@ -27,6 +27,8 @@ type CrateHuntProps = {
   pickRandom: () => CrateEntry
   /** Which side the reel column (title, spinner, button) sits on. */
   reelSide: 'left' | 'right'
+  /** Optional controls shown above the reel (e.g. monster rarity filters). */
+  filters?: (ctx: { disabled: boolean }) => ReactNode
 }
 
 /** Shared row heights so monster and weapon columns line up horizontally. */
@@ -51,6 +53,7 @@ function CrateHunt({
   pool,
   pickRandom,
   reelSide,
+  filters,
 }: CrateHuntProps) {
   const isMobile = useIsMobileLayout()
   const reelOrientation = isMobile ? 'horizontal' : 'vertical'
@@ -62,7 +65,7 @@ function CrateHunt({
   const spinResolverRef = useRef<(() => void) | null>(null)
 
   const startHunt = useCallback(async () => {
-    if (phase === 'spinning') return
+    if (phase === 'spinning' || pool.length === 0) return
 
     const target = pickRandom()
     setResult(target)
@@ -78,7 +81,7 @@ function CrateHunt({
     await new Promise<void>((resolve) => {
       spinResolverRef.current = resolve
     })
-  }, [phase, pickRandom])
+  }, [phase, pickRandom, pool.length])
 
   useEffect(() => {
     if (!isEntering) return
@@ -101,6 +104,7 @@ function CrateHunt({
   }
 
   const buttonLabel = phase === 'revealed' ? buttonLabels.again : buttonLabels.open
+  const canSpin = pool.length > 0
   const reelOnLeft = reelSide === 'left'
   const reelColClass = reelOnLeft ? 'col-start-1' : 'col-start-2'
   const nameColClass = reelOnLeft ? 'col-start-2' : 'col-start-1'
@@ -132,13 +136,20 @@ function CrateHunt({
       className="mt-4 text-center text-[10px] uppercase tracking-[0.2em] text-slate-600 sm:text-xs"
       style={{ minHeight: FOOTER_ROW_H }}
     >
-      {pool.length} {poolCountLabel}
+      {poolCountLabel}
     </p>
   )
 
+  const filtersDisabled = phase === 'spinning'
+  const filtersSlot = filters ? (
+    <div className="flex justify-center pb-1" style={{ width: blockWidth }}>
+      {filters({ disabled: filtersDisabled })}
+    </div>
+  ) : null
+
   const actions = (
     <div className="flex flex-col items-center pt-6" style={{ width: blockWidth }}>
-      <StatefulButton layoutId={buttonLayoutId} onClick={startHunt} disabled={phase === 'spinning'}>
+      <StatefulButton layoutId={buttonLayoutId} onClick={startHunt} disabled={phase === 'spinning' || !canSpin}>
         {buttonLabel}
       </StatefulButton>
       {poolLine}
@@ -203,13 +214,14 @@ function CrateHunt({
           className="grid w-full gap-y-5"
           style={{
             gridTemplateColumns: '1fr',
-            gridTemplateRows: `${HEADER_ROW_H} auto auto auto`,
+            gridTemplateRows: filters ? `${HEADER_ROW_H} auto auto auto auto` : `${HEADER_ROW_H} auto auto auto`,
           }}
         >
           <div className="row-start-1 flex justify-center">{header}</div>
-          <div className="row-start-2 flex justify-center">{reelSlot}</div>
-          <div className="row-start-3 flex justify-center">{nameSlot}</div>
-          <div className="row-start-4 flex justify-center">{actions}</div>
+          {filters ? <div className="row-start-2 flex justify-center">{filtersSlot}</div> : null}
+          <div className={`flex justify-center ${filters ? 'row-start-3' : 'row-start-2'}`}>{reelSlot}</div>
+          <div className={`flex justify-center ${filters ? 'row-start-4' : 'row-start-3'}`}>{nameSlot}</div>
+          <div className={`flex justify-center ${filters ? 'row-start-5' : 'row-start-4'}`}>{actions}</div>
         </div>
       </div>
     )
@@ -229,16 +241,20 @@ function CrateHunt({
         className="grid gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6"
         style={{
           gridTemplateColumns: reelOnLeft ? `${REEL_WIDTH}px auto` : `auto ${REEL_WIDTH}px`,
-          gridTemplateRows: `${HEADER_ROW_H} auto auto`,
+          gridTemplateRows: filters ? `${HEADER_ROW_H} auto auto auto` : `${HEADER_ROW_H} auto auto`,
         }}
       >
         <div className={`${reelColClass} row-start-1 flex justify-center overflow-visible`}>{header}</div>
 
-        <div className={`${reelColClass} row-start-2`}>{reelSlot}</div>
+        {filters ? (
+          <div className={`${reelColClass} row-start-2 flex justify-center`}>{filtersSlot}</div>
+        ) : null}
 
-        <div className={`${nameColClass} row-start-2 self-center`}>{nameSlot}</div>
+        <div className={`${reelColClass} ${filters ? 'row-start-3' : 'row-start-2'}`}>{reelSlot}</div>
 
-        <div className={`${reelColClass} row-start-3`}>{actions}</div>
+        <div className={`${nameColClass} ${filters ? 'row-start-3' : 'row-start-2'} self-center`}>{nameSlot}</div>
+
+        <div className={`${reelColClass} ${filters ? 'row-start-4' : 'row-start-3'}`}>{actions}</div>
       </div>
     </div>
   )
