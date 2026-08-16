@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CrateEntry, Rarity } from '../data/types'
-import { CENTER_INDEX, OPEN_MS, REEL_LENGTH, REEL_WIDTH, VIEWPORT_HEIGHT } from '../lib/crateConfig'
+import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
+import {
+  CENTER_INDEX,
+  MOBILE_REEL_HEIGHT,
+  OPEN_MS,
+  REEL_LENGTH,
+  REEL_WIDTH,
+  VIEWPORT_HEIGHT,
+} from '../lib/crateConfig'
 import Reel from './Reel'
 import RevealPanel from './RevealPanel'
 import IdleCrate from './IdleCrate'
@@ -44,6 +52,8 @@ function CrateHunt({
   pickRandom,
   reelSide,
 }: CrateHuntProps) {
+  const isMobile = useIsMobileLayout()
+  const reelOrientation = isMobile ? 'horizontal' : 'vertical'
   const [phase, setPhase] = useState<Phase>('idle')
   const [result, setResult] = useState<CrateEntry | null>(null)
   const [sequence, setSequence] = useState<CrateEntry[]>([])
@@ -95,10 +105,18 @@ function CrateHunt({
   const reelColClass = reelOnLeft ? 'col-start-1' : 'col-start-2'
   const nameColClass = reelOnLeft ? 'col-start-2' : 'col-start-1'
 
+  const blockWidth = isMobile ? '100%' : REEL_WIDTH
+  const reelSlotHeight = isMobile ? MOBILE_REEL_HEIGHT : VIEWPORT_HEIGHT
+  const stretchClass = isEntering
+    ? isMobile
+      ? 'animate-hunt-reel-stretch-x'
+      : 'animate-hunt-reel-stretch-y'
+    : ''
+
   const header = (
     <div
       className={`flex flex-col items-center justify-end pb-1 text-center ${isEntering ? 'animate-hunt-side-enter' : ''}`}
-      style={{ width: REEL_WIDTH, minHeight: HEADER_ROW_H }}
+      style={{ width: blockWidth, minHeight: HEADER_ROW_H }}
     >
       <p className="select-none text-3xl font-black uppercase leading-none tracking-tight text-slate-500/40 sm:text-4xl">
         {heading}
@@ -119,7 +137,7 @@ function CrateHunt({
   )
 
   const actions = (
-    <div className="flex flex-col items-center pt-6" style={{ width: REEL_WIDTH }}>
+    <div className="flex flex-col items-center pt-6" style={{ width: blockWidth }}>
       <StatefulButton layoutId={buttonLayoutId} onClick={startHunt} disabled={phase === 'spinning'}>
         {buttonLabel}
       </StatefulButton>
@@ -132,27 +150,28 @@ function CrateHunt({
       result={result}
       visible={phase === 'revealed'}
       rarityLabels={rarityLabels}
-      align={reelSide === 'left' ? 'right' : 'left'}
+      align={isMobile ? 'center' : reelSide === 'left' ? 'right' : 'left'}
     />
   )
 
   const reelSlot =
     phase === 'idle' ? (
       <div
-        className="flex items-center justify-center"
-        style={{ width: REEL_WIDTH, height: VIEWPORT_HEIGHT }}
+        className={`flex items-center justify-center ${isMobile ? 'w-full max-w-[620px]' : ''}`}
+        style={{ width: blockWidth, height: reelSlotHeight }}
       >
-        <IdleCrate />
+        <IdleCrate orientation={reelOrientation} />
       </div>
     ) : (
-      <div style={{ width: REEL_WIDTH }}>
-        <div className={isEntering ? 'animate-hunt-reel-stretch' : ''}>
+      <div className={isMobile ? 'w-full max-w-[620px]' : ''} style={{ width: blockWidth }}>
+        <div className={stretchClass}>
           <Reel
-            key={spinKey}
+            key={`${spinKey}-${reelOrientation}`}
             sequence={sequence}
             onDone={handleLanded}
             landed={phase === 'revealed'}
             rarity={rarity}
+            orientation={reelOrientation}
           />
         </div>
       </div>
@@ -160,10 +179,41 @@ function CrateHunt({
 
   const nameSlot =
     phase === 'idle' ? (
-      <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
+      isMobile ? (
+        <div className="min-h-[4rem]" aria-hidden="true" />
+      ) : (
+        <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
+      )
     ) : (
       namePanel
     )
+
+  if (isMobile) {
+    return (
+      <div className="relative w-full max-w-[620px] shrink-0">
+        <div
+          className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
+          style={{
+            opacity: phase === 'revealed' ? 1 : 0,
+            background: backgroundGlow[rarity],
+          }}
+        />
+
+        <div
+          className="grid w-full gap-y-5"
+          style={{
+            gridTemplateColumns: '1fr',
+            gridTemplateRows: `${HEADER_ROW_H} auto auto auto`,
+          }}
+        >
+          <div className="row-start-1 flex justify-center">{header}</div>
+          <div className="row-start-2 flex justify-center">{reelSlot}</div>
+          <div className="row-start-3 flex justify-center">{nameSlot}</div>
+          <div className="row-start-4 flex justify-center">{actions}</div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="relative w-fit max-w-full shrink-0">

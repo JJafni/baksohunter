@@ -4,7 +4,7 @@ type RevealPanelProps = {
   result: CrateEntry | null
   visible: boolean
   rarityLabels: Record<Rarity, string>
-  align?: 'left' | 'right'
+  align?: 'left' | 'right' | 'center'
 }
 
 const RARITY_TEXT: Record<Rarity, string> = {
@@ -15,12 +15,18 @@ const RARITY_TEXT: Record<Rarity, string> = {
 
 function RevealPanel({ result, visible, rarityLabels, align = 'left' }: RevealPanelProps) {
   const show = visible && result !== null
+  const alignClass =
+    align === 'center'
+      ? 'items-center text-center'
+      : align === 'right'
+        ? 'items-end text-right'
+        : 'items-start text-left'
 
   return (
     <div
-      className={`flex min-h-[6rem] w-[150px] shrink-0 flex-col justify-center sm:w-[185px] ${
-        align === 'right' ? 'items-end text-right' : 'items-start text-left'
-      }`}
+      className={`flex min-h-[4rem] shrink-0 flex-col justify-center sm:min-h-[6rem] ${
+        align === 'center' ? 'w-full max-w-[620px]' : 'w-[150px] sm:w-[185px]'
+      } ${alignClass}`}
     >
       {show ? (
         <div className="animate-hunt-reveal-enter">
