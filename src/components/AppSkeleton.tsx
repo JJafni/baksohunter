@@ -27,7 +27,7 @@ function AppSkeleton({ progress }: { progress: number }) {
   const percent = Math.round(progress * 100)
 
   return (
-    <div className="relative z-20 flex min-h-svh flex-col bg-slate-950">
+    <div className="relative z-20 flex min-h-svh flex-col bg-slate-950 max-lg:overflow-x-hidden lg:h-svh lg:min-h-0 lg:overflow-hidden">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-0.5 bg-white/5">
         <div
           className="h-full bg-amber-400/80 transition-[width] duration-300 ease-out"
@@ -35,7 +35,7 @@ function AppSkeleton({ progress }: { progress: number }) {
         />
       </div>
 
-      <main className="flex flex-1 flex-col items-center px-4 py-6 sm:px-6 sm:py-8">
+      <main className="flex min-h-0 flex-1 flex-col items-center overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:overflow-hidden lg:py-3">
         <div className="grid w-full max-w-6xl grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-10 xl:gap-12">
           <div className="flex justify-center lg:justify-end">
             <HuntColumnSkeleton showGallery />

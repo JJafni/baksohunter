@@ -15,12 +15,7 @@ function MonsterGalleryImage({ result, visible }: MonsterGalleryImageProps) {
   }, [result?.slug])
 
   if (!visible || !result) {
-    return (
-      <div
-        className="flex aspect-[16/10] w-full items-center justify-center rounded-2xl border border-dashed border-white/10 bg-black/20"
-        aria-hidden="true"
-      />
-    )
+    return null
   }
 
   const galleryUrl = getMonsterGalleryImageUrl(result.slug)
@@ -39,8 +34,8 @@ function MonsterGalleryImage({ result, visible }: MonsterGalleryImageProps) {
         onError={() => {
           if (showHd) setUseIconFallback(true)
         }}
-        className={`relative z-10 mx-auto w-full object-contain p-3 sm:p-4 ${
-          showHd ? 'max-h-[min(42vh,360px)]' : 'max-h-[min(32vh,280px)] opacity-90'
+        className={`relative z-10 mx-auto w-full object-contain p-2 sm:p-3 lg:p-2 ${
+          showHd ? 'max-h-[min(42vh,360px)] lg:max-h-[min(16vh,160px)]' : 'max-h-[min(32vh,280px)] lg:max-h-[min(12vh,120px)] opacity-90'
         }`}
       />
       <figcaption className="border-t border-white/5 px-3 py-2 text-center text-[9px] uppercase tracking-[0.14em] text-slate-600 sm:text-[10px]">

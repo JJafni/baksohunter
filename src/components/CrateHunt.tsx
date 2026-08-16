@@ -253,7 +253,7 @@ function CrateHunt({
           }}
         />
 
-        <div className="flex w-full flex-col items-center gap-4">
+        <div className="flex w-full flex-col items-center gap-4 lg:gap-2">
           <div className="w-full">{reelSlot}</div>
           {belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
           {header}

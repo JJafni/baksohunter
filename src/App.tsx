@@ -27,7 +27,7 @@ function AppBackground() {
 function AppContent() {
   return (
     <>
-      <header className="relative z-10 flex items-center justify-between px-6 py-6 sm:px-10">
+      <header className="relative z-10 flex shrink-0 items-center justify-between px-6 py-6 sm:px-10 lg:py-4">
         <div className="flex items-center gap-3">
           <span className="text-lg font-black uppercase tracking-widest text-white">
             MH<span className="text-amber-400">Wilds</span>
@@ -39,8 +39,8 @@ function AppContent() {
         <HeaderNav activeMode="normal" />
       </header>
 
-      <main className="relative z-10 flex flex-1 flex-col items-center px-4 py-6 sm:px-6 sm:py-8">
-        <div className="grid w-full max-w-6xl grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-10 xl:gap-12">
+      <main className="relative z-10 flex min-h-0 flex-1 flex-col items-center overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:overflow-hidden lg:py-3">
+        <div className="grid w-full max-w-6xl grid-cols-1 items-start gap-8 lg:h-full lg:grid-cols-2 lg:items-center lg:gap-6 xl:gap-8">
           <div className="flex justify-center lg:justify-end">
             <CrateOpener />
           </div>
@@ -50,7 +50,7 @@ function AppContent() {
         </div>
       </main>
 
-      <footer className="relative z-10 px-6 py-6 text-center text-[11px] text-slate-600">
+      <footer className="relative z-10 shrink-0 px-6 py-6 text-center text-[11px] text-slate-600 lg:py-3">
         Fan-made tool for Monster Hunter Wilds &middot; Monster &amp; weapon icons &copy; Capcom &middot; Not
         affiliated with Capcom or Psyonix
       </footer>
@@ -62,7 +62,7 @@ function App() {
   const { ready, progress } = useAppReady()
 
   return (
-    <div className="relative flex min-h-svh flex-col overflow-hidden bg-slate-950 text-slate-100">
+    <div className="relative flex min-h-svh flex-col bg-slate-950 text-slate-100 max-lg:overflow-x-hidden lg:h-svh lg:min-h-0 lg:overflow-hidden">
       <AnimatePresence mode="wait">
         {!ready ? (
           <motion.div
@@ -80,7 +80,7 @@ function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.45, ease: 'easeOut' }}
-            className="relative flex min-h-svh flex-col"
+            className="relative flex min-h-svh flex-col max-lg:min-h-svh lg:h-full lg:min-h-0 lg:overflow-hidden"
           >
             <AppBackground />
             <AppContent />
