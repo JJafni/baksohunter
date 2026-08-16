@@ -44,6 +44,8 @@ type CrateHuntProps = {
   belowReel?: (ctx: CrateHuntContext) => ReactNode
   /** When true, gallery is rendered elsewhere (desktop left panel). */
   externalGallery?: boolean
+  /** When true, hunt UI overlays a backdrop image panel. */
+  overlayMode?: boolean
   onHuntChange?: (ctx: CrateHuntContext) => void
 }
 
@@ -67,6 +69,7 @@ function CrateHunt({
   reelOrientation = 'horizontal',
   belowReel,
   externalGallery = false,
+  overlayMode = false,
   onHuntChange,
 }: CrateHuntProps) {
   const isMobile = useIsMobileLayout()
@@ -253,22 +256,26 @@ function CrateHunt({
 
   if (useStackedLayout) {
     return (
-      <div className="relative w-full max-w-[620px] shrink-0">
+      <div
+        className={`relative shrink-0 ${overlayMode ? 'flex h-full w-full max-w-none flex-col' : 'w-full max-w-[620px]'}`}
+      >
         <div
           className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
           style={{
-            opacity: phase === 'revealed' ? 1 : 0,
+            opacity: phase === 'revealed' && !overlayMode ? 1 : 0,
             background: backgroundGlow[visualRarity],
           }}
         />
 
-        <div className="flex w-full flex-col items-center gap-4 lg:gap-3">
-          <div className="w-full">{reelSlot}</div>
+        <div
+          className={`flex w-full flex-col items-center ${overlayMode ? 'h-full min-h-0 justify-between gap-3 py-2' : 'gap-4 lg:gap-3'}`}
+        >
+          <div className="w-full shrink-0">{reelSlot}</div>
           {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
           {header}
           {hasFilters ? filtersSlot : null}
           {mobileRevealSlot}
-          <div>{actions}</div>
+          <div className="w-full">{actions}</div>
         </div>
       </div>
     )

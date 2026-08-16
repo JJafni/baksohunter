@@ -5,16 +5,43 @@ import { getMonsterGalleryImageUrl, MONSTER_GALLERY_SOURCE_URL } from '../lib/mo
 type MonsterGalleryImageProps = {
   result: CrateEntry | null
   visible: boolean
-  variant?: 'inline' | 'hero'
+  variant?: 'inline' | 'hero' | 'backdrop'
 }
 
 function MonsterGalleryImage({ result, visible, variant = 'inline' }: MonsterGalleryImageProps) {
   const [useIconFallback, setUseIconFallback] = useState(false)
   const isHero = variant === 'hero'
+  const isBackdrop = variant === 'backdrop'
 
   useEffect(() => {
     setUseIconFallback(false)
   }, [result?.slug])
+
+  if (isBackdrop) {
+    const galleryUrl = result ? getMonsterGalleryImageUrl(result.slug) : undefined
+    const showHd = Boolean(galleryUrl) && !useIconFallback
+    const imageUrl = result && showHd ? galleryUrl! : result?.icon
+
+    return (
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden={!visible || !result}>
+        {visible && result && imageUrl ? (
+          <img
+            key={`${result.slug}-${showHd ? 'hd' : 'icon'}`}
+            src={imageUrl}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            onError={() => {
+              if (showHd) setUseIconFallback(true)
+            }}
+            className="h-full w-full scale-105 object-contain object-center opacity-95"
+          />
+        ) : (
+          <div className="h-full w-full bg-slate-950/80" />
+        )}
+      </div>
+    )
+  }
 
   if (!visible || !result) {
     if (isHero) {

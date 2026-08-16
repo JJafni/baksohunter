@@ -49,19 +49,23 @@ function DesktopHuntLayout({
   onMonsterHuntChange: (ctx: CrateHuntContext) => void
 }) {
   return (
-    <div className="grid h-full min-h-0 w-full max-w-[1400px] grid-cols-1 grid-rows-[auto_minmax(0,1fr)] gap-4 lg:grid-cols-2 lg:grid-rows-1 lg:gap-0">
-      <aside className="flex min-h-0 items-stretch justify-center border-white/10 p-4 lg:border-r lg:p-6">
+    <div className="grid h-full min-h-0 w-full max-w-[1400px] grid-cols-2">
+      <section className="relative min-h-0 overflow-hidden border-r border-white/10">
         <MonsterGalleryImage
           result={monsterHunt.result}
           visible={monsterHunt.phase === 'revealed'}
-          variant="hero"
+          variant="backdrop"
         />
-      </aside>
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80" />
 
-      <div className="grid min-h-0 grid-cols-1 gap-6 px-4 pb-2 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:py-4">
-        <CrateOpener onHuntChange={onMonsterHuntChange} />
+        <div className="relative z-10 flex h-full min-h-0 flex-col items-center px-5 py-4 lg:px-8 lg:py-5">
+          <CrateOpener onHuntChange={onMonsterHuntChange} />
+        </div>
+      </section>
+
+      <section className="flex min-h-0 items-center justify-center px-5 py-4 lg:px-8 lg:py-5">
         <WeaponCrateOpener />
-      </div>
+      </section>
     </div>
   )
 }

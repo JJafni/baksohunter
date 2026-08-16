@@ -34,7 +34,7 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
   const pickRandom = useCallback(() => pickRandomFromPool(filteredPool), [filteredPool])
 
   const poolCountLabel = formatPoolCountLabel(filteredPool.length)
-  const externalGallery = !isMobile && Boolean(onHuntChange)
+  const overlayMode = !isMobile && Boolean(onHuntChange)
 
   return (
     <CrateHunt
@@ -48,7 +48,8 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
       pickRandom={pickRandom}
       reelSide="left"
       spinLabels={SPIN_LABELS}
-      externalGallery={externalGallery}
+      externalGallery={overlayMode}
+      overlayMode={overlayMode}
       onHuntChange={onHuntChange}
       filters={({ disabled, layout }) => (
         <MonsterRarityFilter
