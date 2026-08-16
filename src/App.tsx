@@ -35,21 +35,16 @@ function GalleryBackdropOverlay({
   revealed: boolean
   emphasized: boolean
 }) {
+  // Single layer: dark while spinner is up, lighter once it fades. No stacked fades on reveal.
+  const opacity = !revealed ? 1 : emphasized ? 1 : 0.45
+
   return (
-    <>
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80"
-        initial={false}
-        animate={{ opacity: revealed ? 0.45 : 1 }}
-        transition={{ duration: 0.7, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-slate-950/92 via-slate-950/78 to-slate-950/90"
-        initial={false}
-        animate={{ opacity: emphasized ? 1 : 0 }}
-        transition={{ duration: 0.7, ease: 'easeInOut' }}
-      />
-    </>
+    <motion.div
+      className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/92 via-slate-950/78 to-slate-950/90"
+      initial={false}
+      animate={{ opacity }}
+      transition={{ duration: 0.7, ease: 'easeInOut' }}
+    />
   )
 }
 

@@ -7,7 +7,7 @@ import { getWeaponGalleryImageUrl, WEAPON_GALLERY_SOURCE_URL } from '../lib/weap
 type WeaponGalleryImageProps = {
   result: CrateEntry | null
   visible: boolean
-  /** Brighter treatment while the spinner is still on screen after reveal. */
+  /** Darker overlay while the spinner is still on screen after reveal. */
   emphasized?: boolean
   variant?: 'inline' | 'hero' | 'backdrop'
 }
@@ -41,7 +41,7 @@ function WeaponGalleryImage({
             alt=""
             loading="lazy"
             decoding="async"
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{
               opacity: visible ? 1 : 0,
             }}
@@ -89,7 +89,7 @@ function WeaponGalleryImage({
       <motion.div
         className="pointer-events-none absolute inset-0 z-20 bg-slate-950/65"
         initial={false}
-        animate={{ opacity: visible && emphasized ? 1 : 0 }}
+        animate={{ opacity: visible ? (emphasized ? 0.65 : 0.3) : 0 }}
         transition={{ duration: 0.7, ease: 'easeInOut' }}
       />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(255,255,255,0.06),transparent_70%)]" />
