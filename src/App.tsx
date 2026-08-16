@@ -28,6 +28,31 @@ function AppBackground() {
   )
 }
 
+function GalleryBackdropOverlay({
+  revealed,
+  emphasized,
+}: {
+  revealed: boolean
+  emphasized: boolean
+}) {
+  return (
+    <>
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80"
+        initial={false}
+        animate={{ opacity: revealed ? 0.45 : 1 }}
+        transition={{ duration: 0.7, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-slate-950/92 via-slate-950/78 to-slate-950/90"
+        initial={false}
+        animate={{ opacity: emphasized ? 1 : 0 }}
+        transition={{ duration: 0.7, ease: 'easeInOut' }}
+      />
+    </>
+  )
+}
+
 function HuntLayout({
   monsterHunt,
   onMonsterHuntChange,
@@ -53,14 +78,9 @@ function HuntLayout({
             emphasized={monsterGalleryEmphasized}
             variant="backdrop"
           />
-          <motion.div
-            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80"
-            initial={false}
-            animate={{
-              opacity:
-                monsterHunt.phase === 'revealed' ? (monsterGalleryEmphasized ? 1 : 0.45) : 1,
-            }}
-            transition={{ duration: 0.7, ease: 'easeInOut' }}
+          <GalleryBackdropOverlay
+            revealed={monsterHunt.phase === 'revealed'}
+            emphasized={monsterGalleryEmphasized}
           />
         </div>
 
@@ -77,13 +97,9 @@ function HuntLayout({
             emphasized={weaponGalleryEmphasized}
             variant="backdrop"
           />
-          <motion.div
-            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80"
-            initial={false}
-            animate={{
-              opacity: weaponHunt.phase === 'revealed' ? (weaponGalleryEmphasized ? 1 : 0.45) : 1,
-            }}
-            transition={{ duration: 0.7, ease: 'easeInOut' }}
+          <GalleryBackdropOverlay
+            revealed={weaponHunt.phase === 'revealed'}
+            emphasized={weaponGalleryEmphasized}
           />
         </div>
 

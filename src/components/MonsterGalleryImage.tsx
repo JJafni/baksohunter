@@ -87,7 +87,7 @@ function MonsterGalleryImage({
       }`}
     >
       <motion.div
-        className="pointer-events-none absolute inset-0 z-20 bg-slate-950/40"
+        className="pointer-events-none absolute inset-0 z-20 bg-slate-950/65"
         initial={false}
         animate={{ opacity: visible && emphasized ? 1 : 0 }}
         transition={{ duration: 0.7, ease: 'easeInOut' }}
