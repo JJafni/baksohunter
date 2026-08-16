@@ -233,19 +233,13 @@ function CrateHunt({
           }}
         />
 
-        <motion.div
-          layout
-          className="flex w-full flex-col items-center gap-4"
-          transition={{ layout: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }}
-        >
+        <div className="flex w-full flex-col items-center gap-4">
           {header}
           {hasFilters ? filtersSlot : null}
           <div className="w-full">{reelSlot}</div>
           {mobileRevealSlot}
-          <motion.div layout transition={{ layout: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }}>
-            {actions}
-          </motion.div>
-        </motion.div>
+          <div>{actions}</div>
+        </div>
       </div>
     )
   }
