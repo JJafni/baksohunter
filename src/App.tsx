@@ -1,4 +1,5 @@
 import CrateOpener from './components/CrateOpener'
+import WeaponCrateOpener from './components/WeaponCrateOpener'
 
 function App() {
   return (
@@ -25,12 +26,19 @@ function App() {
       </header>
 
       <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-10">
-        <CrateOpener />
+        <div className="grid w-full max-w-6xl grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-8">
+          <section className="relative flex flex-col items-center lg:border-r lg:border-white/10 lg:pr-8">
+            <CrateOpener />
+          </section>
+          <section className="relative flex flex-col items-center lg:pl-2">
+            <WeaponCrateOpener />
+          </section>
+        </div>
       </main>
 
       <footer className="relative z-10 px-6 py-6 text-center text-[11px] text-slate-600">
-        Fan-made tool for Monster Hunter Wilds &middot; Monster icons &copy; Capcom &middot; Not affiliated with
-        Capcom or Psyonix
+        Fan-made tool for Monster Hunter Wilds &middot; Monster &amp; weapon icons &copy; Capcom &middot; Not
+        affiliated with Capcom or Psyonix
       </footer>
     </div>
   )

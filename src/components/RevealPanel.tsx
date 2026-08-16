@@ -1,14 +1,9 @@
-import type { MonsterEntry, Rarity } from '../data/monsters'
+import type { CrateEntry, Rarity } from '../data/types'
 
 type RevealPanelProps = {
-  result: MonsterEntry | null
+  result: CrateEntry | null
   visible: boolean
-}
-
-const RARITY_LABEL: Record<Rarity, string> = {
-  normal: 'Large Monster',
-  tempered: 'Tempered Large Monster',
-  'arch-tempered': 'Arch-Tempered Large Monster',
+  rarityLabels: Record<Rarity, string>
 }
 
 const RARITY_TEXT: Record<Rarity, string> = {
@@ -17,14 +12,14 @@ const RARITY_TEXT: Record<Rarity, string> = {
   'arch-tempered': 'text-amber-400',
 }
 
-function RevealPanel({ result, visible }: RevealPanelProps) {
+function RevealPanel({ result, visible, rarityLabels }: RevealPanelProps) {
   if (!result) {
-    return <div className="hidden w-[320px] lg:block" />
+    return <div className="h-0 w-full" />
   }
 
   return (
     <div
-      className={`w-full max-w-[320px] transition-all duration-700 ease-out lg:w-[320px] ${
+      className={`w-full max-w-[320px] text-center transition-all duration-700 ease-out ${
         visible ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
       }`}
     >
@@ -32,7 +27,7 @@ function RevealPanel({ result, visible }: RevealPanelProps) {
         {result.name}
       </h2>
       <p className={`mt-2 text-sm font-bold uppercase tracking-[0.25em] ${RARITY_TEXT[result.rarity]}`}>
-        {RARITY_LABEL[result.rarity]}
+        {rarityLabels[result.rarity]}
       </p>
     </div>
   )

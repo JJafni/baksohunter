@@ -5,9 +5,10 @@ import { motion, useAnimate } from 'motion/react'
 interface StatefulButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string
   children: React.ReactNode
+  layoutId?: string
 }
 
-export function StatefulButton({ className, children, ...props }: StatefulButtonProps) {
+export function StatefulButton({ className, children, layoutId = 'crate-hunt-button', ...props }: StatefulButtonProps) {
   const [scope, animate] = useAnimate()
 
   const animateLoading = async () => {
@@ -36,7 +37,7 @@ export function StatefulButton({ className, children, ...props }: StatefulButton
   return (
     <motion.button
       layout
-      layoutId="crate-hunt-button"
+      layoutId={layoutId}
       ref={scope}
       className={cn(
         'flex min-w-[160px] cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-[#9a7b3c] bg-[#2c261f] px-10 py-3.5 text-sm font-bold uppercase tracking-[0.2em] text-[#ede0c8] shadow-[0_0_18px_rgba(154,123,60,0.22)] ring-offset-2 ring-offset-stone-950 transition duration-200 hover:border-[#b8954a] hover:bg-[#3a3228] hover:shadow-[0_0_24px_rgba(184,149,74,0.28)] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none',

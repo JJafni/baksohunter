@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import type { MonsterEntry, Rarity } from '../data/monsters'
-import MonsterCard from './MonsterCard'
+import type { CrateEntry, Rarity } from '../data/types'
+import CrateCard from './CrateCard'
 import CenterMarker from './CenterMarker'
 import { CARD_GAP, CARD_SIZE, CENTER_INDEX, SLOT, SPIN_MS, VIEWPORT_HEIGHT } from '../lib/crateConfig'
 
 type ReelProps = {
-  sequence: MonsterEntry[]
+  sequence: CrateEntry[]
   onDone: () => void
   landed: boolean
   rarity: Rarity
@@ -54,7 +54,7 @@ function Reel({ sequence, onDone, landed, rarity }: ReelProps) {
         }}
       >
         {sequence.map((entry, i) => (
-          <MonsterCard key={i} entry={entry} winner={landed && i === CENTER_INDEX} />
+          <CrateCard key={i} entry={entry} winner={landed && i === CENTER_INDEX} />
         ))}
       </div>
 

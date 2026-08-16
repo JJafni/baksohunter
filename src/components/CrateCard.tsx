@@ -1,8 +1,8 @@
-import type { MonsterEntry } from '../data/monsters'
+import type { CrateEntry } from '../data/types'
 import { CARD_SIZE } from '../lib/crateConfig'
 
-type MonsterCardProps = {
-  entry: MonsterEntry
+type CrateCardProps = {
+  entry: CrateEntry
   winner?: boolean
 }
 
@@ -24,7 +24,7 @@ const RARITY_TONE = {
   },
 } as const
 
-function MonsterCard({ entry, winner = false }: MonsterCardProps) {
+function CrateCard({ entry, winner = false }: CrateCardProps) {
   const tone = RARITY_TONE[entry.rarity]
 
   return (
@@ -58,4 +58,4 @@ function MonsterCard({ entry, winner = false }: MonsterCardProps) {
   )
 }
 
-export default MonsterCard
+export default CrateCard

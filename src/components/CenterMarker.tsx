@@ -1,4 +1,4 @@
-import type { Rarity } from '../data/monsters'
+import type { Rarity } from '../data/types'
 
 type CenterMarkerProps = {
   active: boolean

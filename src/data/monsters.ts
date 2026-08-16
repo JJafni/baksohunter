@@ -1,11 +1,8 @@
-export type Rarity = 'normal' | 'tempered' | 'arch-tempered'
+import type { CrateEntry, Rarity } from './types'
 
-export type MonsterEntry = {
-  slug: string
-  name: string
-  rarity: Rarity
-  icon: string
-}
+export type { CrateEntry, Rarity }
+
+export type MonsterEntry = CrateEntry
 
 const iconModules = import.meta.glob<string>('../assets/monsters/*.webp', {
   eager: true,
