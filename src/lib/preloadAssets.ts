@@ -41,31 +41,47 @@ async function preloadImage(src: string): Promise<void> {
   }
 }
 
+let preloadProgress = 0
 let preloadPromise: Promise<void> | null = null
+const progressListeners = new Set<(progress: number) => void>()
+
+function emitProgress(progress: number) {
+  preloadProgress = progress
+  progressListeners.forEach((listener) => listener(progress))
+}
 
 export function preloadAppAssets(onProgress?: (progress: number) => void): Promise<void> {
-  if (preloadPromise) {
-    return preloadPromise.then(() => onProgress?.(1))
+  if (onProgress) {
+    progressListeners.add(onProgress)
+    onProgress(preloadProgress)
   }
 
-  preloadPromise = (async () => {
-    const urls = getAppAssetUrls()
+  if (!preloadPromise) {
+    preloadPromise = (async () => {
+      const urls = getAppAssetUrls()
 
-    if (urls.length === 0) {
-      onProgress?.(1)
-      return
+      if (urls.length === 0) {
+        emitProgress(1)
+        return
+      }
+
+      let loaded = 0
+
+      await Promise.all(
+        urls.map(async (url) => {
+          await preloadImage(url)
+          loaded += 1
+          emitProgress(loaded / urls.length)
+        }),
+      )
+
+      emitProgress(1)
+    })()
+  }
+
+  return preloadPromise.finally(() => {
+    if (onProgress) {
+      progressListeners.delete(onProgress)
     }
-
-    let loaded = 0
-
-    await Promise.all(
-      urls.map(async (url) => {
-        await preloadImage(url)
-        loaded += 1
-        onProgress?.(loaded / urls.length)
-      }),
-    )
-  })()
-
-  return preloadPromise
+  })
 }

@@ -9,9 +9,7 @@ export function useAppReady() {
     let cancelled = false
 
     preloadAppAssets((value) => {
-      if (!cancelled) {
-        setProgress(value)
-      }
+      setProgress(value)
     }).then(() => {
       if (!cancelled) {
         setProgress(1)
