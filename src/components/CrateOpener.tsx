@@ -22,12 +22,13 @@ function CrateOpener() {
   const [spinKey, setSpinKey] = useState(0)
 
   const startHunt = useCallback(() => {
+    if (phase === 'spinning') return
     const target = pickRandomMonster()
     setResult(target)
     setSequence(buildSequence(target))
     setPhase('spinning')
     setSpinKey((k) => k + 1)
-  }, [])
+  }, [phase])
 
   const handleLanded = useCallback(() => {
     setPhase('revealed')
@@ -40,6 +41,9 @@ function CrateOpener() {
     'arch-tempered': 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(251,191,36,0.22), transparent 70%)',
   }
 
+  const isSpinning = phase === 'spinning'
+  const buttonLabel = phase === 'revealed' ? 'Hunt Again' : 'Open Crate'
+
   return (
     <div className="relative flex w-full flex-col items-center">
       <div
@@ -51,7 +55,7 @@ function CrateOpener() {
       />
 
       {phase === 'idle' ? (
-        <IdleCrate onOpen={startHunt} />
+        <IdleCrate />
       ) : (
         <div className="flex w-full flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16">
           <div className="w-full max-w-[320px] text-center lg:w-[320px] lg:text-right">
@@ -69,15 +73,18 @@ function CrateOpener() {
         </div>
       )}
 
-      {phase === 'revealed' && (
-        <button
-          type="button"
-          onClick={startHunt}
-          className="mt-10 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-10 py-3.5 text-sm font-bold uppercase tracking-[0.2em] text-slate-950 shadow-[0_0_30px_rgba(251,146,60,0.4)] transition-transform hover:scale-105 active:scale-95"
-        >
-          Hunt Again
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={startHunt}
+        disabled={isSpinning}
+        className={`mt-8 rounded-lg px-10 py-3.5 text-sm font-bold uppercase tracking-[0.2em] transition-all ${
+          isSpinning
+            ? 'cursor-not-allowed bg-slate-800 text-slate-500 shadow-none'
+            : 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-[0_0_30px_rgba(251,146,60,0.4)] hover:scale-105 active:scale-95'
+        }`}
+      >
+        {isSpinning ? 'Opening...' : buttonLabel}
+      </button>
 
       <p className="mt-10 text-center text-xs uppercase tracking-[0.2em] text-slate-600">
         {MONSTER_POOL.length} Large, Tempered &amp; Arch-Tempered Monsters in the pool
