@@ -1,15 +1,11 @@
+import BackgroundSlideshow from './components/BackgroundSlideshow'
 import CrateOpener from './components/CrateOpener'
 import WeaponCrateOpener from './components/WeaponCrateOpener'
-import backgroundImage from './assets/backgrounds/mhwilds-library-hero-2x.jpg'
 
 function App() {
   return (
     <div className="relative flex min-h-svh flex-col overflow-hidden bg-slate-950 text-slate-100">
-      <div
-        className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
-        aria-hidden="true"
-      />
+      <BackgroundSlideshow />
       <div
         className="pointer-events-none absolute inset-0 bg-slate-950/80"
         aria-hidden="true"
