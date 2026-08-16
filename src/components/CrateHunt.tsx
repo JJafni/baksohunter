@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CrateEntry, Rarity } from '../data/types'
-import { CENTER_INDEX, OPEN_MS, REEL_LENGTH } from '../lib/crateConfig'
+import { CENTER_INDEX, OPEN_MS, REEL_LENGTH, REEL_WIDTH } from '../lib/crateConfig'
 import Reel from './Reel'
 import RevealPanel from './RevealPanel'
 import IdleCrate from './IdleCrate'
@@ -87,9 +87,10 @@ function CrateHunt({
   }
 
   const buttonLabel = phase === 'revealed' ? buttonLabels.again : buttonLabels.open
+  const columnAlign = revealSide === 'right' ? 'items-end' : 'items-start'
 
   return (
-    <div className="relative flex w-full flex-col items-center">
+    <div className={`relative flex w-full flex-col ${columnAlign}`}>
       <div
         className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
         style={{
@@ -99,18 +100,25 @@ function CrateHunt({
       />
 
       {phase === 'idle' ? (
-        <IdleCrate />
+        <div style={{ width: REEL_WIDTH }}>
+          <IdleCrate />
+        </div>
       ) : (
-        <div className="flex w-full flex-col items-center gap-8">
-          <div className={`text-center ${isEntering ? 'animate-hunt-side-enter' : ''}`}>
-            <p className="select-none text-4xl font-black uppercase tracking-tight text-slate-500/40 sm:text-5xl">
+        <div className={`flex w-fit flex-col gap-5 ${columnAlign}`}>
+          <div
+            className={`text-center ${isEntering ? 'animate-hunt-side-enter' : ''}`}
+            style={{ width: REEL_WIDTH }}
+          >
+            <p className="select-none text-3xl font-black uppercase tracking-tight text-slate-500/40 sm:text-4xl">
               {heading}
             </p>
-            <p className="mt-1 text-lg font-bold uppercase tracking-[0.2em] text-slate-100">{subtitle}</p>
+            <p className="mt-1 text-sm font-bold uppercase tracking-[0.2em] text-slate-100 sm:text-base">
+              {subtitle}
+            </p>
           </div>
 
           <div
-            className={`flex w-full items-center justify-center gap-6 lg:gap-8 ${
+            className={`flex items-center gap-2 sm:gap-3 ${
               revealSide === 'right' ? 'flex-row' : 'flex-row-reverse'
             }`}
           >
@@ -134,18 +142,19 @@ function CrateHunt({
         </div>
       )}
 
-      <StatefulButton
-        className="mt-8"
-        layoutId={buttonLayoutId}
-        onClick={startHunt}
-        disabled={phase === 'spinning'}
-      >
-        {buttonLabel}
-      </StatefulButton>
+      <div className="mt-6 flex flex-col items-center" style={{ width: REEL_WIDTH }}>
+        <StatefulButton
+          layoutId={buttonLayoutId}
+          onClick={startHunt}
+          disabled={phase === 'spinning'}
+        >
+          {buttonLabel}
+        </StatefulButton>
 
-      <p className="mt-10 text-center text-xs uppercase tracking-[0.2em] text-slate-600">
-        {pool.length} {poolCountLabel}
-      </p>
+        <p className="mt-6 text-center text-[10px] uppercase tracking-[0.2em] text-slate-600 sm:text-xs">
+          {pool.length} {poolCountLabel}
+        </p>
+      </div>
     </div>
   )
 }

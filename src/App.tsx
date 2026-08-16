@@ -26,11 +26,11 @@ function App() {
       </header>
 
       <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-10">
-        <div className="grid w-full max-w-6xl grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-8">
-          <section className="relative flex flex-col items-center lg:border-r lg:border-white/10 lg:pr-8">
+        <div className="grid w-full max-w-5xl grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-4">
+          <section className="relative flex flex-col items-end lg:border-r lg:border-white/10 lg:pr-3">
             <CrateOpener />
           </section>
-          <section className="relative flex flex-col items-center lg:pl-2">
+          <section className="relative flex flex-col items-start lg:pl-3">
             <WeaponCrateOpener />
           </section>
         </div>
