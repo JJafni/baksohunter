@@ -45,6 +45,8 @@ function CrateCard({ entry, winner = false }: CrateCardProps) {
         <img
           src={entry.icon}
           alt={entry.name}
+          loading="eager"
+          decoding="sync"
           className="h-[76px] w-[76px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]"
           draggable={false}
         />

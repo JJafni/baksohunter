@@ -3,47 +3,69 @@ import { MONSTER_POOL } from '../data/monsters'
 import { WEAPON_POOL } from '../data/weapons'
 
 export function getAppAssetUrls(): string[] {
-  const urls = new Set<string>()
-
-  for (const slide of backgroundSlides) {
-    urls.add(slide.src)
-  }
+  const iconUrls = new Set<string>()
+  const backgroundUrls = new Set<string>()
 
   for (const entry of MONSTER_POOL) {
-    urls.add(entry.icon)
+    iconUrls.add(entry.icon)
   }
 
   for (const entry of WEAPON_POOL) {
-    urls.add(entry.icon)
+    iconUrls.add(entry.icon)
   }
 
-  return [...urls]
+  for (const slide of backgroundSlides) {
+    backgroundUrls.add(slide.src)
+  }
+
+  return [...iconUrls, ...backgroundUrls]
 }
 
-function preloadImage(src: string): Promise<void> {
-  return new Promise((resolve) => {
-    const img = new Image()
+async function preloadImage(src: string): Promise<void> {
+  const img = new Image()
+
+  await new Promise<void>((resolve) => {
     img.onload = () => resolve()
     img.onerror = () => resolve()
     img.src = src
   })
+
+  if (!img.complete) return
+
+  try {
+    if ('decode' in img) {
+      await img.decode()
+    }
+  } catch {
+    // Ignore decode failures; the asset is still fetched.
+  }
 }
 
-export async function preloadAppAssets(onProgress?: (progress: number) => void): Promise<void> {
-  const urls = getAppAssetUrls()
+let preloadPromise: Promise<void> | null = null
 
-  if (urls.length === 0) {
-    onProgress?.(1)
-    return
+export function preloadAppAssets(onProgress?: (progress: number) => void): Promise<void> {
+  if (preloadPromise) {
+    return preloadPromise.then(() => onProgress?.(1))
   }
 
-  let loaded = 0
+  preloadPromise = (async () => {
+    const urls = getAppAssetUrls()
 
-  await Promise.all(
-    urls.map(async (url) => {
-      await preloadImage(url)
-      loaded += 1
-      onProgress?.(loaded / urls.length)
-    }),
-  )
+    if (urls.length === 0) {
+      onProgress?.(1)
+      return
+    }
+
+    let loaded = 0
+
+    await Promise.all(
+      urls.map(async (url) => {
+        await preloadImage(url)
+        loaded += 1
+        onProgress?.(loaded / urls.length)
+      }),
+    )
+  })()
+
+  return preloadPromise
 }

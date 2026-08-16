@@ -79,10 +79,6 @@ function AppSkeleton({ progress }: AppSkeletonProps) {
               )}
             </div>
           </div>
-
-          <p className="mx-auto mt-10 w-full text-center text-[11px] font-bold uppercase tracking-[0.22em] text-slate-500">
-            Loading hunt assets {percent}%
-          </p>
         </div>
       </main>
     </div>
