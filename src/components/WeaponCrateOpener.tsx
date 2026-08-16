@@ -15,7 +15,7 @@ function WeaponCrateOpener() {
       subtitle="Weapons"
       poolCountLabel="Weapon Types in the pool"
       buttonLayoutId="weapon-crate-button"
-      buttonLabels={{ open: 'Open Crate', again: 'Forge Again' }}
+      buttonLabels={{ open: 'Draw', again: 'Draw' }}
       rarityLabels={RARITY_LABELS}
       pool={WEAPON_POOL}
       pickRandom={pickRandomWeapon}

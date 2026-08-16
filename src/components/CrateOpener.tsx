@@ -3,6 +3,7 @@ import CrateHunt from './CrateHunt'
 import MonsterRarityFilter from './MonsterRarityFilter'
 import { MONSTER_POOL } from '../data/monsters'
 import type { Rarity } from '../data/types'
+import { SPIN_LABELS } from './ui/stateful-button'
 import {
   DEFAULT_MONSTER_POOL_FILTER,
   filterMonsterPool,
@@ -32,11 +33,12 @@ function CrateOpener() {
       subtitle="Large Monsters"
       poolCountLabel={poolCountLabel}
       buttonLayoutId="monster-crate-button"
-      buttonLabels={{ open: 'Open Crate', again: 'Hunt Again' }}
+      buttonLabels={{ open: 'Draw', again: 'Draw' }}
       rarityLabels={RARITY_LABELS}
       pool={filteredPool}
       pickRandom={pickRandom}
       reelSide="left"
+      spinLabels={SPIN_LABELS}
       filters={({ disabled, layout }) => (
         <MonsterRarityFilter
           value={poolFilter}

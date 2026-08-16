@@ -31,6 +31,8 @@ type CrateHuntProps = {
   reelSide: 'left' | 'right'
   /** Optional controls shown beside the reel (e.g. monster rarity filters). */
   filters?: (ctx: { disabled: boolean; layout: 'sidebar' | 'bar' }) => ReactNode
+  /** Random labels shown on the button while spinning. Omit for a static label. */
+  spinLabels?: string[]
 }
 
 /** Shared row heights so monster and weapon columns line up horizontally. */
@@ -48,6 +50,7 @@ function CrateHunt({
   pickRandom,
   reelSide,
   filters,
+  spinLabels,
 }: CrateHuntProps) {
   const isMobile = useIsMobileLayout()
   const reelOrientation = isMobile ? 'horizontal' : 'vertical'
@@ -162,7 +165,12 @@ function CrateHunt({
 
   const actions = (
     <div className={`flex flex-col items-center ${isMobile ? 'pt-2' : 'pt-6'}`} style={{ width: blockWidth }}>
-      <StatefulButton layoutId={buttonLayoutId} onClick={startHunt} disabled={phase === 'spinning' || !canSpin}>
+      <StatefulButton
+        layoutId={buttonLayoutId}
+        loadingLabels={spinLabels}
+        onClick={startHunt}
+        disabled={phase === 'spinning' || !canSpin}
+      >
         {buttonLabel}
       </StatefulButton>
       {poolLine}

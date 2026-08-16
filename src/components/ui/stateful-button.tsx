@@ -2,7 +2,7 @@ import { cn } from '../../lib/utils'
 import React, { useRef, useState } from 'react'
 import { AnimatePresence, motion, useAnimate } from 'motion/react'
 
-const DEFAULT_LOADING_LABELS = [
+export const SPIN_LABELS = [
   'Get ready...',
   'Cooked?',
   'Fingers crossed',
@@ -14,6 +14,7 @@ interface StatefulButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
   className?: string
   children: React.ReactNode
   layoutId?: string
+  /** When set, a random label is shown while loading. Omit for a static label. */
   loadingLabels?: string[]
 }
 
@@ -21,7 +22,7 @@ export function StatefulButton({
   className,
   children,
   layoutId = 'crate-hunt-button',
-  loadingLabels = DEFAULT_LOADING_LABELS,
+  loadingLabels,
   disabled = false,
   ...props
 }: StatefulButtonProps) {
@@ -29,6 +30,7 @@ export function StatefulButton({
   const [isLoading, setIsLoading] = useState(false)
   const [loadingLabel, setLoadingLabel] = useState('')
   const loadingRef = useRef(false)
+  const useSpinLabels = Boolean(loadingLabels?.length)
 
   const animateLoading = async () => {
     await Promise.all([
@@ -48,7 +50,9 @@ export function StatefulButton({
     if (disabled || loadingRef.current) return
 
     loadingRef.current = true
-    setLoadingLabel(loadingLabels[Math.floor(Math.random() * loadingLabels.length)])
+    if (useSpinLabels) {
+      setLoadingLabel(loadingLabels![Math.floor(Math.random() * loadingLabels!.length)])
+    }
     setIsLoading(true)
 
     try {
@@ -63,7 +67,7 @@ export function StatefulButton({
 
   const { onClick, onDrag, onDragStart, onDragEnd, onAnimationStart, onAnimationEnd, ...buttonProps } = props
   const isButtonDisabled = disabled || isLoading
-  const label = isLoading ? loadingLabel : children
+  const label = isLoading && useSpinLabels ? loadingLabel : children
 
   return (
     <motion.button
@@ -84,20 +88,24 @@ export function StatefulButton({
     >
       <div className="flex shrink-0 items-center gap-2 whitespace-nowrap">
         <IconSlot />
-        <span className="relative inline-grid min-w-[7.5rem] place-items-center">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span
-              key={String(label)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2, ease: 'easeInOut' }}
-              className="col-start-1 row-start-1 whitespace-nowrap"
-            >
-              {label}
-            </motion.span>
-          </AnimatePresence>
-        </span>
+        {useSpinLabels ? (
+          <span className="relative inline-grid min-w-[9rem] place-items-center">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={String(label)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: 'easeInOut' }}
+                className="col-start-1 row-start-1 whitespace-nowrap"
+              >
+                {label}
+              </motion.span>
+            </AnimatePresence>
+          </span>
+        ) : (
+          <span className="whitespace-nowrap">{children}</span>
+        )}
       </div>
     </motion.button>
   )
