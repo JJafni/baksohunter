@@ -17,6 +17,8 @@ type CrateHuntProps = {
   rarityLabels: Record<Rarity, string>
   pool: CrateEntry[]
   pickRandom: () => CrateEntry
+  /** Which side of the reel the reveal name sits on (faces inward toward the other column). */
+  revealSide: 'left' | 'right'
 }
 
 function buildSequence(target: CrateEntry, pickRandom: () => CrateEntry): CrateEntry[] {
@@ -36,6 +38,7 @@ function CrateHunt({
   rarityLabels,
   pool,
   pickRandom,
+  revealSide,
 }: CrateHuntProps) {
   const [phase, setPhase] = useState<Phase>('idle')
   const [result, setResult] = useState<CrateEntry | null>(null)
@@ -106,12 +109,27 @@ function CrateHunt({
             <p className="mt-1 text-lg font-bold uppercase tracking-[0.2em] text-slate-100">{subtitle}</p>
           </div>
 
-          <div className={isEntering ? 'animate-hunt-reel-stretch' : ''}>
-            <Reel key={spinKey} sequence={sequence} onDone={handleLanded} landed={phase === 'revealed'} rarity={rarity} />
-          </div>
+          <div
+            className={`flex w-full items-center justify-center gap-6 lg:gap-8 ${
+              revealSide === 'right' ? 'flex-row' : 'flex-row-reverse'
+            }`}
+          >
+            <div className={isEntering ? 'animate-hunt-reel-stretch' : ''}>
+              <Reel
+                key={spinKey}
+                sequence={sequence}
+                onDone={handleLanded}
+                landed={phase === 'revealed'}
+                rarity={rarity}
+              />
+            </div>
 
-          <div>
-            <RevealPanel result={result} visible={phase === 'revealed'} rarityLabels={rarityLabels} />
+            <RevealPanel
+              result={result}
+              visible={phase === 'revealed'}
+              rarityLabels={rarityLabels}
+              align={revealSide === 'left' ? 'right' : 'left'}
+            />
           </div>
         </div>
       )}

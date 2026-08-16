@@ -19,6 +19,7 @@ function CrateOpener() {
       rarityLabels={RARITY_LABELS}
       pool={MONSTER_POOL}
       pickRandom={pickRandomMonster}
+      revealSide="right"
     />
   )
 }
