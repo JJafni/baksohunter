@@ -18,16 +18,16 @@ function RevealPanel({ result, visible, rarityLabels, align = 'left' }: RevealPa
 
   return (
     <div
-      className={`flex min-h-[5.5rem] w-[120px] shrink-0 items-center sm:w-[140px] ${
-        align === 'right' ? 'justify-end text-right' : 'justify-start text-left'
+      className={`flex min-h-[5rem] w-full flex-col justify-center ${
+        align === 'right' ? 'items-end text-right' : 'items-start text-left'
       }`}
     >
       {show ? (
         <div className="animate-hunt-reveal-enter">
-          <h2 className="text-xl font-black uppercase leading-tight tracking-tight text-white sm:text-2xl">
+          <h2 className="text-2xl font-black uppercase leading-tight tracking-tight text-white sm:text-3xl">
             {result.name}
           </h2>
-          <p className={`mt-1.5 text-[10px] font-bold uppercase tracking-[0.2em] sm:text-xs ${RARITY_TEXT[result.rarity]}`}>
+          <p className={`mt-2 text-xs font-bold uppercase tracking-[0.2em] ${RARITY_TEXT[result.rarity]}`}>
             {rarityLabels[result.rarity]}
           </p>
         </div>

@@ -17,8 +17,8 @@ type CrateHuntProps = {
   rarityLabels: Record<Rarity, string>
   pool: CrateEntry[]
   pickRandom: () => CrateEntry
-  /** Which side of the reel the reveal name sits on (faces inward toward the other column). */
-  revealSide: 'left' | 'right'
+  /** Side the info column (title, name, button) sits on relative to the reel. */
+  infoSide: 'left' | 'right'
 }
 
 function buildSequence(target: CrateEntry, pickRandom: () => CrateEntry): CrateEntry[] {
@@ -38,7 +38,7 @@ function CrateHunt({
   rarityLabels,
   pool,
   pickRandom,
-  revealSide,
+  infoSide,
 }: CrateHuntProps) {
   const [phase, setPhase] = useState<Phase>('idle')
   const [result, setResult] = useState<CrateEntry | null>(null)
@@ -87,21 +87,56 @@ function CrateHunt({
   }
 
   const buttonLabel = phase === 'revealed' ? buttonLabels.again : buttonLabels.open
-  const blockAlign = revealSide === 'left' ? 'items-end' : 'items-start'
+  const infoAlign = infoSide === 'left' ? 'items-end text-right' : 'items-start text-left'
 
-  const actions = (
-    <>
-      <StatefulButton layoutId={buttonLayoutId} onClick={startHunt} disabled={phase === 'spinning'}>
-        {buttonLabel}
-      </StatefulButton>
-      <p className="mt-4 text-center text-[10px] uppercase tracking-[0.2em] text-slate-600 sm:text-xs">
-        {pool.length} {poolCountLabel}
-      </p>
-    </>
+  const infoPanel = (
+    <div className={`flex w-[200px] shrink-0 flex-col justify-center gap-8 sm:w-[220px] ${infoAlign}`}>
+      {phase !== 'idle' ? (
+        <div className={isEntering ? 'animate-hunt-side-enter' : ''}>
+          <p className="select-none text-3xl font-black uppercase leading-none tracking-tight text-slate-500/40 sm:text-4xl">
+            {heading}
+          </p>
+          <p className="mt-2 text-sm font-bold uppercase tracking-[0.2em] text-slate-100">{subtitle}</p>
+        </div>
+      ) : null}
+
+      {phase !== 'idle' ? (
+        <RevealPanel
+          result={result}
+          visible={phase === 'revealed'}
+          rarityLabels={rarityLabels}
+          align={infoSide === 'left' ? 'right' : 'left'}
+        />
+      ) : null}
+
+      <div className={`flex flex-col gap-4 ${infoSide === 'left' ? 'items-end' : 'items-start'}`}>
+        <StatefulButton layoutId={buttonLayoutId} onClick={startHunt} disabled={phase === 'spinning'}>
+          {buttonLabel}
+        </StatefulButton>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-slate-600 sm:text-xs">
+          {pool.length} {poolCountLabel}
+        </p>
+      </div>
+    </div>
   )
 
+  const reelPanel =
+    phase === 'idle' ? (
+      <IdleCrate />
+    ) : (
+      <div className={isEntering ? 'animate-hunt-reel-stretch' : ''}>
+        <Reel
+          key={spinKey}
+          sequence={sequence}
+          onDone={handleLanded}
+          landed={phase === 'revealed'}
+          rarity={rarity}
+        />
+      </div>
+    )
+
   return (
-    <div className={`relative flex w-fit flex-col ${blockAlign}`}>
+    <div className="relative w-fit">
       <div
         className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
         style={{
@@ -112,50 +147,27 @@ function CrateHunt({
 
       {phase === 'idle' ? (
         <div className="flex flex-col items-center" style={{ width: REEL_WIDTH }}>
-          <IdleCrate />
-          <div className="mt-6 flex w-full flex-col items-center">{actions}</div>
+          {reelPanel}
+          <div className="mt-6 flex w-full flex-col items-center gap-4">
+            <StatefulButton layoutId={buttonLayoutId} onClick={startHunt}>
+              {buttonLabel}
+            </StatefulButton>
+            <p className="text-center text-[10px] uppercase tracking-[0.2em] text-slate-600 sm:text-xs">
+              {pool.length} {poolCountLabel}
+            </p>
+          </div>
         </div>
       ) : (
-        <>
-          <div
-            className={`mb-5 text-center ${isEntering ? 'animate-hunt-side-enter' : ''}`}
-            style={{ width: REEL_WIDTH }}
-          >
-            <p className="select-none text-3xl font-black uppercase tracking-tight text-slate-500/40 sm:text-4xl">
-              {heading}
-            </p>
-            <p className="mt-1 text-sm font-bold uppercase tracking-[0.2em] text-slate-100 sm:text-base">
-              {subtitle}
-            </p>
+        <div
+          className={`flex items-center gap-5 sm:gap-6 ${
+            infoSide === 'right' ? 'flex-row' : 'flex-row-reverse'
+          }`}
+        >
+          <div className="shrink-0" style={{ width: REEL_WIDTH }}>
+            {reelPanel}
           </div>
-
-          <div
-            className={`flex items-center gap-3 ${
-              revealSide === 'right' ? 'flex-row' : 'flex-row-reverse'
-            }`}
-          >
-            <div className={isEntering ? 'animate-hunt-reel-stretch' : ''} style={{ width: REEL_WIDTH }}>
-              <Reel
-                key={spinKey}
-                sequence={sequence}
-                onDone={handleLanded}
-                landed={phase === 'revealed'}
-                rarity={rarity}
-              />
-            </div>
-
-            <RevealPanel
-              result={result}
-              visible={phase === 'revealed'}
-              rarityLabels={rarityLabels}
-              align={revealSide === 'left' ? 'right' : 'left'}
-            />
-          </div>
-
-          <div className="mt-6 flex flex-col items-center" style={{ width: REEL_WIDTH }}>
-            {actions}
-          </div>
-        </>
+          {infoPanel}
+        </div>
       )}
     </div>
   )
