@@ -23,6 +23,10 @@ type ReelProps = {
   orientation?: ReelOrientation
 }
 
+function finalOffsetForViewport(viewportSize: number): number {
+  return viewportSize / 2 - (CENTER_INDEX * SLOT + CARD_SIZE / 2)
+}
+
 function Reel({ sequence, onDone, landed, rarity, orientation = 'vertical' }: ReelProps) {
   const isHorizontal = orientation === 'horizontal'
   const containerRef = useRef<HTMLDivElement>(null)
@@ -49,20 +53,40 @@ function Reel({ sequence, onDone, landed, rarity, orientation = 'vertical' }: Re
     return () => observer.disconnect()
   }, [isHorizontal])
 
+  // Run the spin animation once when this reel instance mounts.
   useEffect(() => {
-    const finalOffset = viewportSize / 2 - (CENTER_INDEX * SLOT + CARD_SIZE / 2)
+    let cancelled = false
+    let timer: number | undefined
+
+    const size = isHorizontal
+      ? (containerRef.current?.clientWidth ?? MOBILE_REEL_MAX_WIDTH)
+      : VIEWPORT_HEIGHT
+    const finalOffset = finalOffsetForViewport(size)
+
     const raf = requestAnimationFrame(() => {
+      if (cancelled) return
       setSpinning(true)
       setTranslate(finalOffset)
     })
-    const timer = window.setTimeout(() => doneRef.current(), SPIN_MS + 150)
+
+    timer = window.setTimeout(() => {
+      if (!cancelled) doneRef.current()
+    }, SPIN_MS + 150)
+
     return () => {
+      cancelled = true
       cancelAnimationFrame(raf)
-      window.clearTimeout(timer)
+      if (timer !== undefined) window.clearTimeout(timer)
     }
-    // Runs once per mount; parent remounts this component (via key) for each new spin.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewportSize, isHorizontal])
+  }, [])
+
+  // After landing, keep the winner centered if the viewport size changes (e.g. resize).
+  useEffect(() => {
+    if (!landed) return
+    setSpinning(false)
+    setTranslate(finalOffsetForViewport(viewportSize))
+  }, [landed, viewportSize])
 
   const trackStyle = isHorizontal
     ? {

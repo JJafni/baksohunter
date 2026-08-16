@@ -11,7 +11,7 @@ import {
   VIEWPORT_HEIGHT,
 } from '../lib/crateConfig'
 import { buildReelSequence } from '../lib/reelSequence'
-import Reel from './Reel'
+import Reel, { type ReelOrientation } from './Reel'
 import RevealPanel from './RevealPanel'
 import IdleCrate from './IdleCrate'
 import { StatefulButton } from './ui/stateful-button'
@@ -50,7 +50,8 @@ function CrateHunt({
   filters,
 }: CrateHuntProps) {
   const isMobile = useIsMobileLayout()
-  const reelOrientation = isMobile ? 'horizontal' : 'vertical'
+  const idleOrientation: ReelOrientation = isMobile ? 'horizontal' : 'vertical'
+  const [spinOrientation, setSpinOrientation] = useState<ReelOrientation>(idleOrientation)
   const [phase, setPhase] = useState<Phase>('idle')
   const [result, setResult] = useState<CrateEntry | null>(null)
   const [sequence, setSequence] = useState<CrateEntry[]>([])
@@ -64,6 +65,7 @@ function CrateHunt({
     const target = pickRandom()
     setResult(target)
     setSequence(buildReelSequence(pool, target, REEL_LENGTH, CENTER_INDEX))
+    setSpinOrientation(isMobile ? 'horizontal' : 'vertical')
 
     if (phase === 'idle') {
       setIsEntering(true)
@@ -75,7 +77,9 @@ function CrateHunt({
     await new Promise<void>((resolve) => {
       spinResolverRef.current = resolve
     })
-  }, [phase, pickRandom, pool])
+  }, [phase, pickRandom, pool, isMobile])
+
+  const reelOrientation = phase === 'idle' ? idleOrientation : spinOrientation
 
   useEffect(() => {
     if (!isEntering) return
@@ -202,7 +206,7 @@ function CrateHunt({
       <div className={isMobile ? 'w-full max-w-[620px]' : ''} style={{ width: blockWidth }}>
         <div className={stretchClass}>
           <Reel
-            key={`${spinKey}-${reelOrientation}`}
+            key={spinKey}
             sequence={sequence}
             onDone={handleLanded}
             landed={phase === 'revealed'}
