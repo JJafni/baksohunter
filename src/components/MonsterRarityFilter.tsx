@@ -53,7 +53,7 @@ function MonsterRarityFilter({ value, onChange, disabled = false, variant = 'sid
               disabled={disabled}
               aria-pressed={on}
               onClick={() => toggle(key)}
-              className={`rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
+              className={`cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
                 on
                   ? activeClass
                   : 'border-white/10 bg-black/20 text-slate-500 hover:border-white/20 hover:text-slate-400'
