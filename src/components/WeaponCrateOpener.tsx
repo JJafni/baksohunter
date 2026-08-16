@@ -21,6 +21,7 @@ function WeaponCrateOpener() {
       pickRandom={pickRandomWeapon}
       reelSide="right"
       spinLabels={['Drawing']}
+      buttonIcon="shield"
     />
   )
 }
