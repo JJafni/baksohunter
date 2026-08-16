@@ -30,11 +30,11 @@ function RevealPanel({
   const isLongName = show && result.name.length >= 8
   const nameSizeClass = isMobile
     ? isLongName
-      ? 'text-xl sm:text-2xl'
-      : 'text-2xl sm:text-3xl'
+      ? 'text-2xl sm:text-3xl'
+      : 'text-3xl sm:text-4xl'
     : isLongName
-      ? 'text-2xl sm:text-3xl lg:text-[2.25rem]'
-      : 'text-3xl sm:text-4xl lg:text-[2.75rem]'
+      ? 'text-3xl sm:text-4xl lg:text-[2.75rem]'
+      : 'text-4xl sm:text-5xl lg:text-[3.25rem]'
   const alignClass =
     align === 'center'
       ? 'items-center text-center'
@@ -58,7 +58,7 @@ function RevealPanel({
             {result.name}
           </h2>
           <p
-            className={`mt-2 font-bold uppercase tracking-[0.2em] ${isMobile ? 'text-[11px]' : 'mt-2.5 text-xs sm:text-sm'} ${RARITY_TEXT[getVisualRarity(result)]}`}
+            className={`mt-2 font-bold uppercase tracking-[0.2em] ${isMobile ? 'text-xs sm:text-sm' : 'mt-2.5 text-xs sm:text-sm'} ${RARITY_TEXT[getVisualRarity(result)]}`}
           >
             {rarityLabel}
           </p>

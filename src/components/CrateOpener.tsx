@@ -1,6 +1,9 @@
 import { useCallback, useMemo, useState } from 'react'
+import type { CrateHuntContext } from './CrateHunt'
 import CrateHunt from './CrateHunt'
+import MonsterGalleryImage from './MonsterGalleryImage'
 import MonsterRarityFilter from './MonsterRarityFilter'
+import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import { MONSTER_POOL } from '../data/monsters'
 import type { Rarity } from '../data/types'
 import { SPIN_LABELS } from './ui/stateful-button'
@@ -18,7 +21,12 @@ const RARITY_LABELS: Record<Rarity, string> = {
   'arch-tempered': 'Arch-Tempered Large Monster',
 }
 
-function CrateOpener() {
+type CrateOpenerProps = {
+  onHuntChange?: (ctx: CrateHuntContext) => void
+}
+
+function CrateOpener({ onHuntChange }: CrateOpenerProps) {
+  const isMobile = useIsMobileLayout()
   const [poolFilter, setPoolFilter] = useState<MonsterPoolFilterState>(DEFAULT_MONSTER_POOL_FILTER)
 
   const filteredPool = useMemo(() => filterMonsterPool(MONSTER_POOL, poolFilter), [poolFilter])
@@ -26,6 +34,7 @@ function CrateOpener() {
   const pickRandom = useCallback(() => pickRandomFromPool(filteredPool), [filteredPool])
 
   const poolCountLabel = formatPoolCountLabel(filteredPool.length)
+  const overlayMode = !isMobile && Boolean(onHuntChange)
 
   return (
     <CrateHunt
@@ -39,6 +48,9 @@ function CrateOpener() {
       pickRandom={pickRandom}
       reelSide="left"
       spinLabels={SPIN_LABELS}
+      externalGallery={overlayMode}
+      overlayMode={overlayMode}
+      onHuntChange={onHuntChange}
       filters={({ disabled, layout }) => (
         <MonsterRarityFilter
           value={poolFilter}
@@ -47,6 +59,11 @@ function CrateOpener() {
           variant={layout}
         />
       )}
+      belowReel={
+        isMobile
+          ? ({ result, phase }) => <MonsterGalleryImage result={result} visible={phase === 'revealed'} />
+          : undefined
+      }
     />
   )
 }

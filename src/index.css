@@ -6,6 +6,15 @@
   body {
     font-family: 'Rajdhani', ui-sans-serif, system-ui, sans-serif;
   }
+
+  @media (min-width: 1024px) {
+    html,
+    body,
+    #root {
+      height: 100%;
+      overflow: hidden;
+    }
+  }
 }
 
 @keyframes reel-blur {

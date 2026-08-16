@@ -3,42 +3,33 @@ import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import {
   MOBILE_REEL_HEIGHT,
   MOBILE_REEL_MAX_WIDTH,
-  REEL_WIDTH,
-  VIEWPORT_HEIGHT,
 } from '../lib/crateConfig'
 
 function SkeletonBlock({ className, style }: { className?: string; style?: CSSProperties }) {
   return <div className={`skeleton ${className ?? ''}`} style={style} />
 }
 
-function HuntColumnSkeleton({
-  reelHeight,
-  isMobile,
-}: {
-  reelHeight: number
-  isMobile: boolean
-}) {
-  const columnWidth = isMobile ? '100%' : REEL_WIDTH
-
+function HuntColumnSkeleton({ showGallery = false }: { showGallery?: boolean }) {
   return (
     <div
-      className="flex shrink-0 flex-col items-stretch"
-      style={{ width: columnWidth, maxWidth: isMobile ? MOBILE_REEL_MAX_WIDTH : REEL_WIDTH }}
+      className="flex w-full max-w-[620px] shrink-0 flex-col items-stretch gap-4"
+      style={{ maxWidth: MOBILE_REEL_MAX_WIDTH }}
     >
-      <SkeletonBlock className="mb-4 h-14 w-full rounded-lg sm:mb-5" />
-      <SkeletonBlock className="w-full rounded-2xl" style={{ height: reelHeight }} />
-      <SkeletonBlock className="mt-6 h-12 w-full rounded-lg" />
+      <SkeletonBlock className="w-full rounded-2xl" style={{ height: MOBILE_REEL_HEIGHT }} />
+      {showGallery ? <SkeletonBlock className="aspect-[16/10] w-full rounded-2xl" /> : null}
+      <SkeletonBlock className="h-14 w-full rounded-lg" />
+      <SkeletonBlock className="h-10 w-full max-w-md rounded-lg" />
+      <SkeletonBlock className="h-12 w-full rounded-lg" />
     </div>
   )
 }
 
 function AppSkeleton({ progress }: { progress: number }) {
   const isMobile = useIsMobileLayout()
-  const reelHeight = isMobile ? MOBILE_REEL_HEIGHT : VIEWPORT_HEIGHT
   const percent = Math.round(progress * 100)
 
   return (
-    <div className="relative z-20 flex min-h-svh flex-col bg-slate-950">
+    <div className="relative z-20 flex min-h-svh flex-col bg-slate-950 max-lg:overflow-x-hidden lg:h-svh lg:min-h-0 lg:overflow-hidden">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-0.5 bg-white/5">
         <div
           className="h-full bg-amber-400/80 transition-[width] duration-300 ease-out"
@@ -46,36 +37,37 @@ function AppSkeleton({ progress }: { progress: number }) {
         />
       </div>
 
-      <main className="flex flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
-        <div className="w-full max-w-5xl">
-          <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-0">
-            <div className="flex justify-center lg:justify-end lg:pr-6 xl:pr-10">
-              {isMobile ? (
-                <HuntColumnSkeleton reelHeight={reelHeight} isMobile={isMobile} />
-              ) : (
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="w-[5.75rem] shrink-0 sm:w-[6.25rem]" aria-hidden="true" />
-                  <HuntColumnSkeleton reelHeight={reelHeight} isMobile={isMobile} />
-                  <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
-                </div>
-              )}
+      <main className="flex min-h-0 w-full flex-1 flex-col overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:overflow-hidden lg:px-0 lg:py-0">
+        {isMobile ? (
+          <div className="grid w-full grid-cols-1 gap-8">
+            <div className="flex justify-center">
+              <HuntColumnSkeleton showGallery />
             </div>
-
-            <div className="hidden w-px shrink-0 self-stretch bg-white/10 lg:mx-6 lg:block xl:mx-10" aria-hidden="true" />
-
-            <div className="flex justify-center lg:justify-start lg:pl-6 xl:pl-10">
-              {isMobile ? (
-                <HuntColumnSkeleton reelHeight={reelHeight} isMobile={isMobile} />
-              ) : (
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
-                  <HuntColumnSkeleton reelHeight={reelHeight} isMobile={isMobile} />
-                  <div className="w-[5.75rem] shrink-0 sm:w-[6.25rem]" aria-hidden="true" />
-                </div>
-              )}
+            <div className="flex justify-center">
+              <HuntColumnSkeleton />
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="grid h-full min-h-0 w-full grid-cols-2">
+            <div className="relative border-r border-white/10 p-6">
+              <SkeletonBlock className="absolute inset-0 h-full w-full rounded-none opacity-40" />
+              <div className="relative z-10 flex h-full flex-col gap-4">
+                <SkeletonBlock className="h-[172px] w-full rounded-2xl" />
+                <SkeletonBlock className="h-14 w-full rounded-lg" />
+                <SkeletonBlock className="h-10 w-full rounded-lg" />
+                <SkeletonBlock className="h-12 w-full rounded-lg" />
+              </div>
+            </div>
+            <div className="relative p-6">
+              <SkeletonBlock className="absolute inset-0 h-full w-full rounded-none opacity-40" />
+              <div className="relative z-10 flex h-full flex-col gap-4">
+                <SkeletonBlock className="h-[172px] w-full rounded-2xl" />
+                <SkeletonBlock className="h-14 w-full rounded-lg" />
+                <SkeletonBlock className="h-12 w-full rounded-lg" />
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   )
