@@ -2,26 +2,58 @@ import { useEffect, useRef, useState } from 'react'
 import type { CrateEntry, Rarity } from '../data/types'
 import CrateCard from './CrateCard'
 import CenterMarker from './CenterMarker'
-import { CARD_GAP, CARD_SIZE, CENTER_INDEX, SLOT, SPIN_MS, VIEWPORT_HEIGHT } from '../lib/crateConfig'
+import {
+  CARD_GAP,
+  CARD_SIZE,
+  CENTER_INDEX,
+  MOBILE_REEL_HEIGHT,
+  MOBILE_REEL_MAX_WIDTH,
+  SLOT,
+  SPIN_MS,
+  VIEWPORT_HEIGHT,
+} from '../lib/crateConfig'
+
+export type ReelOrientation = 'vertical' | 'horizontal'
 
 type ReelProps = {
   sequence: CrateEntry[]
   onDone: () => void
   landed: boolean
   rarity: Rarity
+  orientation?: ReelOrientation
 }
 
-function Reel({ sequence, onDone, landed, rarity }: ReelProps) {
-  const [translateY, setTranslateY] = useState(0)
+function Reel({ sequence, onDone, landed, rarity, orientation = 'vertical' }: ReelProps) {
+  const isHorizontal = orientation === 'horizontal'
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [translate, setTranslate] = useState(0)
   const [spinning, setSpinning] = useState(false)
+  const [viewportSize, setViewportSize] = useState(isHorizontal ? MOBILE_REEL_MAX_WIDTH : VIEWPORT_HEIGHT)
   const doneRef = useRef(onDone)
   doneRef.current = onDone
 
   useEffect(() => {
-    const finalY = VIEWPORT_HEIGHT / 2 - (CENTER_INDEX * SLOT + CARD_SIZE / 2)
+    if (!isHorizontal) {
+      setViewportSize(VIEWPORT_HEIGHT)
+      return
+    }
+
+    const el = containerRef.current
+    if (!el) return
+
+    const updateSize = () => setViewportSize(el.clientWidth)
+    updateSize()
+
+    const observer = new ResizeObserver(updateSize)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [isHorizontal])
+
+  useEffect(() => {
+    const finalOffset = viewportSize / 2 - (CENTER_INDEX * SLOT + CARD_SIZE / 2)
     const raf = requestAnimationFrame(() => {
       setSpinning(true)
-      setTranslateY(finalY)
+      setTranslate(finalOffset)
     })
     const timer = window.setTimeout(() => doneRef.current(), SPIN_MS + 150)
     return () => {
@@ -30,24 +62,48 @@ function Reel({ sequence, onDone, landed, rarity }: ReelProps) {
     }
     // Runs once per mount; parent remounts this component (via key) for each new spin.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [viewportSize, isHorizontal])
+
+  const trackStyle = isHorizontal
+    ? {
+        position: 'absolute' as const,
+        insetBlock: 0,
+        left: 0,
+        display: 'flex',
+        flexDirection: 'row' as const,
+        alignItems: 'center',
+        gap: CARD_GAP,
+        transform: `translateX(${translate}px)`,
+      }
+    : {
+        position: 'absolute' as const,
+        insetInline: 0,
+        top: 0,
+        display: 'flex',
+        flexDirection: 'column' as const,
+        alignItems: 'center',
+        gap: CARD_GAP,
+        transform: `translateY(${translate}px)`,
+      }
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/40"
-      style={{ height: VIEWPORT_HEIGHT, width: CARD_SIZE + 40 }}
+      ref={containerRef}
+      className={
+        isHorizontal
+          ? 'relative w-full max-w-[620px] overflow-hidden rounded-2xl border border-white/10 bg-black/40'
+          : 'relative overflow-hidden rounded-2xl border border-white/10 bg-black/40'
+      }
+      style={
+        isHorizontal
+          ? { height: MOBILE_REEL_HEIGHT }
+          : { height: VIEWPORT_HEIGHT, width: CARD_SIZE + 40 }
+      }
     >
       <div
         className={spinning ? 'animate-[reel-blur_4800ms_ease-out_1]' : ''}
         style={{
-          position: 'absolute',
-          insetInline: 0,
-          top: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: CARD_GAP,
-          transform: `translateY(${translateY}px)`,
+          ...trackStyle,
           transitionProperty: 'transform',
           transitionDuration: spinning ? `${SPIN_MS}ms` : '0ms',
           transitionTimingFunction: 'cubic-bezier(0.1, 0.62, 0.06, 1)',
@@ -58,10 +114,19 @@ function Reel({ sequence, onDone, landed, rarity }: ReelProps) {
         ))}
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-28 bg-gradient-to-b from-slate-950 via-slate-950/80 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-28 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent" />
+      {isHorizontal ? (
+        <>
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-slate-950 via-slate-950/80 to-transparent" />
+        </>
+      ) : (
+        <>
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-28 bg-gradient-to-b from-slate-950 via-slate-950/80 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-28 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent" />
+        </>
+      )}
 
-      <CenterMarker active={landed} rarity={rarity} />
+      <CenterMarker active={landed} rarity={rarity} orientation={orientation} />
     </div>
   )
 }
