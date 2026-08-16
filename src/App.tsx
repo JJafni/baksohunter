@@ -26,13 +26,10 @@ function App() {
       </header>
 
       <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-10">
-        <div className="grid w-full max-w-6xl grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-6">
-          <section className="relative flex flex-col items-start lg:border-r lg:border-white/10 lg:pr-4">
-            <CrateOpener />
-          </section>
-          <section className="relative flex flex-col items-end lg:pl-4">
-            <WeaponCrateOpener />
-          </section>
+        <div className="flex w-full flex-col items-center gap-16 lg:flex-row lg:justify-center lg:gap-3 xl:gap-4">
+          <CrateOpener />
+          <div className="hidden w-px self-stretch bg-white/10 lg:block" aria-hidden="true" />
+          <WeaponCrateOpener />
         </div>
       </main>
 

@@ -146,10 +146,7 @@ function CrateHunt({
       />
 
       {phase === 'idle' ? (
-        <div
-          className={`flex flex-col items-center ${reelSide === 'right' ? 'ml-auto' : ''}`}
-          style={{ width: REEL_WIDTH }}
-        >
+        <div className="flex flex-col items-center" style={{ width: REEL_WIDTH }}>
           <IdleCrate />
           <div className="mt-6 flex w-full flex-col items-center gap-4">
             <StatefulButton layoutId={buttonLayoutId} onClick={startHunt}>
@@ -161,7 +158,7 @@ function CrateHunt({
           </div>
         </div>
       ) : reelOnLeft ? (
-        <div className="flex items-center gap-5 sm:gap-6">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="flex shrink-0 flex-col items-center">
             {header}
             {reel}
@@ -170,7 +167,7 @@ function CrateHunt({
           <div className="self-center">{namePanel}</div>
         </div>
       ) : (
-        <div className="flex items-center gap-5 sm:gap-6">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="self-center">{namePanel}</div>
           <div className="flex shrink-0 flex-col items-center">
             {header}

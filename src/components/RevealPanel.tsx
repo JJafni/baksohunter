@@ -18,7 +18,7 @@ function RevealPanel({ result, visible, rarityLabels, align = 'left' }: RevealPa
 
   return (
     <div
-      className={`flex min-h-[5rem] w-full flex-col justify-center ${
+      className={`flex min-h-[5rem] w-[110px] shrink-0 flex-col justify-center sm:w-[130px] ${
         align === 'right' ? 'items-end text-right' : 'items-start text-left'
       }`}
     >
