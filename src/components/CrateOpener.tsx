@@ -3,10 +3,9 @@ import { MONSTER_POOL, pickRandomMonster, type MonsterEntry, type Rarity } from 
 import { CENTER_INDEX, OPEN_MS, REEL_LENGTH } from '../lib/crateConfig'
 import Reel from './Reel'
 import RevealPanel from './RevealPanel'
-import OpeningReel from './OpeningReel'
 import IdleCrate from './IdleCrate'
 
-type Phase = 'idle' | 'opening' | 'spinning' | 'revealed'
+type Phase = 'idle' | 'spinning' | 'revealed'
 
 function buildSequence(target: MonsterEntry): MonsterEntry[] {
   const sequence: MonsterEntry[] = []
@@ -21,33 +20,28 @@ function CrateOpener() {
   const [result, setResult] = useState<MonsterEntry | null>(null)
   const [sequence, setSequence] = useState<MonsterEntry[]>([])
   const [spinKey, setSpinKey] = useState(0)
+  const [isEntering, setIsEntering] = useState(false)
 
   const startHunt = useCallback(() => {
-    if (phase === 'spinning' || phase === 'opening') return
+    if (phase === 'spinning') return
 
     const target = pickRandomMonster()
     setResult(target)
     setSequence(buildSequence(target))
-
-    if (phase === 'idle') {
-      setPhase('opening')
-      return
-    }
-
     setPhase('spinning')
     setSpinKey((k) => k + 1)
+
+    if (phase === 'idle') {
+      setIsEntering(true)
+    }
   }, [phase])
 
   useEffect(() => {
-    if (phase !== 'opening') return
+    if (!isEntering) return
 
-    const timer = window.setTimeout(() => {
-      setPhase('spinning')
-      setSpinKey((k) => k + 1)
-    }, OPEN_MS)
-
+    const timer = window.setTimeout(() => setIsEntering(false), OPEN_MS)
     return () => window.clearTimeout(timer)
-  }, [phase])
+  }, [isEntering])
 
   const handleLanded = useCallback(() => {
     setPhase('revealed')
@@ -60,9 +54,8 @@ function CrateOpener() {
     'arch-tempered': 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(251,191,36,0.22), transparent 70%)',
   }
 
-  const isBusy = phase === 'spinning' || phase === 'opening'
+  const isBusy = phase === 'spinning'
   const buttonLabel = phase === 'revealed' ? 'Hunt Again' : 'Open Crate'
-  const isFirstOpen = phase === 'opening'
 
   return (
     <div className="relative flex w-full flex-col items-center">
@@ -79,14 +72,10 @@ function CrateOpener() {
       ) : (
         <div
           className={`flex w-full flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16 ${
-            isFirstOpen ? 'animate-hunt-stage-enter' : ''
+            isEntering ? 'animate-hunt-stage-enter' : ''
           }`}
         >
-          <div
-            className={`w-full max-w-[320px] text-center lg:w-[320px] lg:text-right ${
-              isFirstOpen ? 'animate-hunt-side-enter' : ''
-            }`}
-          >
+          <div className={`w-full max-w-[320px] text-center lg:w-[320px] lg:text-right ${isEntering ? 'animate-hunt-side-enter' : ''}`}>
             <p className="select-none text-4xl font-black uppercase tracking-tight text-slate-500/40 sm:text-5xl">
               Hunting
             </p>
@@ -95,13 +84,9 @@ function CrateOpener() {
             </p>
           </div>
 
-          {phase === 'opening' ? (
-            <OpeningReel />
-          ) : (
-            <Reel key={spinKey} sequence={sequence} onDone={handleLanded} landed={phase === 'revealed'} rarity={rarity} />
-          )}
+          <Reel key={spinKey} sequence={sequence} onDone={handleLanded} landed={phase === 'revealed'} rarity={rarity} />
 
-          <div className={isFirstOpen ? 'animate-hunt-reveal-enter' : ''}>
+          <div className={isEntering ? 'animate-hunt-reveal-enter' : ''}>
             <RevealPanel result={result} visible={phase === 'revealed'} />
           </div>
         </div>
