@@ -37,9 +37,9 @@ function AppSkeleton({ progress }: { progress: number }) {
         />
       </div>
 
-      <main className="flex min-h-0 flex-1 flex-col items-center overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:overflow-hidden lg:px-0 lg:py-0">
+      <main className="flex min-h-0 w-full flex-1 flex-col overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:overflow-hidden lg:px-0 lg:py-0">
         {isMobile ? (
-          <div className="grid w-full max-w-6xl grid-cols-1 gap-8">
+          <div className="grid w-full grid-cols-1 gap-8">
             <div className="flex justify-center">
               <HuntColumnSkeleton showGallery />
             </div>
@@ -48,7 +48,7 @@ function AppSkeleton({ progress }: { progress: number }) {
             </div>
           </div>
         ) : (
-          <div className="grid h-full min-h-0 w-full max-w-[1400px] grid-cols-2">
+          <div className="grid h-full min-h-0 w-full grid-cols-2">
             <div className="relative border-r border-white/10 p-6">
               <SkeletonBlock className="absolute inset-0 h-full w-full rounded-none opacity-40" />
               <div className="relative z-10 flex h-full flex-col gap-4">
@@ -58,8 +58,13 @@ function AppSkeleton({ progress }: { progress: number }) {
                 <SkeletonBlock className="h-12 w-full rounded-lg" />
               </div>
             </div>
-            <div className="flex items-center justify-center p-8">
-              <HuntColumnSkeleton />
+            <div className="relative p-6">
+              <SkeletonBlock className="absolute inset-0 h-full w-full rounded-none opacity-40" />
+              <div className="relative z-10 flex h-full flex-col gap-4">
+                <SkeletonBlock className="h-[172px] w-full rounded-2xl" />
+                <SkeletonBlock className="h-14 w-full rounded-lg" />
+                <SkeletonBlock className="h-12 w-full rounded-lg" />
+              </div>
             </div>
           </div>
         )}
