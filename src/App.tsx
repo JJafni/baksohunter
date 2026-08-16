@@ -15,7 +15,7 @@ function App() {
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transparent_45%,rgba(2,6,23,0.28)_82%,rgba(2,6,23,0.42)_100%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_75%_65%_at_50%_50%,transparent_32%,rgba(2,6,23,0.48)_75%,rgba(2,6,23,0.72)_100%)]"
         aria-hidden="true"
       />
       <div
