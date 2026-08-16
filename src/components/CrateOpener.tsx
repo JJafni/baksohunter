@@ -4,7 +4,7 @@ import CrateHunt from './CrateHunt'
 import MonsterGalleryImage from './MonsterGalleryImage'
 import MonsterRarityFilter from './MonsterRarityFilter'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
-import { pickRandomQuestType } from '../data/questTypes'
+import { pickQuestTypeForMonster } from '../data/questTypes'
 import { MONSTER_POOL } from '../data/monsters'
 import type { Rarity } from '../data/types'
 import { SPIN_LABELS } from './ui/stateful-button'
@@ -47,7 +47,7 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
       rarityLabels={RARITY_LABELS}
       pool={filteredPool}
       pickRandom={pickRandom}
-      pickRandomQuestType={pickRandomQuestType}
+      pickRandomQuestType={pickQuestTypeForMonster}
       reelSide="left"
       spinLabels={SPIN_LABELS}
       externalGallery={overlayMode}

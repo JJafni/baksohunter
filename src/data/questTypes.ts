@@ -1,3 +1,6 @@
+import type { CrateEntry } from './types'
+import { ELDER_DRAGON_SLUGS } from './monsters'
+
 /** Quest objective types from the MHWiki quest icon set (Category:MHWiki_Quest_Icons). */
 export type QuestType = 'hunt' | 'slay' | 'capture'
 
@@ -35,8 +38,15 @@ export const QUEST_TYPE_BY_ID = Object.fromEntries(
   QUEST_TYPES.map((quest) => [quest.id, quest]),
 ) as Record<QuestType, QuestTypeDefinition>
 
-export function pickRandomQuestType(): QuestType {
-  return QUEST_TYPES[Math.floor(Math.random() * QUEST_TYPES.length)].id
+const RANDOM_QUEST_TYPES: QuestType[] = ['hunt', 'slay', 'capture']
+
+export function isElderDragonEntry(entry: CrateEntry): boolean {
+  return entry.rarity === 'normal' && ELDER_DRAGON_SLUGS.has(entry.slug)
+}
+
+export function pickQuestTypeForMonster(entry: CrateEntry): QuestType {
+  if (isElderDragonEntry(entry)) return 'slay'
+  return RANDOM_QUEST_TYPES[Math.floor(Math.random() * RANDOM_QUEST_TYPES.length)]
 }
 
 export function getQuestTypeIconUrls(): string[] {

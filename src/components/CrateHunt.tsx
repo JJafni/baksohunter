@@ -17,6 +17,7 @@ import {
 import { buildReelSequence } from '../lib/reelSequence'
 import Reel from './Reel'
 import RevealPanel from './RevealPanel'
+import QuestTypeBadge from './QuestTypeBadge'
 import IdleCrate from './IdleCrate'
 import { StatefulButton } from './ui/stateful-button'
 
@@ -40,8 +41,8 @@ type CrateHuntProps = {
   rarityLabels: Record<Rarity, string>
   pool: CrateEntry[]
   pickRandom: () => CrateEntry
-  /** When set, a random quest objective is chosen on each spin. */
-  pickRandomQuestType?: () => QuestType
+  /** When set, a quest objective is chosen on each spin based on the result. */
+  pickRandomQuestType?: (entry: CrateEntry) => QuestType
   /** Which side the reel column (title, spinner, button) sits on. */
   reelSide: 'left' | 'right'
   /** Optional controls shown beside the reel (e.g. monster rarity filters). */
@@ -62,7 +63,7 @@ type CrateHuntProps = {
 const HEADER_ROW_H = '6rem'
 const FOOTER_ROW_H = '2.75rem'
 /** Fixed mobile reveal row — keeps filters/button from jumping when the name appears. */
-const MOBILE_REVEAL_ROW_H = '6.25rem'
+const MOBILE_REVEAL_ROW_H = '4.75rem'
 
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 
@@ -126,7 +127,7 @@ function CrateHunt({
     setSpinnerUiVisible(true)
 
     const target = pickRandom()
-    const nextQuestType = pickRandomQuestType?.() ?? null
+    const nextQuestType = pickRandomQuestType?.(target) ?? null
     setPhase('spinning')
     setSpinKey((k) => k + 1)
     setResult(target)
@@ -271,7 +272,6 @@ function CrateHunt({
   const namePanel = (
     <RevealPanel
       result={result}
-      questType={questType}
       visible={phase === 'revealed'}
       revealKey={spinKey}
       rarityLabels={rarityLabels}
@@ -279,6 +279,10 @@ function CrateHunt({
       variant={useStackedLayout ? 'mobile' : 'desktop'}
     />
   )
+
+  const questTypeBadge = pickRandomQuestType ? (
+    <QuestTypeBadge questType={questType} visible={phase !== 'idle'} revealKey={spinKey} />
+  ) : null
 
   const mobileRevealSlot = !useStackedLayout ? null : isMobile ? (
     <motion.div
@@ -327,7 +331,7 @@ function CrateHunt({
   const nameSlot =
     phase === 'idle' ? (
       useStackedLayout ? null : (
-        <div className="w-[170px] shrink-0 sm:w-[210px]" aria-hidden="true" />
+        <div className="w-[150px] shrink-0 sm:w-[185px]" aria-hidden="true" />
       )
     ) : (
       namePanel
@@ -337,8 +341,9 @@ function CrateHunt({
     return (
       <div
         className={`relative mx-auto w-full shrink-0 ${overlayMode ? 'flex h-full flex-col' : ''}`}
-        style={{ maxWidth: HUNT_COLUMN_MAX_WIDTH }}
+        style={{ maxWidth: overlayMode ? undefined : HUNT_COLUMN_MAX_WIDTH }}
       >
+        {questTypeBadge}
         <div
           className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
           style={{
@@ -348,7 +353,8 @@ function CrateHunt({
         />
 
         <div
-          className={`flex w-full flex-col items-center ${overlayMode ? 'h-full min-h-0 gap-3 py-2' : 'gap-4 lg:gap-3'}`}
+          className={`flex w-full flex-col items-center ${overlayMode ? 'mx-auto h-full min-h-0 gap-3 py-2' : 'gap-4 lg:gap-3'}`}
+          style={overlayMode ? { maxWidth: HUNT_COLUMN_MAX_WIDTH } : undefined}
         >
           <SpinnerUiFade visible={showSpinnerUi}>
             {header}
@@ -366,7 +372,9 @@ function CrateHunt({
   }
 
   return (
-    <div className="relative w-fit max-w-full shrink-0">
+    <div className="relative w-full max-w-full shrink-0">
+      {questTypeBadge}
+      <div className="relative mx-auto w-fit max-w-full">
       <div
         className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
         style={{
@@ -403,6 +411,7 @@ function CrateHunt({
         <div className={`${nameColClass} row-start-2 self-center`}>{nameSlot}</div>
 
         <div className={`${reelColClass} row-start-3`}>{actions}</div>
+      </div>
       </div>
     </div>
   )
