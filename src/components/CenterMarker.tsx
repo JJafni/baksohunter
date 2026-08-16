@@ -1,10 +1,18 @@
+import type { Rarity } from '../data/monsters'
+
 type CenterMarkerProps = {
   active: boolean
-  tempered?: boolean
+  rarity?: Rarity
 }
 
-function CenterMarker({ active, tempered = false }: CenterMarkerProps) {
-  const color = tempered ? 'rgba(244,63,94,0.95)' : 'rgba(56,189,248,0.95)'
+const RARITY_COLOR: Record<Rarity, string> = {
+  normal: 'rgba(56,189,248,0.95)',
+  tempered: 'rgba(244,63,94,0.95)',
+  'arch-tempered': 'rgba(251,191,36,0.95)',
+}
+
+function CenterMarker({ active, rarity = 'normal' }: CenterMarkerProps) {
+  const color = RARITY_COLOR[rarity]
   const idleColor = 'rgba(148,163,184,0.55)'
 
   return (

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { MONSTER_POOL, pickRandomMonster, type MonsterEntry } from '../data/monsters'
+import { MONSTER_POOL, pickRandomMonster, type MonsterEntry, type Rarity } from '../data/monsters'
 import { CENTER_INDEX, REEL_LENGTH } from '../lib/crateConfig'
 import Reel from './Reel'
 import RevealPanel from './RevealPanel'
@@ -33,7 +33,12 @@ function CrateOpener() {
     setPhase('revealed')
   }, [])
 
-  const tempered = result?.tempered ?? false
+  const rarity: Rarity = result?.rarity ?? 'normal'
+  const backgroundGlow: Record<Rarity, string> = {
+    normal: 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(56,189,248,0.18), transparent 70%)',
+    tempered: 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(244,63,94,0.18), transparent 70%)',
+    'arch-tempered': 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(251,191,36,0.22), transparent 70%)',
+  }
 
   return (
     <div className="relative flex w-full flex-col items-center">
@@ -41,9 +46,7 @@ function CrateOpener() {
         className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
         style={{
           opacity: phase === 'revealed' ? 1 : 0,
-          background: tempered
-            ? 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(244,63,94,0.18), transparent 70%)'
-            : 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(56,189,248,0.18), transparent 70%)',
+          background: backgroundGlow[rarity],
         }}
       />
 
@@ -60,7 +63,7 @@ function CrateOpener() {
             </p>
           </div>
 
-          <Reel key={spinKey} sequence={sequence} onDone={handleLanded} landed={phase === 'revealed'} tempered={tempered} />
+          <Reel key={spinKey} sequence={sequence} onDone={handleLanded} landed={phase === 'revealed'} rarity={rarity} />
 
           <RevealPanel result={result} visible={phase === 'revealed'} />
         </div>
@@ -77,7 +80,7 @@ function CrateOpener() {
       )}
 
       <p className="mt-10 text-center text-xs uppercase tracking-[0.2em] text-slate-600">
-        {MONSTER_POOL.length} Large &amp; Tempered Monsters in the pool
+        {MONSTER_POOL.length} Large, Tempered &amp; Arch-Tempered Monsters in the pool
       </p>
     </div>
   )

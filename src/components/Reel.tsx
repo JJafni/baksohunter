@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import type { MonsterEntry } from '../data/monsters'
+import type { MonsterEntry, Rarity } from '../data/monsters'
 import MonsterCard from './MonsterCard'
 import CenterMarker from './CenterMarker'
 import { CARD_GAP, CARD_SIZE, CENTER_INDEX, SLOT, SPIN_MS, VIEWPORT_HEIGHT } from '../lib/crateConfig'
@@ -8,10 +8,10 @@ type ReelProps = {
   sequence: MonsterEntry[]
   onDone: () => void
   landed: boolean
-  tempered: boolean
+  rarity: Rarity
 }
 
-function Reel({ sequence, onDone, landed, tempered }: ReelProps) {
+function Reel({ sequence, onDone, landed, rarity }: ReelProps) {
   const [translateY, setTranslateY] = useState(0)
   const [spinning, setSpinning] = useState(false)
   const doneRef = useRef(onDone)
@@ -61,7 +61,7 @@ function Reel({ sequence, onDone, landed, tempered }: ReelProps) {
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-28 bg-gradient-to-b from-slate-950 via-slate-950/80 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-28 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent" />
 
-      <CenterMarker active={landed} tempered={tempered} />
+      <CenterMarker active={landed} rarity={rarity} />
     </div>
   )
 }
