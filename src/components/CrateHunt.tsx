@@ -24,6 +24,8 @@ type Phase = 'idle' | 'spinning' | 'revealed'
 export type CrateHuntContext = {
   result: CrateEntry | null
   phase: Phase
+  /** False after post-reveal fade; true while idle, spinning, or before fade completes. */
+  spinnerUiVisible: boolean
 }
 
 type CrateHuntProps = {
@@ -164,8 +166,8 @@ function CrateHunt({
   }, [phase, spinKey, clearSpinnerFadeTimer])
 
   useEffect(() => {
-    onHuntChange?.({ result, phase })
-  }, [result, phase, onHuntChange])
+    onHuntChange?.({ result, phase, spinnerUiVisible })
+  }, [result, phase, spinnerUiVisible, onHuntChange])
 
   const visualRarity: VisualRarity = result ? getVisualRarity(result) : 'normal'
   const backgroundGlow = RARITY_BACKGROUND_GLOW
@@ -225,7 +227,7 @@ function CrateHunt({
     </p>
   )
 
-  const huntContextForRender: CrateHuntContext = { result, phase }
+  const huntContextForRender: CrateHuntContext = { result, phase, spinnerUiVisible }
   const belowReelSlot = externalGallery ? null : belowReel?.(huntContextForRender) ?? null
 
   const filtersDisabled = phase === 'spinning'

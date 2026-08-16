@@ -39,6 +39,10 @@ function HuntLayout({
   weaponHunt: CrateHuntContext
   onWeaponHuntChange: (ctx: CrateHuntContext) => void
 }) {
+  const monsterGalleryEmphasized =
+    monsterHunt.phase === 'revealed' && monsterHunt.spinnerUiVisible
+  const weaponGalleryEmphasized = weaponHunt.phase === 'revealed' && weaponHunt.spinnerUiVisible
+
   return (
     <div className="grid h-full min-h-0 w-full grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:items-stretch lg:gap-0">
       <section className="relative flex min-h-0 w-full justify-center lg:overflow-hidden lg:border-r lg:border-white/10">
@@ -46,9 +50,16 @@ function HuntLayout({
           <MonsterGalleryImage
             result={monsterHunt.result}
             visible={monsterHunt.phase === 'revealed'}
+            emphasized={monsterGalleryEmphasized}
             variant="backdrop"
           />
-          <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80" />
+          <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/90 via-slate-950/65 to-slate-950/88" />
+          <motion.div
+            className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80"
+            initial={false}
+            animate={{ opacity: monsterGalleryEmphasized ? 1 : 0 }}
+            transition={{ duration: 0.7, ease: 'easeInOut' }}
+          />
         </div>
 
         <div className="relative z-10 flex h-full min-h-0 w-full flex-col items-center lg:px-8 lg:py-5">
@@ -61,9 +72,16 @@ function HuntLayout({
           <WeaponGalleryImage
             result={weaponHunt.result}
             visible={weaponHunt.phase === 'revealed'}
+            emphasized={weaponGalleryEmphasized}
             variant="backdrop"
           />
-          <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80" />
+          <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-slate-950/90 via-slate-950/65 to-slate-950/88" />
+          <motion.div
+            className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-slate-950/85 via-slate-950/35 to-slate-950/80"
+            initial={false}
+            animate={{ opacity: weaponGalleryEmphasized ? 1 : 0 }}
+            transition={{ duration: 0.7, ease: 'easeInOut' }}
+          />
         </div>
 
         <div className="relative z-10 flex h-full min-h-0 w-full flex-col items-center lg:px-8 lg:py-5">
@@ -75,8 +93,16 @@ function HuntLayout({
 }
 
 function AppContent() {
-  const [monsterHunt, setMonsterHunt] = useState<CrateHuntContext>({ result: null, phase: 'idle' })
-  const [weaponHunt, setWeaponHunt] = useState<CrateHuntContext>({ result: null, phase: 'idle' })
+  const [monsterHunt, setMonsterHunt] = useState<CrateHuntContext>({
+    result: null,
+    phase: 'idle',
+    spinnerUiVisible: true,
+  })
+  const [weaponHunt, setWeaponHunt] = useState<CrateHuntContext>({
+    result: null,
+    phase: 'idle',
+    spinnerUiVisible: true,
+  })
 
   return (
     <>

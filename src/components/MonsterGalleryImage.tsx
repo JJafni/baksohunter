@@ -7,10 +7,17 @@ import { getMonsterGalleryImageUrl, MONSTER_GALLERY_SOURCE_URL } from '../lib/mo
 type MonsterGalleryImageProps = {
   result: CrateEntry | null
   visible: boolean
+  /** Brighter treatment while the spinner is still on screen after reveal. */
+  emphasized?: boolean
   variant?: 'inline' | 'hero' | 'backdrop'
 }
 
-function MonsterGalleryImage({ result, visible, variant = 'inline' }: MonsterGalleryImageProps) {
+function MonsterGalleryImage({
+  result,
+  visible,
+  emphasized = true,
+  variant = 'inline',
+}: MonsterGalleryImageProps) {
   const [useIconFallback, setUseIconFallback] = useState(false)
   const displayedResult = useGalleryDisplayResult(result, visible)
   const isHero = variant === 'hero'
@@ -35,7 +42,10 @@ function MonsterGalleryImage({ result, visible, variant = 'inline' }: MonsterGal
             loading="lazy"
             decoding="async"
             initial={{ opacity: 0 }}
-            animate={{ opacity: visible ? 0.95 : 0 }}
+            animate={{
+              opacity: visible ? 0.95 : 0,
+              filter: visible && emphasized ? 'brightness(1)' : visible ? 'brightness(0.72)' : 'brightness(1)',
+            }}
             transition={{ duration: 0.7, ease: 'easeInOut' }}
             onError={() => {
               if (showHd) setUseIconFallback(true)
@@ -69,7 +79,10 @@ function MonsterGalleryImage({ result, visible, variant = 'inline' }: MonsterGal
   return (
     <motion.figure
       initial={false}
-      animate={{ opacity: visible ? 1 : 0 }}
+      animate={{
+        opacity: visible ? 1 : 0,
+        filter: visible && emphasized ? 'brightness(1)' : visible ? 'brightness(0.72)' : 'brightness(1)',
+      }}
       transition={{ duration: 0.7, ease: 'easeInOut' }}
       className={`relative flex w-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-black/30 ${
         isHero ? 'h-full min-h-[280px] lg:min-h-0' : ''

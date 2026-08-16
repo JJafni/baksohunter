@@ -7,10 +7,17 @@ import { getWeaponGalleryImageUrl, WEAPON_GALLERY_SOURCE_URL } from '../lib/weap
 type WeaponGalleryImageProps = {
   result: CrateEntry | null
   visible: boolean
+  /** Brighter treatment while the spinner is still on screen after reveal. */
+  emphasized?: boolean
   variant?: 'inline' | 'hero' | 'backdrop'
 }
 
-function WeaponGalleryImage({ result, visible, variant = 'inline' }: WeaponGalleryImageProps) {
+function WeaponGalleryImage({
+  result,
+  visible,
+  emphasized = true,
+  variant = 'inline',
+}: WeaponGalleryImageProps) {
   const [useIconFallback, setUseIconFallback] = useState(false)
   const displayedResult = useGalleryDisplayResult(result, visible)
   const isHero = variant === 'hero'
@@ -35,7 +42,10 @@ function WeaponGalleryImage({ result, visible, variant = 'inline' }: WeaponGalle
             loading="lazy"
             decoding="async"
             initial={{ opacity: 0 }}
-            animate={{ opacity: visible ? 0.95 : 0 }}
+            animate={{
+              opacity: visible ? 0.95 : 0,
+              filter: visible && emphasized ? 'brightness(1)' : visible ? 'brightness(0.72)' : 'brightness(1)',
+            }}
             transition={{ duration: 0.7, ease: 'easeInOut' }}
             onError={() => {
               if (showHd) setUseIconFallback(true)
@@ -69,7 +79,10 @@ function WeaponGalleryImage({ result, visible, variant = 'inline' }: WeaponGalle
   return (
     <motion.figure
       initial={false}
-      animate={{ opacity: visible ? 1 : 0 }}
+      animate={{
+        opacity: visible ? 1 : 0,
+        filter: visible && emphasized ? 'brightness(1)' : visible ? 'brightness(0.72)' : 'brightness(1)',
+      }}
       transition={{ duration: 0.7, ease: 'easeInOut' }}
       className={`relative flex w-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-black/30 ${
         isHero ? 'h-full min-h-[280px] lg:min-h-0' : ''
