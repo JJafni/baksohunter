@@ -48,7 +48,7 @@
     );
   }
 
-  /* Hunt/Draw spin button — sandblasted matte surface (reference-style). */
+  /* Hunt spin button — sandblasted matte surface. */
   .wilds-spin-matte {
     position: relative;
     isolation: isolate;
@@ -121,6 +121,116 @@
 
   .wilds-spin-matte:disabled::after {
     opacity: 0.22;
+  }
+
+  /*
+   * Draw button — grey gradient shine (adapted from yavuzyolbir/shiny-button).
+   * https://github.com/yavuzyolbir/shiny-button
+   */
+  .wilds-shiny-button {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding: 1px;
+    background-image: linear-gradient(0deg, #0a0a0a 0%, #8a8a8a 100%);
+    box-shadow: 0 15px 15px -10px transparent;
+    transition:
+      filter 200ms ease,
+      box-shadow 200ms ease,
+      transform 200ms ease;
+    text-shadow: 0 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .wilds-shiny-inner {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: calc(0.5rem - 1px);
+    background-image: linear-gradient(0deg, #0a0a0a 0%, #474747 100%);
+  }
+
+  .wilds-shiny-button::before,
+  .wilds-shiny-button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    z-index: 3;
+    height: 100%;
+    opacity: 0;
+    filter: blur(1px);
+    pointer-events: none;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation-duration: 500ms;
+    animation-delay: 300ms;
+    animation-iteration-count: 1;
+    animation-timing-function: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+  }
+
+  .wilds-shiny-button::before {
+    left: -3.5625rem;
+    width: 3.5625rem;
+    background-image: url("data:image/svg+xml,%3Csvg width='57' height='44' viewBox='0 0 57 44' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M57 0H27L0 44H30L57 0Z' fill='white'/%3E%3C/svg%3E");
+    animation-name: wilds-shiny-sweep-before;
+  }
+
+  .wilds-shiny-button::after {
+    left: -2.1875rem;
+    width: 2.1875rem;
+    background-image: url("data:image/svg+xml,%3Csvg width='35' height='44' viewBox='0 0 35 44' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M35 0H27L0 44H8L35 0Z' fill='white'/%3E%3C/svg%3E");
+    animation-name: wilds-shiny-sweep-after;
+    animation-delay: 400ms;
+  }
+
+  .wilds-shiny-button:not(:disabled):hover {
+    filter: brightness(125%);
+    box-shadow: 0 15px 15px -10px rgba(0, 0, 0, 0.55);
+  }
+
+  .wilds-shiny-button:not(:disabled):hover::before,
+  .wilds-shiny-button:not(:disabled):hover::after {
+    left: 110%;
+    opacity: 0.8;
+    transition: all 500ms cubic-bezier(0.79, 0.14, 0.15, 0.86);
+  }
+
+  .wilds-shiny-button:not(:disabled):hover::after {
+    transition-delay: 100ms;
+  }
+
+  .wilds-shiny-button:not(:disabled):active {
+    filter: brightness(90%);
+    box-shadow: none;
+    transform: translateY(1px);
+  }
+
+  .wilds-shiny-button:disabled {
+    opacity: 0.5;
+  }
+}
+
+@keyframes wilds-shiny-sweep-before {
+  from {
+    left: -3.5625rem;
+    opacity: 0;
+  }
+  to {
+    left: 110%;
+    opacity: 1;
+  }
+}
+
+@keyframes wilds-shiny-sweep-after {
+  from {
+    left: -2.1875rem;
+    opacity: 0;
+  }
+  to {
+    left: 110%;
+    opacity: 1;
   }
 }
 

@@ -30,6 +30,7 @@ function WeaponCrateOpener({ onHuntChange }: WeaponCrateOpenerProps) {
       reelSide="right"
       spinLabels={['Drawing']}
       buttonIcon="shield"
+      buttonSurface="shiny"
       externalGallery={overlayMode}
       overlayMode={overlayMode}
       onHuntChange={onHuntChange}
