@@ -64,6 +64,8 @@ type CrateHuntProps = {
 const FOOTER_ROW_H = '2.75rem'
 /** Fixed mobile reveal row — keeps filters/button from jumping when the name appears. */
 const MOBILE_REVEAL_ROW_H = '4.75rem'
+/** Bottom filter row above spin buttons — both columns reserve this height. */
+const FILTER_ROW_MIN_H = '5.25rem'
 
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 const CONTROLS_LAYOUT = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
@@ -197,17 +199,9 @@ function CrateHunt({
 
   const buttonLabel = phase === 'revealed' ? buttonLabels.again : buttonLabels.open
   const canSpin = pool.length > 0
-  const hasFilters = Boolean(filters)
   const reelOnLeft = reelSide === 'left'
-  const filterColClass = reelOnLeft ? 'col-start-1' : 'col-start-3'
-  const reelColClass = hasFilters ? 'col-start-2' : reelOnLeft ? 'col-start-1' : 'col-start-2'
-  const nameColClass = hasFilters
-    ? reelOnLeft
-      ? 'col-start-3'
-      : 'col-start-1'
-    : reelOnLeft
-      ? 'col-start-2'
-      : 'col-start-1'
+  const reelColClass = reelOnLeft ? 'col-start-1' : 'col-start-2'
+  const nameColClass = reelOnLeft ? 'col-start-2' : 'col-start-1'
 
   const blockWidth = useStackedLayout ? '100%' : REEL_WIDTH
   const stretchClass = isEntering
@@ -235,15 +229,19 @@ function CrateHunt({
   const columnMaxWidth = HUNT_COLUMN_MAX_WIDTH
 
   const filtersDisabled = phase === 'spinning'
-  const filterLayout = useStackedLayout ? 'bar' : 'sidebar'
-  const filtersSlot = filters ? (
-    <div className={useStackedLayout ? 'w-full' : 'self-center'}>
-      {filters({ disabled: filtersDisabled, layout: filterLayout })}
+
+  const filterRow = (
+    <div
+      className="mb-2 flex w-full items-end justify-center px-1"
+      style={{ minHeight: FILTER_ROW_MIN_H }}
+    >
+      {filters ? filters({ disabled: filtersDisabled, layout: 'bar' }) : null}
     </div>
-  ) : null
+  )
 
   const actions = (
     <div className={`flex flex-col items-center ${actionsPadding}`} style={{ width: blockWidth }}>
+      {filterRow}
       <StatefulButton
         layoutId={buttonLayoutId}
         loadingLabels={spinLabels}
@@ -360,7 +358,6 @@ function CrateHunt({
             }`}
           >
             {stackedRevealSlot}
-            {filtersSlot}
             {actions}
           </motion.div>
         </motion.div>
@@ -383,20 +380,10 @@ function CrateHunt({
       <div
         className="grid gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6"
         style={{
-          gridTemplateColumns: hasFilters
-            ? reelOnLeft
-              ? `auto ${REEL_WIDTH}px auto`
-              : `auto ${REEL_WIDTH}px auto`
-            : reelOnLeft
-              ? `${REEL_WIDTH}px auto`
-              : `auto ${REEL_WIDTH}px`,
+          gridTemplateColumns: reelOnLeft ? `${REEL_WIDTH}px auto` : `auto ${REEL_WIDTH}px`,
           gridTemplateRows: 'auto auto',
         }}
       >
-        {filtersSlot ? (
-          <div className={`${filterColClass} row-start-1 self-center`}>{filtersSlot}</div>
-        ) : null}
-
         <div className={`${reelColClass} row-start-1`}>
           <SpinnerUiFade visible={showSpinnerUi}>{reelSlot}</SpinnerUiFade>
         </div>
