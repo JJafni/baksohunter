@@ -40,8 +40,6 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
 
   return (
     <CrateHunt
-      heading="Hunting"
-      subtitle="Large Monsters"
       poolCountLabel={poolCountLabel}
       buttonLayoutId="monster-crate-button"
       buttonLabels={{ open: 'Hunt', again: 'Hunt' }}

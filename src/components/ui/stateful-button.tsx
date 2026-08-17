@@ -36,15 +36,27 @@ export function StatefulButton({
 
   const animateLoading = async () => {
     await Promise.all([
-      animate('.button-icon', { opacity: 0, scale: 0.8 }, { duration: 0.25, ease: 'easeInOut' }),
-      animate('.loader', { opacity: 1, scale: 1 }, { duration: 0.25, ease: 'easeInOut' }),
+      animate(
+        scope.current,
+        { scale: 1.22 },
+        { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+      ),
+      animate('.spin-ring', { opacity: 1, scale: 1 }, { duration: 0.35, ease: 'easeOut' }),
+      animate('.button-icon', { opacity: 0, scale: 0.6 }, { duration: 0.25, ease: 'easeInOut' }),
+      animate('.loader', { opacity: 1, scale: 1 }, { duration: 0.3, ease: 'easeOut' }),
     ])
   }
 
   const animateComplete = async () => {
     await Promise.all([
-      animate('.loader', { opacity: 0, scale: 0.8 }, { duration: 0.25, ease: 'easeInOut' }),
-      animate('.button-icon', { opacity: 1, scale: 1 }, { duration: 0.25, ease: 'easeInOut' }),
+      animate(
+        scope.current,
+        { scale: 1 },
+        { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+      ),
+      animate('.spin-ring', { opacity: 0, scale: 0.92 }, { duration: 0.3, ease: 'easeInOut' }),
+      animate('.loader', { opacity: 0, scale: 0.6 }, { duration: 0.25, ease: 'easeInOut' }),
+      animate('.button-icon', { opacity: 1, scale: 1 }, { duration: 0.3, ease: 'easeOut' }),
     ])
   }
 
@@ -78,26 +90,34 @@ export function StatefulButton({
       aria-busy={isLoading}
       disabled={isButtonDisabled}
       className={cn(
-        'group flex w-full max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-lg border-2 px-6 py-3.5 text-sm font-bold uppercase tracking-[0.12em] ring-offset-2 ring-offset-wilds-950 transition-colors duration-200',
+        'group relative flex w-full max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-lg border-2 px-6 py-3.5 text-sm font-bold uppercase tracking-[0.12em] ring-offset-2 ring-offset-wilds-950 transition-colors duration-200',
         'border-[#9a7b3c] bg-[#2c261f] text-[#ede0c8] shadow-[0_0_18px_rgba(154,123,60,0.22)]',
         'enabled:cursor-pointer enabled:hover:border-[#b8954a] enabled:hover:bg-[#3a3228] enabled:hover:shadow-[0_0_24px_rgba(184,149,74,0.28)]',
         'disabled:cursor-not-allowed disabled:border-[#4a4234] disabled:bg-[#1a1714] disabled:text-[#7a7268] disabled:shadow-none disabled:hover:border-[#4a4234] disabled:hover:bg-[#1a1714] disabled:hover:shadow-none',
-        isLoading && 'cursor-wait',
+        isLoading && 'cursor-wait border-[#b8954a] shadow-[0_0_32px_rgba(184,149,74,0.35)]',
         className,
       )}
       {...buttonProps}
       onClick={handleClick}
     >
-      <span className="inline-flex items-center justify-center gap-1.5">
-        <IconSlot icon={icon} />
+      <motion.span
+        className="spin-ring pointer-events-none absolute -inset-1 rounded-xl opacity-0"
+        initial={{ opacity: 0, scale: 0.92 }}
+        aria-hidden="true"
+      >
+        <span className="absolute inset-0 animate-[spin_0.9s_linear_infinite] rounded-xl border-2 border-[#d4b86a]/15 border-t-[#e4c878] border-r-[#d4b86a]/55" />
+      </motion.span>
+
+      <span className="button-content relative z-10 inline-flex items-center justify-center gap-1.5">
+        <IconSlot icon={icon} loading={isLoading} />
         {useSpinLabels ? (
           <span className="relative inline-block overflow-hidden text-center">
             <AnimatePresence mode="wait" initial={false}>
               <motion.span
                 key={String(label)}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
                 transition={{ duration: 0.2, ease: 'easeInOut' }}
                 className="block whitespace-nowrap"
               >
@@ -113,15 +133,18 @@ export function StatefulButton({
   )
 }
 
-function IconSlot({ icon }: { icon: 'sword' | 'shield' }) {
+function IconSlot({ icon, loading }: { icon: 'sword' | 'shield'; loading: boolean }) {
   return (
-    <div className="relative h-[18px] w-[18px] shrink-0" aria-hidden="true">
+    <div
+      className={`relative shrink-0 transition-[width,height] duration-300 ${loading ? 'h-6 w-6' : 'h-[18px] w-[18px]'}`}
+      aria-hidden="true"
+    >
       <motion.div className="button-icon absolute inset-0" initial={{ opacity: 1, scale: 1 }}>
         {icon === 'shield' ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
+            width="100%"
+            height="100%"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -135,8 +158,8 @@ function IconSlot({ icon }: { icon: 'sword' | 'shield' }) {
         ) : (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
+            width="100%"
+            height="100%"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -155,19 +178,19 @@ function IconSlot({ icon }: { icon: 'sword' | 'shield' }) {
 
       <motion.div
         className="loader pointer-events-none absolute inset-0"
-        initial={{ opacity: 0, scale: 0.8 }}
+        initial={{ opacity: 0, scale: 0.6 }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
+          width="100%"
+          height="100%"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="animate-[spin_0.45s_linear_infinite] text-[#d4b86a] transition-colors duration-200 group-disabled:text-[#5c5548]"
+          className="animate-[spin_0.65s_linear_infinite] text-[#e4c878] transition-colors duration-200 group-disabled:text-[#5c5548]"
         >
           <path stroke="none" d="M0 0h24v24H0z" fill="none" />
           <path d="M12 3a9 9 0 1 0 9 9" />

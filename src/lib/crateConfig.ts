@@ -7,7 +7,7 @@ export const CENTER_INDEX = 46
 export const VIEWPORT_HEIGHT = 620
 export const SPIN_MS = 4800
 export const OPEN_MS = 700
-/** Delay after reveal before title and spinner fade out. */
+/** Delay after reveal before spinner fades out. */
 export const REVEAL_UI_FADE_DELAY_MS = 3000
 /** Delay after monster reveal before the quest type badge appears. */
 export const QUEST_TYPE_REVEAL_DELAY_MS = 1000
