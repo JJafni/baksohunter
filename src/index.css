@@ -48,75 +48,79 @@
     );
   }
 
-  /* Matte, rough-surfaced buttons — flat fill with grain and micro-scratches. */
-  .wilds-rough-matte {
+  /* Hunt/Draw spin button — sandblasted matte surface (reference-style). */
+  .wilds-spin-matte {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    background-color: #2c261f;
-    box-shadow:
-      inset 0 1px 0 rgba(237, 224, 200, 0.06),
-      inset 0 -2px 0 rgba(0, 0, 0, 0.48),
-      0 1px 2px rgba(0, 0, 0, 0.28);
-  }
-
-  .wilds-rough-matte::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.42;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
-    background-size: 96px 96px;
-    mix-blend-mode: overlay;
-  }
-
-  .wilds-rough-matte::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.35;
+    background-color: #2e2720;
     background-image:
-      repeating-linear-gradient(
-        118deg,
-        rgba(201, 162, 77, 0.05) 0px,
-        rgba(201, 162, 77, 0.05) 1px,
-        transparent 1px,
-        transparent 5px
-      ),
-      repeating-linear-gradient(
-        28deg,
-        rgba(0, 0, 0, 0.06) 0px,
-        rgba(0, 0, 0, 0.06) 1px,
-        transparent 1px,
-        transparent 3px
-      );
-  }
-
-  .wilds-rough-matte:not(:disabled):hover {
-    background-color: #352d25;
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g' x='0%25' y='0%25' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.2' numOctaves='2' stitchTiles='stitch' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1.85 -0.48'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),
+      linear-gradient(180deg, #3a3228 0%, #2e2720 52%, #231d17 100%);
+    background-size:
+      58px 58px,
+      100% 100%;
+    background-blend-mode: overlay, normal;
     box-shadow:
-      inset 0 1px 0 rgba(237, 224, 200, 0.08),
-      inset 0 -2px 0 rgba(0, 0, 0, 0.5),
-      0 1px 3px rgba(0, 0, 0, 0.32);
+      inset 0 1px 0 rgba(255, 248, 235, 0.14),
+      inset 1px 0 0 rgba(255, 248, 235, 0.06),
+      inset -1px 0 0 rgba(255, 248, 235, 0.06),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+      0 1px 2px rgba(0, 0, 0, 0.42),
+      0 0 0 1px rgba(0, 0, 0, 0.36);
   }
 
-  .wilds-rough-matte:disabled {
-    background-color: #1a1714;
+  .wilds-spin-matte::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.02) 16%,
+      transparent 40%
+    );
+  }
+
+  .wilds-spin-matte::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.45;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f' x='0%25' y='0%25' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.4' numOctaves='1' stitchTiles='stitch' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 2.1 -0.55'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+    background-size: 38px 38px;
+    mix-blend-mode: soft-light;
+  }
+
+  .wilds-spin-matte:not(:disabled):hover {
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g' x='0%25' y='0%25' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.2' numOctaves='2' stitchTiles='stitch' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1.85 -0.48'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),
+      linear-gradient(180deg, #443a30 0%, #352d25 52%, #292219 100%);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.03),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+      inset 0 1px 0 rgba(255, 248, 235, 0.17),
+      inset 1px 0 0 rgba(255, 248, 235, 0.08),
+      inset -1px 0 0 rgba(255, 248, 235, 0.08),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.32),
+      0 1px 3px rgba(0, 0, 0, 0.48),
+      0 0 0 1px rgba(0, 0, 0, 0.38);
   }
 
-  .wilds-rough-matte:disabled::before {
+  .wilds-spin-matte:disabled {
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g' x='0%25' y='0%25' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.2' numOctaves='2' stitchTiles='stitch' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1.85 -0.48'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),
+      linear-gradient(180deg, #221e19 0%, #1a1714 52%, #141210 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+      0 1px 1px rgba(0, 0, 0, 0.28);
+  }
+
+  .wilds-spin-matte:disabled::after {
     opacity: 0.22;
-  }
-
-  .wilds-rough-matte:disabled::after {
-    opacity: 0.18;
   }
 }
 
