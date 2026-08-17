@@ -3,7 +3,6 @@ import type { CrateHuntContext } from './CrateHunt'
 import CrateHunt from './CrateHunt'
 import MonsterGalleryImage from './MonsterGalleryImage'
 import MonsterRarityFilter from './MonsterRarityFilter'
-import QuestTypeToggle from './QuestTypeToggle'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import { pickQuestTypeForMonster } from '../data/questTypes'
 import { MONSTER_POOL } from '../data/monsters'
@@ -57,26 +56,14 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
       overlayMode={overlayMode}
       onHuntChange={onHuntChange}
       filters={({ disabled, layout }) => (
-        <div
-          className={
-            layout === 'bar'
-              ? 'flex w-full flex-col items-center gap-3'
-              : 'flex flex-col items-stretch gap-3'
-          }
-        >
-          <MonsterRarityFilter
-            value={poolFilter}
-            onChange={setPoolFilter}
-            disabled={disabled}
-            variant={layout}
-          />
-          <QuestTypeToggle
-            enabled={questTypeEnabled}
-            onChange={setQuestTypeEnabled}
-            disabled={disabled}
-            variant={layout}
-          />
-        </div>
+        <MonsterRarityFilter
+          value={poolFilter}
+          onChange={setPoolFilter}
+          questTypeEnabled={questTypeEnabled}
+          onQuestTypeChange={setQuestTypeEnabled}
+          disabled={disabled}
+          variant={layout}
+        />
       )}
       belowReel={
         isMobile
