@@ -94,7 +94,7 @@ function MonsterRarityFilter({
                   : 'border-wilds-gold/15 bg-wilds-850/60 text-wilds-muted hover:border-wilds-gold/30 hover:text-wilds-parchment'
               } disabled:cursor-not-allowed disabled:opacity-50`}
             >
-              Quest Type
+              Hunt Type
             </button>
           </>
         ) : null}
