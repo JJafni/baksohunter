@@ -103,8 +103,7 @@ function RevealPanel({
       {monsterInfo ? (
         <MonsterInfoModal
           info={monsterInfo}
-          imageUrl={getMonsterGalleryImageUrl(entry.slug)}
-          imageFallbackUrl={entry.icon}
+          icon={entry.icon}
           open={infoOpen}
           onClose={() => setInfoOpen(false)}
         />

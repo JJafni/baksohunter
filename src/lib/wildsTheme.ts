@@ -8,3 +8,5 @@ export const WILDS_REEL_FRAME =
   'border border-wilds-gold/20 bg-wilds-900/70 shadow-[inset_0_1px_0_rgba(228,200,120,0.08)]'
 
 export const WILDS_REEL_FADE = 'from-wilds-950 via-wilds-950/85'
+
+export const WILDS_SCROLLBAR = 'wilds-scrollbar'

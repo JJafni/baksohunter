@@ -2,7 +2,7 @@ import { useEffect, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import type { MonsterInfo } from '../data/monsterInfoTypes'
-import { WILDS_PANEL_BORDER } from '../lib/wildsTheme'
+import { WILDS_PANEL_BORDER, WILDS_SCROLLBAR } from '../lib/wildsTheme'
 
 const ELEMENT_CLASS: Record<string, string> = {
   fire: 'text-orange-400',
@@ -153,27 +153,18 @@ function MonsterInfoModal({ info, icon, open, onClose }: MonsterInfoModalProps) 
               </button>
             </div>
 
-            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto sm:flex-row">
-              <div className="flex shrink-0 items-end justify-center border-b border-wilds-gold/15 bg-gradient-to-b from-wilds-950/80 to-wilds-900/40 p-3 sm:w-52 sm:border-r sm:border-b-0 md:w-60">
-                {renderSrc ? (
-                  <img
-                    src={renderSrc}
-                    alt=""
-                    className="max-h-40 w-full object-contain object-bottom sm:max-h-[min(60vh,520px)] sm:min-h-[280px]"
-                    draggable={false}
-                    onError={() => {
-                      if (showGalleryImage && imageFallbackUrl) setUseImageFallback(true)
-                    }}
-                  />
+            <div className={`min-h-0 flex-1 overflow-y-auto p-3 sm:p-4 ${WILDS_SCROLLBAR}`}>
+              <div className="mb-3 flex justify-center border-b border-wilds-gold/15 pb-3">
+                {icon ? (
+                  <img src={icon} alt="" className="size-24 object-contain sm:size-28" draggable={false} />
                 ) : (
-                  <div className="flex h-40 w-full items-center justify-center rounded-sm border border-dashed border-wilds-gold/20 text-[10px] uppercase tracking-[0.14em] text-wilds-muted sm:h-[280px]">
-                    No render
+                  <div className="flex size-24 items-center justify-center rounded-sm border border-dashed border-wilds-gold/20 text-[10px] uppercase tracking-[0.14em] text-wilds-muted sm:size-28">
+                    No icon
                   </div>
                 )}
               </div>
 
-              <div className="min-w-0 flex-1 p-3 sm:p-4">
-                <InfoGrid columns={3}>
+              <InfoGrid columns={3}>
                   <InfoCell label="Elements">
                     <TagList items={info.elements} />
                   </InfoCell>
@@ -256,7 +247,6 @@ function MonsterInfoModal({ info, icon, open, onClose }: MonsterInfoModalProps) 
                 >
                   View on Monster Hunter Wiki
                 </a>
-              </div>
             </div>
           </motion.div>
         </motion.div>
