@@ -66,7 +66,6 @@ const FOOTER_ROW_H = '2.75rem'
 const MOBILE_REVEAL_ROW_H = '4.75rem'
 
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
-const FILTERS_FADE = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
 const CONTROLS_LAYOUT = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
 
 function SpinnerUiFade({ visible, children }: { visible: boolean; children: ReactNode }) {
@@ -113,11 +112,8 @@ function CrateHunt({
   const [spinKey, setSpinKey] = useState(0)
   const [isEntering, setIsEntering] = useState(false)
   const [spinnerUiVisible, setSpinnerUiVisible] = useState(true)
-  const [filtersRevealed, setFiltersRevealed] = useState(false)
   const spinResolverRef = useRef<(() => void) | null>(null)
   const spinnerFadeTimerRef = useRef<number | null>(null)
-  const filtersRevealTimerRef = useRef<number | null>(null)
-  const filtersRevealPendingRef = useRef(false)
 
   const clearSpinnerFadeTimer = useCallback(() => {
     if (spinnerFadeTimerRef.current !== null) {
@@ -125,20 +121,6 @@ function CrateHunt({
       spinnerFadeTimerRef.current = null
     }
   }, [])
-
-  const clearFiltersRevealTimer = useCallback(() => {
-    if (filtersRevealTimerRef.current !== null) {
-      window.clearTimeout(filtersRevealTimerRef.current)
-      filtersRevealTimerRef.current = null
-    }
-  }, [])
-
-  const revealFilters = useCallback(() => {
-    if (!filtersRevealPendingRef.current) return
-    filtersRevealPendingRef.current = false
-    clearFiltersRevealTimer()
-    setFiltersRevealed(true)
-  }, [clearFiltersRevealTimer])
 
   const startHunt = useCallback(async () => {
     if (phase === 'spinning' || pool.length === 0) return
@@ -167,28 +149,6 @@ function CrateHunt({
   useEffect(() => {
     if (!questTypeEnabled) setQuestType(null)
   }, [questTypeEnabled])
-
-  useEffect(() => {
-    if (phase === 'idle') {
-      clearFiltersRevealTimer()
-      filtersRevealPendingRef.current = false
-      setFiltersRevealed(false)
-      return
-    }
-
-    if (filtersRevealed) return
-
-    filtersRevealPendingRef.current = true
-    clearFiltersRevealTimer()
-    filtersRevealTimerRef.current = window.setTimeout(revealFilters, OPEN_MS)
-
-    return clearFiltersRevealTimer
-  }, [phase, spinKey, filtersRevealed, clearFiltersRevealTimer, revealFilters])
-
-  const handleControlsLayoutComplete = useCallback(() => {
-    if (phase === 'idle' || filtersRevealed) return
-    revealFilters()
-  }, [phase, filtersRevealed, revealFilters])
 
   useEffect(() => {
     if (!isEntering) return
@@ -237,17 +197,9 @@ function CrateHunt({
 
   const buttonLabel = phase === 'revealed' ? buttonLabels.again : buttonLabels.open
   const canSpin = pool.length > 0
-  const hasFilters = Boolean(filters)
   const reelOnLeft = reelSide === 'left'
-  const filterColClass = reelOnLeft ? 'col-start-1' : 'col-start-3'
-  const reelColClass = hasFilters ? 'col-start-2' : reelOnLeft ? 'col-start-1' : 'col-start-2'
-  const nameColClass = hasFilters
-    ? reelOnLeft
-      ? 'col-start-3'
-      : 'col-start-1'
-    : reelOnLeft
-      ? 'col-start-2'
-      : 'col-start-1'
+  const reelColClass = reelOnLeft ? 'col-start-1' : 'col-start-2'
+  const nameColClass = reelOnLeft ? 'col-start-2' : 'col-start-1'
 
   const blockWidth = useStackedLayout ? '100%' : REEL_WIDTH
   const stretchClass = isEntering
@@ -274,30 +226,28 @@ function CrateHunt({
   const belowReelSlot = externalGallery ? null : belowReel?.(huntContextForRender) ?? null
 
   const filtersDisabled = phase === 'spinning'
-  const filterLayout = useStackedLayout ? 'bar' : 'sidebar'
-  const filtersWithFade = filters && filtersRevealed ? (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={FILTERS_FADE}
-      className={useStackedLayout ? 'w-full' : 'self-center'}
-    >
-      {filters({ disabled: filtersDisabled, layout: filterLayout })}
-    </motion.div>
-  ) : null
 
   const actions = (
     <div className={`flex flex-col items-center ${actionsPadding}`} style={{ width: blockWidth }}>
-      <StatefulButton
-        layoutId={buttonLayoutId}
-        loadingLabels={spinLabels}
-        icon={buttonIcon}
-        surface={buttonSurface}
-        onClick={startHunt}
-        disabled={phase === 'spinning' || !canSpin}
-      >
-        {buttonLabel}
-      </StatefulButton>
+      <div className="relative w-full">
+        {filters ? (
+          <div className="pointer-events-none absolute inset-x-0 bottom-full z-20 mb-2 flex justify-center">
+            <div className="pointer-events-auto">
+              {filters({ disabled: filtersDisabled, layout: 'bar' })}
+            </div>
+          </div>
+        ) : null}
+        <StatefulButton
+          layoutId={buttonLayoutId}
+          loadingLabels={spinLabels}
+          icon={buttonIcon}
+          surface={buttonSurface}
+          onClick={startHunt}
+          disabled={phase === 'spinning' || !canSpin}
+        >
+          {buttonLabel}
+        </StatefulButton>
+      </div>
       {poolLine}
     </div>
   )
@@ -401,13 +351,11 @@ function CrateHunt({
           <motion.div
             layout
             transition={{ layout: CONTROLS_LAYOUT }}
-            onLayoutAnimationComplete={handleControlsLayoutComplete}
             className={`flex w-full flex-col items-center gap-2 ${
               overlayMode && phase !== 'idle' ? 'mt-auto' : ''
             }`}
           >
             {mobileRevealSlot}
-            {filtersWithFade}
             {actions}
           </motion.div>
         </motion.div>
@@ -430,20 +378,10 @@ function CrateHunt({
       <div
         className="grid gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6"
         style={{
-          gridTemplateColumns: hasFilters
-            ? reelOnLeft
-              ? `auto ${REEL_WIDTH}px auto`
-              : `auto ${REEL_WIDTH}px auto`
-            : reelOnLeft
-              ? `${REEL_WIDTH}px auto`
-              : `auto ${REEL_WIDTH}px`,
+          gridTemplateColumns: reelOnLeft ? `${REEL_WIDTH}px auto` : `auto ${REEL_WIDTH}px`,
           gridTemplateRows: 'auto auto',
         }}
       >
-        {filtersWithFade ? (
-          <div className={`${filterColClass} row-start-1 self-center`}>{filtersWithFade}</div>
-        ) : null}
-
         <div className={`${reelColClass} row-start-1`}>
           <SpinnerUiFade visible={showSpinnerUi}>{reelSlot}</SpinnerUiFade>
         </div>
