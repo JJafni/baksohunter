@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import type { MonsterInfo } from '../data/monsterInfoTypes'
@@ -75,12 +75,19 @@ function InfoGrid({
 
 type MonsterInfoModalProps = {
   info: MonsterInfo | null
-  icon?: string
+  /** HD gallery render; falls back to hunt icon if missing or failed to load. */
+  imageUrl?: string
+  imageFallbackUrl?: string
   open: boolean
   onClose: () => void
 }
 
-function MonsterInfoModal({ info, icon, open, onClose }: MonsterInfoModalProps) {
+function MonsterInfoModal({ info, imageUrl, imageFallbackUrl, open, onClose }: MonsterInfoModalProps) {
+  const [useImageFallback, setUseImageFallback] = useState(false)
+
+  useEffect(() => {
+    setUseImageFallback(false)
+  }, [info?.slug, imageUrl, open])
   useEffect(() => {
     if (!open) return
 
@@ -103,6 +110,9 @@ function MonsterInfoModal({ info, icon, open, onClose }: MonsterInfoModalProps) 
   }, [open])
 
   if (typeof document === 'undefined') return null
+
+  const showGalleryImage = Boolean(imageUrl) && !useImageFallback
+  const renderSrc = showGalleryImage ? imageUrl : imageFallbackUrl
 
   return createPortal(
     <AnimatePresence>
@@ -154,17 +164,20 @@ function MonsterInfoModal({ info, icon, open, onClose }: MonsterInfoModalProps) 
             </div>
 
             <div className="flex min-h-0 flex-1 flex-col overflow-y-auto sm:flex-row">
-              <div className="flex shrink-0 items-center justify-center border-b border-wilds-gold/15 bg-wilds-950/50 p-4 sm:w-44 sm:border-r sm:border-b-0 md:w-52">
-                {icon ? (
+              <div className="flex shrink-0 items-end justify-center border-b border-wilds-gold/15 bg-gradient-to-b from-wilds-950/80 to-wilds-900/40 p-3 sm:w-52 sm:border-r sm:border-b-0 md:w-60">
+                {renderSrc ? (
                   <img
-                    src={icon}
+                    src={renderSrc}
                     alt=""
-                    className="size-28 object-contain sm:size-32 md:size-36"
+                    className="max-h-40 w-full object-contain object-bottom sm:max-h-[min(60vh,520px)] sm:min-h-[280px]"
                     draggable={false}
+                    onError={() => {
+                      if (showGalleryImage && imageFallbackUrl) setUseImageFallback(true)
+                    }}
                   />
                 ) : (
-                  <div className="flex size-28 items-center justify-center rounded-sm border border-dashed border-wilds-gold/20 text-[10px] uppercase tracking-[0.14em] text-wilds-muted sm:size-32">
-                    No icon
+                  <div className="flex h-40 w-full items-center justify-center rounded-sm border border-dashed border-wilds-gold/20 text-[10px] uppercase tracking-[0.14em] text-wilds-muted sm:h-[280px]">
+                    No render
                   </div>
                 )}
               </div>
