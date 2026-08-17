@@ -101,7 +101,12 @@ function RevealPanel({
         {rarityLabelFor(entry, rarityLabels)}
       </p>
       {monsterInfo ? (
-        <MonsterInfoModal info={monsterInfo} open={infoOpen} onClose={() => setInfoOpen(false)} />
+        <MonsterInfoModal
+          info={monsterInfo}
+          icon={entry.icon}
+          open={infoOpen}
+          onClose={() => setInfoOpen(false)}
+        />
       ) : null}
     </>
   )
