@@ -62,8 +62,10 @@ type CrateHuntProps = {
 
 /** Shared row heights so monster and weapon columns line up horizontally. */
 const FOOTER_ROW_H = '2.75rem'
-/** Fixed mobile reveal row — keeps filters/button from jumping when the name appears. */
-const MOBILE_REVEAL_ROW_H = '4.75rem'
+/** Fixed stacked reveal row — keeps name, filters, and button from overlapping. */
+const STACKED_REVEAL_ROW_H = '6.5rem'
+/** Reserved filter strip above spin buttons (both columns, for alignment). */
+const FILTER_DOCK_MIN_H = '5.25rem'
 
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 const CONTROLS_LAYOUT = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
@@ -224,30 +226,35 @@ function CrateHunt({
 
   const huntContextForRender: CrateHuntContext = { result, questType, phase, spinnerUiVisible }
   const belowReelSlot = externalGallery ? null : belowReel?.(huntContextForRender) ?? null
+  const columnMaxWidth = HUNT_COLUMN_MAX_WIDTH
 
   const filtersDisabled = phase === 'spinning'
 
+  const filterDock = (
+    <div
+      className="mb-2 flex w-full items-end justify-center px-1"
+      style={{ minHeight: FILTER_DOCK_MIN_H }}
+    >
+      {filters ? filters({ disabled: filtersDisabled, layout: 'bar' }) : null}
+    </div>
+  )
+
   const actions = (
-    <div className={`flex flex-col items-center ${actionsPadding}`} style={{ width: blockWidth }}>
-      <div className="relative w-full">
-        {filters ? (
-          <div className="pointer-events-none absolute inset-x-0 bottom-full z-20 mb-2 flex justify-center">
-            <div className="pointer-events-auto">
-              {filters({ disabled: filtersDisabled, layout: 'bar' })}
-            </div>
-          </div>
-        ) : null}
-        <StatefulButton
-          layoutId={buttonLayoutId}
-          loadingLabels={spinLabels}
-          icon={buttonIcon}
-          surface={buttonSurface}
-          onClick={startHunt}
-          disabled={phase === 'spinning' || !canSpin}
-        >
-          {buttonLabel}
-        </StatefulButton>
-      </div>
+    <div
+      className={`flex w-full flex-col items-center ${actionsPadding}`}
+      style={{ width: blockWidth, maxWidth: useStackedLayout ? columnMaxWidth : undefined }}
+    >
+      {filterDock}
+      <StatefulButton
+        layoutId={buttonLayoutId}
+        loadingLabels={spinLabels}
+        icon={buttonIcon}
+        surface={buttonSurface}
+        onClick={startHunt}
+        disabled={phase === 'spinning' || !canSpin}
+      >
+        {buttonLabel}
+      </StatefulButton>
       {poolLine}
     </div>
   )
@@ -269,26 +276,16 @@ function CrateHunt({
       <QuestTypeBadge questType={questType} visible={phase === 'revealed'} revealKey={spinKey} />
     ) : null
 
-  const mobileRevealSlot = !useStackedLayout ? null : isMobile ? (
+  const stackedRevealSlot = useStackedLayout ? (
     <motion.div
-      className="flex w-full shrink-0 items-center justify-center overflow-hidden"
+      className="flex w-full shrink-0 items-center justify-center overflow-hidden px-2"
       initial={false}
-      animate={{ height: phase === 'idle' ? 0 : MOBILE_REVEAL_ROW_H }}
+      animate={{ height: phase === 'revealed' ? STACKED_REVEAL_ROW_H : 0 }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
     >
-      {phase !== 'idle' ? namePanel : null}
+      {phase === 'revealed' ? namePanel : null}
     </motion.div>
-  ) : phase !== 'idle' ? (
-      <motion.div
-        layout
-        className="w-full transition-[grid-template-rows] duration-[550ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
-        style={{ display: 'grid', gridTemplateRows: phase === 'revealed' ? '1fr' : '0fr' }}
-      >
-        <div className="min-h-0 overflow-hidden">{namePanel}</div>
-      </motion.div>
-    ) : null
-
-  const columnMaxWidth = HUNT_COLUMN_MAX_WIDTH
+  ) : null
 
   const reelSlot =
     phase === 'idle' ? null : (
@@ -351,11 +348,12 @@ function CrateHunt({
           <motion.div
             layout
             transition={{ layout: CONTROLS_LAYOUT }}
-            className={`flex w-full flex-col items-center gap-2 ${
+            className={`flex w-full max-w-full flex-col items-center gap-2 ${
               overlayMode && phase !== 'idle' ? 'mt-auto' : ''
             }`}
+            style={{ maxWidth: columnMaxWidth }}
           >
-            {mobileRevealSlot}
+            {stackedRevealSlot}
             {actions}
           </motion.div>
         </motion.div>
