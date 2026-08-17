@@ -91,21 +91,21 @@ function RevealPanel({
 
     return (
       <div className="wilds-legibility-text">
-        <div className={`flex items-center gap-2 ${nameRowClass}`}>
+        <div className={`flex items-start gap-2 ${nameRowClass}`}>
           {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
-          <h2
-            className={`font-black uppercase leading-[0.95] tracking-tight text-wilds-parchment ${nameSizeClassFor(entry)}`}
-          >
-            {entry.name}
-          </h2>
+          <div className="flex items-start gap-2">
+            <h2
+              className={`font-black uppercase leading-[0.95] tracking-tight text-wilds-parchment ${nameSizeClassFor(entry)}`}
+            >
+              {entry.name}
+            </h2>
+            {titleUpdateLabel ? (
+              <span className="shrink-0 pt-0.5 text-[10px] font-bold uppercase tracking-[0.28em] text-wilds-gold-light/90 sm:text-xs sm:pt-1">
+                {titleUpdateLabel}
+              </span>
+            ) : null}
+          </div>
         </div>
-        {titleUpdateLabel ? (
-          <p
-            className={`${isMobile ? 'mt-1.5 text-[10px] sm:text-xs' : 'mt-2 text-[10px] sm:text-xs'} font-bold uppercase tracking-[0.28em] text-wilds-gold-light/90`}
-          >
-            {titleUpdateLabel}
-          </p>
-        ) : null}
         <p
           className={`${isMobile ? 'mt-2 text-sm sm:text-base' : 'mt-2.5 text-sm sm:text-base'} font-bold uppercase tracking-[0.2em] ${RARITY_TEXT[getVisualRarity(entry)]}`}
         >
