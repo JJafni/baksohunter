@@ -3,6 +3,7 @@ import { motion } from 'motion/react'
 import type { CrateEntry } from '../data/types'
 import { useGalleryDisplayResult } from '../hooks/useGalleryDisplayResult'
 import { getWeaponGalleryImageUrl, WEAPON_GALLERY_SOURCE_URL } from '../lib/weaponGalleryImages'
+import { hasLocalWeaponGallery } from '../lib/localGalleryAssets'
 
 const GALLERY_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 
@@ -76,6 +77,7 @@ function WeaponGalleryImage({
   const galleryUrl = getWeaponGalleryImageUrl(displayedResult.slug)
   const showHd = Boolean(galleryUrl) && !useIconFallback
   const imageUrl = showHd ? galleryUrl! : displayedResult.icon
+  const isLocalGallery = hasLocalWeaponGallery(displayedResult.slug)
 
   return (
     <figure
@@ -114,17 +116,21 @@ function WeaponGalleryImage({
       </div>
       <figcaption className="shrink-0 border-t border-wilds-gold/10 px-3 py-2 text-center text-[9px] uppercase tracking-[0.14em] text-wilds-muted sm:text-[10px]">
         {showHd ? (
-          <>
-            Showcase via{' '}
-            <a
-              href={WEAPON_GALLERY_SOURCE_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-wilds-muted underline-offset-2 hover:text-wilds-gold-light hover:underline"
-            >
-              IGN Nordic Weapons Gallery
-            </a>
-          </>
+          isLocalGallery ? (
+            <span className="text-wilds-muted">Showcase image</span>
+          ) : (
+            <>
+              Showcase via{' '}
+              <a
+                href={WEAPON_GALLERY_SOURCE_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="text-wilds-muted underline-offset-2 hover:text-wilds-gold-light hover:underline"
+              >
+                IGN Nordic Weapons Gallery
+              </a>
+            </>
+          )
         ) : (
           <span className="text-wilds-muted">Showcase not available — showing weapon icon</span>
         )}
