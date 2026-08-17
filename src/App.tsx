@@ -102,11 +102,13 @@ function HuntLayout({
 function AppContent() {
   const [monsterHunt, setMonsterHunt] = useState<CrateHuntContext>({
     result: null,
+    questType: null,
     phase: 'idle',
     spinnerUiVisible: true,
   })
   const [weaponHunt, setWeaponHunt] = useState<CrateHuntContext>({
     result: null,
+    questType: null,
     phase: 'idle',
     spinnerUiVisible: true,
   })

@@ -3,6 +3,8 @@ import type { MonsterPoolFilterState } from '../lib/rarityFilter'
 type MonsterRarityFilterProps = {
   value: MonsterPoolFilterState
   onChange: (next: MonsterPoolFilterState) => void
+  questTypeEnabled?: boolean
+  onQuestTypeChange?: (enabled: boolean) => void
   disabled?: boolean
   variant?: 'sidebar' | 'bar'
 }
@@ -26,7 +28,14 @@ const FILTER_OPTIONS: {
   },
 ]
 
-function MonsterRarityFilter({ value, onChange, disabled = false, variant = 'sidebar' }: MonsterRarityFilterProps) {
+function MonsterRarityFilter({
+  value,
+  onChange,
+  questTypeEnabled,
+  onQuestTypeChange,
+  disabled = false,
+  variant = 'sidebar',
+}: MonsterRarityFilterProps) {
   const toggle = (key: keyof MonsterPoolFilterState) => {
     onChange({ ...value, [key]: !value[key] })
   }
@@ -64,6 +73,31 @@ function MonsterRarityFilter({ value, onChange, disabled = false, variant = 'sid
             </button>
           )
         })}
+        {onQuestTypeChange ? (
+          <>
+            <div
+              aria-hidden="true"
+              className={
+                isBar
+                  ? 'mx-0.5 h-5 w-px shrink-0 self-center bg-wilds-gold/20'
+                  : 'my-0.5 h-px w-full shrink-0 bg-wilds-gold/20'
+              }
+            />
+            <button
+              type="button"
+              disabled={disabled}
+              aria-pressed={questTypeEnabled}
+              onClick={() => onQuestTypeChange(!questTypeEnabled)}
+              className={`cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
+                questTypeEnabled
+                  ? 'border-wilds-gold/50 bg-wilds-gold/10 text-wilds-gold-light'
+                  : 'border-wilds-gold/15 bg-wilds-850/60 text-wilds-muted hover:border-wilds-gold/30 hover:text-wilds-parchment'
+              } disabled:cursor-not-allowed disabled:opacity-50`}
+            >
+              Hunt Type
+            </button>
+          </>
+        ) : null}
       </div>
     </div>
   )

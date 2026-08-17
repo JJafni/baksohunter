@@ -1,4 +1,5 @@
 import { MONSTER_POOL } from '../data/monsters'
+import { getQuestTypeIconUrls } from '../data/questTypes'
 import { WEAPON_POOL } from '../data/weapons'
 
 export function getAppAssetUrls(): string[] {
@@ -10,6 +11,10 @@ export function getAppAssetUrls(): string[] {
 
   for (const entry of WEAPON_POOL) {
     urls.add(entry.icon)
+  }
+
+  for (const icon of getQuestTypeIconUrls()) {
+    urls.add(icon)
   }
 
   return [...urls]
