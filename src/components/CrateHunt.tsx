@@ -46,7 +46,7 @@ type CrateHuntProps = {
   filters?: (ctx: { disabled: boolean; layout: 'sidebar' | 'bar' }) => ReactNode
   /** Random labels shown on the button while spinning. Omit for a static label. */
   spinLabels?: string[]
-  buttonIcon?: 'sword' | 'shield'
+  buttonIcon?: 'claw-scratch' | 'sword-and-shield'
   /** Hunt = sandblasted matte; Draw = grey shiny gradient. */
   buttonSurface?: 'matte' | 'shiny'
   reelOrientation?: 'horizontal' | 'vertical'
@@ -94,7 +94,7 @@ function CrateHunt({
   reelSide,
   filters,
   spinLabels,
-  buttonIcon = 'sword',
+  buttonIcon = 'claw-scratch',
   buttonSurface = 'matte',
   reelOrientation = 'horizontal',
   belowReel,
