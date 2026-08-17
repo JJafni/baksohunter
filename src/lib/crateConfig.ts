@@ -9,6 +9,8 @@ export const SPIN_MS = 4800
 export const OPEN_MS = 700
 /** Delay after reveal before title and spinner fade out. */
 export const REVEAL_UI_FADE_DELAY_MS = 3000
+/** Delay after monster reveal before the quest type badge appears. */
+export const QUEST_TYPE_REVEAL_DELAY_MS = 1000
 /** Width of the vertical reel block on desktop. */
 export const REEL_WIDTH = CARD_SIZE + 40
 /** Horizontal reel frame height on mobile. */

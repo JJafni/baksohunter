@@ -8,8 +8,6 @@ export type QuestTypeDefinition = {
   id: QuestType
   /** Short label shown on reveal (e.g. "Hunt"). */
   label: string
-  /** One-line objective hint for the assigned quest type. */
-  objective: string
   icon: string
 }
 
@@ -17,19 +15,16 @@ export const QUEST_TYPES: QuestTypeDefinition[] = [
   {
     id: 'hunt',
     label: 'Hunt',
-    objective: 'Slay or capture the target',
     icon: '/quest-icons/hunt.png',
   },
   {
     id: 'slay',
     label: 'Slay',
-    objective: 'Slay the target',
     icon: '/quest-icons/slay.png',
   },
   {
     id: 'capture',
     label: 'Capture',
-    objective: 'Capture the target',
     icon: '/quest-icons/capture.png',
   },
 ]

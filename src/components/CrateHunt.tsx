@@ -281,7 +281,7 @@ function CrateHunt({
   )
 
   const questTypeBadge = pickRandomQuestType ? (
-    <QuestTypeBadge questType={questType} visible={phase !== 'idle'} revealKey={spinKey} />
+    <QuestTypeBadge questType={questType} visible={phase === 'revealed'} revealKey={spinKey} />
   ) : null
 
   const mobileRevealSlot = !useStackedLayout ? null : isMobile ? (
