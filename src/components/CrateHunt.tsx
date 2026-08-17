@@ -65,6 +65,7 @@ const MOBILE_REVEAL_ROW_H = '4.75rem'
 
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 const FILTERS_FADE = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
+const CONTROLS_LAYOUT = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
 
 function SpinnerUiFade({ visible, children }: { visible: boolean; children: ReactNode }) {
   return (
@@ -109,8 +110,11 @@ function CrateHunt({
   const [spinKey, setSpinKey] = useState(0)
   const [isEntering, setIsEntering] = useState(false)
   const [spinnerUiVisible, setSpinnerUiVisible] = useState(true)
+  const [filtersRevealed, setFiltersRevealed] = useState(false)
   const spinResolverRef = useRef<(() => void) | null>(null)
   const spinnerFadeTimerRef = useRef<number | null>(null)
+  const filtersRevealTimerRef = useRef<number | null>(null)
+  const filtersRevealPendingRef = useRef(false)
 
   const clearSpinnerFadeTimer = useCallback(() => {
     if (spinnerFadeTimerRef.current !== null) {
@@ -118,6 +122,20 @@ function CrateHunt({
       spinnerFadeTimerRef.current = null
     }
   }, [])
+
+  const clearFiltersRevealTimer = useCallback(() => {
+    if (filtersRevealTimerRef.current !== null) {
+      window.clearTimeout(filtersRevealTimerRef.current)
+      filtersRevealTimerRef.current = null
+    }
+  }, [])
+
+  const revealFilters = useCallback(() => {
+    if (!filtersRevealPendingRef.current) return
+    filtersRevealPendingRef.current = false
+    clearFiltersRevealTimer()
+    setFiltersRevealed(true)
+  }, [clearFiltersRevealTimer])
 
   const startHunt = useCallback(async () => {
     if (phase === 'spinning' || pool.length === 0) return
@@ -146,6 +164,28 @@ function CrateHunt({
   useEffect(() => {
     if (!questTypeEnabled) setQuestType(null)
   }, [questTypeEnabled])
+
+  useEffect(() => {
+    if (phase === 'idle') {
+      clearFiltersRevealTimer()
+      filtersRevealPendingRef.current = false
+      setFiltersRevealed(false)
+      return
+    }
+
+    if (filtersRevealed) return
+
+    filtersRevealPendingRef.current = true
+    clearFiltersRevealTimer()
+    filtersRevealTimerRef.current = window.setTimeout(revealFilters, OPEN_MS)
+
+    return clearFiltersRevealTimer
+  }, [phase, spinKey, filtersRevealed, clearFiltersRevealTimer, revealFilters])
+
+  const handleControlsLayoutComplete = useCallback(() => {
+    if (phase === 'idle' || filtersRevealed) return
+    revealFilters()
+  }, [phase, filtersRevealed, revealFilters])
 
   useEffect(() => {
     if (!isEntering) return
@@ -232,18 +272,15 @@ function CrateHunt({
 
   const filtersDisabled = phase === 'spinning'
   const filterLayout = useStackedLayout ? 'bar' : 'sidebar'
-  const showFilters = phase !== 'idle'
-  const filtersWithFade = filters ? (
-    showFilters ? (
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={FILTERS_FADE}
-        className={useStackedLayout ? 'w-full' : 'self-center'}
-      >
-        {filters({ disabled: filtersDisabled, layout: filterLayout })}
-      </motion.div>
-    ) : null
+  const filtersWithFade = filters && filtersRevealed ? (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={FILTERS_FADE}
+      className={useStackedLayout ? 'w-full' : 'self-center'}
+    >
+      {filters({ disabled: filtersDisabled, layout: filterLayout })}
+    </motion.div>
   ) : null
 
   const actions = (
@@ -343,7 +380,9 @@ function CrateHunt({
           }}
         />
 
-        <div
+        <motion.div
+          layout
+          transition={{ layout: CONTROLS_LAYOUT }}
           className={`flex w-full flex-col items-center ${
             overlayMode
               ? `mx-auto h-full min-h-0 gap-3 py-2 ${phase === 'idle' ? 'justify-center' : ''}`
@@ -355,7 +394,10 @@ function CrateHunt({
             {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
           </SpinnerUiFade>
           {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
-          <div
+          <motion.div
+            layout
+            transition={{ layout: CONTROLS_LAYOUT }}
+            onLayoutAnimationComplete={handleControlsLayoutComplete}
             className={`flex w-full flex-col items-center gap-2 ${
               overlayMode && phase !== 'idle' ? 'mt-auto' : ''
             }`}
@@ -363,8 +405,8 @@ function CrateHunt({
             {mobileRevealSlot}
             {filtersWithFade}
             {actions}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     )
   }
