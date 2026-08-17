@@ -118,14 +118,6 @@
   .wilds-rough-matte:disabled::after {
     opacity: 0.18;
   }
-
-  .wilds-rough-matte-muted {
-    background-color: color-mix(in srgb, var(--color-wilds-850) 88%, black);
-  }
-
-  .wilds-rough-matte-muted:not(:disabled):hover {
-    background-color: color-mix(in srgb, var(--color-wilds-800) 90%, black);
-  }
 }
 
 @keyframes reel-blur {
