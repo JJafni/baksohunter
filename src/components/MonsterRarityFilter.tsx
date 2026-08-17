@@ -63,10 +63,10 @@ function MonsterRarityFilter({
               disabled={disabled}
               aria-pressed={on}
               onClick={() => toggle(key)}
-              className={`cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
+              className={`wilds-rough-matte wilds-rough-matte-muted cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition-[border-color,color] sm:text-[10px] ${
                 on
                   ? activeClass
-                  : 'border-wilds-gold/15 bg-wilds-850/60 text-wilds-muted hover:border-wilds-gold/30 hover:text-wilds-parchment'
+                  : 'border-wilds-gold/15 text-wilds-muted hover:border-wilds-gold/30 hover:text-wilds-parchment'
               } disabled:cursor-not-allowed disabled:opacity-50`}
             >
               {label}
@@ -88,10 +88,10 @@ function MonsterRarityFilter({
               disabled={disabled}
               aria-pressed={questTypeEnabled}
               onClick={() => onQuestTypeChange(!questTypeEnabled)}
-              className={`cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
+              className={`wilds-rough-matte wilds-rough-matte-muted cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition-[border-color,color] sm:text-[10px] ${
                 questTypeEnabled
                   ? 'border-wilds-gold/50 bg-wilds-gold/10 text-wilds-gold-light'
-                  : 'border-wilds-gold/15 bg-wilds-850/60 text-wilds-muted hover:border-wilds-gold/30 hover:text-wilds-parchment'
+                  : 'border-wilds-gold/15 text-wilds-muted hover:border-wilds-gold/30 hover:text-wilds-parchment'
               } disabled:cursor-not-allowed disabled:opacity-50`}
             >
               Hunt Type

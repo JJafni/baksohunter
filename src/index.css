@@ -47,6 +47,85 @@
       transparent 26px
     );
   }
+
+  /* Matte, rough-surfaced buttons — flat fill with grain and micro-scratches. */
+  .wilds-rough-matte {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-color: #2c261f;
+    box-shadow:
+      inset 0 1px 0 rgba(237, 224, 200, 0.06),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.48),
+      0 1px 2px rgba(0, 0, 0, 0.28);
+  }
+
+  .wilds-rough-matte::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.42;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    background-size: 96px 96px;
+    mix-blend-mode: overlay;
+  }
+
+  .wilds-rough-matte::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    background-image:
+      repeating-linear-gradient(
+        118deg,
+        rgba(201, 162, 77, 0.05) 0px,
+        rgba(201, 162, 77, 0.05) 1px,
+        transparent 1px,
+        transparent 5px
+      ),
+      repeating-linear-gradient(
+        28deg,
+        rgba(0, 0, 0, 0.06) 0px,
+        rgba(0, 0, 0, 0.06) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+  }
+
+  .wilds-rough-matte:not(:disabled):hover {
+    background-color: #352d25;
+    box-shadow:
+      inset 0 1px 0 rgba(237, 224, 200, 0.08),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.5),
+      0 1px 3px rgba(0, 0, 0, 0.32);
+  }
+
+  .wilds-rough-matte:disabled {
+    background-color: #1a1714;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.03),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+  }
+
+  .wilds-rough-matte:disabled::before {
+    opacity: 0.22;
+  }
+
+  .wilds-rough-matte:disabled::after {
+    opacity: 0.18;
+  }
+
+  .wilds-rough-matte-muted {
+    background-color: color-mix(in srgb, var(--color-wilds-850) 88%, black);
+  }
+
+  .wilds-rough-matte-muted:not(:disabled):hover {
+    background-color: color-mix(in srgb, var(--color-wilds-800) 90%, black);
+  }
 }
 
 @keyframes reel-blur {
