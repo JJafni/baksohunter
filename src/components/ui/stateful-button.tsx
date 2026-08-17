@@ -16,7 +16,7 @@ interface StatefulButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
   layoutId?: string
   /** When set, a random label is shown while loading. Omit for a static label. */
   loadingLabels?: string[]
-  icon?: 'claw-scratch' | 'sword-and-shield'
+  icon?: 'sword' | 'shield'
   /** Hunt uses sandblasted matte; Draw uses grey shiny gradient. */
   surface?: 'matte' | 'shiny'
 }
@@ -26,7 +26,7 @@ export function StatefulButton({
   children,
   layoutId = 'crate-hunt-button',
   loadingLabels,
-  icon = 'claw-scratch',
+  icon = 'sword',
   surface = 'matte',
   disabled = false,
   ...props
@@ -127,7 +127,7 @@ export function StatefulButton({
   )
 }
 
-function IconSlot({ icon, tone }: { icon: 'claw-scratch' | 'sword-and-shield'; tone: 'gold' | 'silver' }) {
+function IconSlot({ icon, tone }: { icon: 'sword' | 'shield'; tone: 'gold' | 'silver' }) {
   const iconClass =
     tone === 'silver'
       ? 'text-[#c8c8c8] transition-colors duration-200 group-disabled:text-[#5c5c5c]'
@@ -135,7 +135,7 @@ function IconSlot({ icon, tone }: { icon: 'claw-scratch' | 'sword-and-shield'; t
   return (
     <div className="relative h-[18px] w-[18px] shrink-0" aria-hidden="true">
       <motion.div className="button-icon absolute inset-0" initial={{ opacity: 1, scale: 1 }}>
-        {icon === 'sword-and-shield' ? (
+        {icon === 'shield' ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="18"
@@ -148,10 +148,7 @@ function IconSlot({ icon, tone }: { icon: 'claw-scratch' | 'sword-and-shield'; t
             strokeLinejoin="round"
             className={iconClass}
           >
-            <path d="M5 9v5c0 2.8 2.2 5 5 5.6 2.8-.6 5-2.8 5-5.6V9l-5-2.8L5 9z" />
-            <path d="M13.5 15.5 19 5" />
-            <path d="M16.5 13.5 20 17" />
-            <path d="M11.5 12.5 13 11" />
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
         ) : (
           <svg
@@ -166,9 +163,10 @@ function IconSlot({ icon, tone }: { icon: 'claw-scratch' | 'sword-and-shield'; t
             strokeLinejoin="round"
             className={iconClass}
           >
-            <path d="M5 21c1.5-9 2.5-12 4-14" />
-            <path d="M10 21c1.5-8 2.5-11 4-13" />
-            <path d="M15 21c1.5-7 2.5-10 4-12" />
+            <path d="M14.5 17.5 3 6V3h3l11.5 11.5" />
+            <path d="M13 19l6-6" />
+            <path d="M16 16l4 4" />
+            <path d="M19 21l2-2" />
           </svg>
         )}
       </motion.div>

@@ -29,7 +29,7 @@ function WeaponCrateOpener({ onHuntChange }: WeaponCrateOpenerProps) {
       pickRandom={pickRandomWeapon}
       reelSide="right"
       spinLabels={['Drawing']}
-      buttonIcon="sword-and-shield"
+      buttonIcon="shield"
       buttonSurface="shiny"
       externalGallery={overlayMode}
       overlayMode={overlayMode}
