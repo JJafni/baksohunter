@@ -47,30 +47,6 @@
       transparent 26px
     );
   }
-
-  .wilds-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--color-wilds-gold) 50%, var(--color-wilds-800)) transparent;
-  }
-
-  .wilds-scrollbar::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-  }
-
-  .wilds-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .wilds-scrollbar::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--color-wilds-gold) 38%, var(--color-wilds-850));
-    border-radius: 9999px;
-    border: 1px solid color-mix(in srgb, var(--color-wilds-gold) 18%, transparent);
-  }
-
-  .wilds-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--color-wilds-gold-light) 55%, var(--color-wilds-800));
-  }
 }
 
 @keyframes reel-blur {
