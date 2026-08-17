@@ -43,6 +43,8 @@ type CrateHuntProps = {
   pickRandom: () => CrateEntry
   /** When set, a quest objective is chosen on each spin based on the result. */
   pickRandomQuestType?: (entry: CrateEntry) => QuestType
+  /** When false, quest objectives are disabled and any active badge is cleared. */
+  questTypeEnabled?: boolean
   /** Which side the reel column (title, spinner, button) sits on. */
   reelSide: 'left' | 'right'
   /** Optional controls shown beside the reel (e.g. monster rarity filters). */
@@ -90,6 +92,7 @@ function CrateHunt({
   pool,
   pickRandom,
   pickRandomQuestType,
+  questTypeEnabled = true,
   reelSide,
   filters,
   spinLabels,
@@ -127,7 +130,8 @@ function CrateHunt({
     setSpinnerUiVisible(true)
 
     const target = pickRandom()
-    const nextQuestType = pickRandomQuestType?.(target) ?? null
+    const nextQuestType =
+      questTypeEnabled && pickRandomQuestType ? pickRandomQuestType(target) : null
     setPhase('spinning')
     setSpinKey((k) => k + 1)
     setResult(target)
@@ -141,7 +145,11 @@ function CrateHunt({
     await new Promise<void>((resolve) => {
       spinResolverRef.current = resolve
     })
-  }, [phase, pickRandom, pickRandomQuestType, pool, clearSpinnerFadeTimer])
+  }, [phase, pickRandom, pickRandomQuestType, questTypeEnabled, pool, clearSpinnerFadeTimer])
+
+  useEffect(() => {
+    if (!questTypeEnabled) setQuestType(null)
+  }, [questTypeEnabled])
 
   useEffect(() => {
     if (!isEntering) return
@@ -280,9 +288,10 @@ function CrateHunt({
     />
   )
 
-  const questTypeBadge = pickRandomQuestType ? (
-    <QuestTypeBadge questType={questType} visible={phase === 'revealed'} revealKey={spinKey} />
-  ) : null
+  const questTypeBadge =
+    questTypeEnabled && pickRandomQuestType ? (
+      <QuestTypeBadge questType={questType} visible={phase === 'revealed'} revealKey={spinKey} />
+    ) : null
 
   const mobileRevealSlot = !useStackedLayout ? null : isMobile ? (
     <motion.div
