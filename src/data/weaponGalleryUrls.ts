@@ -1,5 +1,8 @@
 /** Weapon showcase URLs from the IGN Nordic MHWilds weapons gallery. */
 export const WEAPON_GALLERY_URLS: Record<string, string> = {
+  // Official Capcom hunter showcase (bundled locally — CDN blocks hotlinking).
+  // Source: https://www.monsterhunter.com/wilds/assets/img/hunting/weapon/slider/01_a.png
+  'great-sword': 'https://www.monsterhunter.com/wilds/assets/img/hunting/weapon/slider/01_a.png',
   'charge-blade':
     'https://sm.ign.com/t/ign_nordic/gallery/m/monster-hu/monster-hunter-wilds-weapons_mjft.1400.png',
   'switch-axe':
