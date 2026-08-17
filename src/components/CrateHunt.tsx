@@ -56,6 +56,8 @@ type CrateHuntProps = {
   belowReel?: (ctx: CrateHuntContext) => ReactNode
   /** When true, gallery is rendered elsewhere (desktop left panel). */
   externalGallery?: boolean
+  /** When true, show monster info button on reveal (monster hunts only). */
+  showMonsterInfo?: boolean
   /** When true, hunt UI overlays a backdrop image panel. */
   overlayMode?: boolean
   onHuntChange?: (ctx: CrateHuntContext) => void
@@ -100,6 +102,7 @@ function CrateHunt({
   reelOrientation = 'horizontal',
   belowReel,
   externalGallery = false,
+  showMonsterInfo = false,
   overlayMode = false,
   onHuntChange,
 }: CrateHuntProps) {
@@ -285,6 +288,7 @@ function CrateHunt({
       rarityLabels={rarityLabels}
       align={useStackedLayout ? 'center' : reelSide === 'left' ? 'right' : 'left'}
       variant={useStackedLayout ? 'mobile' : 'desktop'}
+      showMonsterInfo={showMonsterInfo}
     />
   )
 

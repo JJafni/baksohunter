@@ -54,6 +54,7 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
       spinLabels={SPIN_LABELS}
       externalGallery={overlayMode}
       overlayMode={overlayMode}
+      showMonsterInfo
       onHuntChange={onHuntChange}
       filters={({ disabled, layout }) => (
         <MonsterRarityFilter
