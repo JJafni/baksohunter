@@ -110,8 +110,8 @@ export function StatefulButton({
         'group relative flex w-full max-w-full items-center justify-center whitespace-nowrap rounded-lg text-sm font-bold uppercase tracking-[0.12em] ring-offset-2 ring-offset-wilds-950 transition-[border-color,color,box-shadow,filter] duration-200',
         isShiny
           ? 'wilds-shiny-button gap-0 border-0 p-[1px] text-[#e5e5e5] enabled:cursor-pointer enabled:hover:text-white disabled:cursor-not-allowed disabled:text-[#6b6b6b]'
-          : 'wilds-spin-matte gap-2 border-2 px-6 py-3.5 border-[#9a7b3c] text-[#ede0c8] enabled:cursor-pointer enabled:hover:border-[#b8954a] enabled:hover:text-[#f2e8d4] disabled:cursor-not-allowed disabled:border-[#4a4234] disabled:text-[#7a7268] disabled:hover:border-[#4a4234]',
-        !isShiny && isLoading && 'cursor-wait enabled:hover:border-[#b8954a]',
+          : 'wilds-spin-matte gap-2 border-2 px-6 py-3.5 border-[#7a3030] text-[#f0e0e0] enabled:cursor-pointer enabled:hover:border-[#9a4040] enabled:hover:text-[#faf0f0] disabled:cursor-not-allowed disabled:border-[#3a2020] disabled:text-[#7a6060] disabled:hover:border-[#3a2020]',
+        !isShiny && isLoading && 'cursor-wait enabled:hover:border-[#9a4040]',
         isShiny && isLoading && 'cursor-wait',
         className,
       )}
@@ -131,7 +131,7 @@ function IconSlot({ icon, tone }: { icon: 'sword' | 'shield'; tone: 'gold' | 'si
   const iconClass =
     tone === 'silver'
       ? 'text-[#c8c8c8] transition-colors duration-200 group-disabled:text-[#5c5c5c]'
-      : 'text-[#d4b86a] transition-colors duration-200 group-disabled:text-[#5c5548]'
+      : 'text-[#e88888] transition-colors duration-200 group-disabled:text-[#5c4040]'
   return (
     <div className="relative h-[18px] w-[18px] shrink-0" aria-hidden="true">
       <motion.div className="button-icon absolute inset-0" initial={{ opacity: 1, scale: 1 }}>
