@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import type { MonsterInfo } from '../data/monsterInfoTypes'
@@ -75,19 +75,12 @@ function InfoGrid({
 
 type MonsterInfoModalProps = {
   info: MonsterInfo | null
-  /** HD gallery render; falls back to hunt icon if missing or failed to load. */
-  imageUrl?: string
-  imageFallbackUrl?: string
+  icon?: string
   open: boolean
   onClose: () => void
 }
 
-function MonsterInfoModal({ info, imageUrl, imageFallbackUrl, open, onClose }: MonsterInfoModalProps) {
-  const [useImageFallback, setUseImageFallback] = useState(false)
-
-  useEffect(() => {
-    setUseImageFallback(false)
-  }, [info?.slug, imageUrl, open])
+function MonsterInfoModal({ info, icon, open, onClose }: MonsterInfoModalProps) {
   useEffect(() => {
     if (!open) return
 
@@ -110,9 +103,6 @@ function MonsterInfoModal({ info, imageUrl, imageFallbackUrl, open, onClose }: M
   }, [open])
 
   if (typeof document === 'undefined') return null
-
-  const showGalleryImage = Boolean(imageUrl) && !useImageFallback
-  const renderSrc = showGalleryImage ? imageUrl : imageFallbackUrl
 
   return createPortal(
     <AnimatePresence>
@@ -139,7 +129,7 @@ function MonsterInfoModal({ info, imageUrl, imageFallbackUrl, open, onClose }: M
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className={`relative z-10 flex max-h-[min(92vh,760px)] w-full max-w-3xl flex-col overflow-hidden rounded-md border bg-wilds-900 shadow-2xl ${WILDS_PANEL_BORDER}`}
+            className={`relative z-10 flex max-h-[min(92vh,720px)] w-full max-w-md flex-col overflow-hidden rounded-md border bg-wilds-900 shadow-2xl ${WILDS_PANEL_BORDER}`}
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex shrink-0 items-start justify-between gap-3 border-b border-wilds-gold/15 px-4 py-3 sm:px-5">

@@ -4,7 +4,6 @@ import { getMonsterInfo } from '../data/monsterInfo'
 import { AnimatePresence, motion } from 'motion/react'
 import { ELDER_DRAGON_SLUGS } from '../data/monsters'
 import { getVisualRarity, RARITY_TEXT_CLASS } from '../lib/rarityColors'
-import { getMonsterGalleryImageUrl } from '../lib/monsterGalleryImages'
 import MonsterInfoModal from './MonsterInfoModal'
 
 const REVEAL_MOTION = { duration: 0.42, ease: [0.22, 1, 0.36, 1] as const }
