@@ -64,6 +64,7 @@ const FOOTER_ROW_H = '2.75rem'
 const MOBILE_REVEAL_ROW_H = '4.75rem'
 
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
+const FILTERS_FADE = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
 
 function SpinnerUiFade({ visible, children }: { visible: boolean; children: ReactNode }) {
   return (
@@ -231,10 +232,18 @@ function CrateHunt({
 
   const filtersDisabled = phase === 'spinning'
   const filterLayout = useStackedLayout ? 'bar' : 'sidebar'
-  const filtersSlot = filters ? (
-    <div className={useStackedLayout ? 'w-full' : 'self-center'}>
-      {filters({ disabled: filtersDisabled, layout: filterLayout })}
-    </div>
+  const showFilters = phase !== 'idle'
+  const filtersWithFade = filters ? (
+    showFilters ? (
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={FILTERS_FADE}
+        className={useStackedLayout ? 'w-full' : 'self-center'}
+      >
+        {filters({ disabled: filtersDisabled, layout: filterLayout })}
+      </motion.div>
+    ) : null
   ) : null
 
   const actions = (
@@ -352,7 +361,7 @@ function CrateHunt({
             }`}
           >
             {mobileRevealSlot}
-            {hasFilters ? filtersSlot : null}
+            {filtersWithFade}
             {actions}
           </div>
         </div>
@@ -385,8 +394,8 @@ function CrateHunt({
           gridTemplateRows: 'auto auto',
         }}
       >
-        {hasFilters ? (
-          <div className={`${filterColClass} row-start-1 self-center`}>{filtersSlot}</div>
+        {filtersWithFade ? (
+          <div className={`${filterColClass} row-start-1 self-center`}>{filtersWithFade}</div>
         ) : null}
 
         <div className={`${reelColClass} row-start-1`}>
