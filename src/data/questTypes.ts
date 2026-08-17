@@ -39,13 +39,8 @@ export function isElderDragonEntry(entry: CrateEntry): boolean {
   return entry.rarity === 'normal' && ELDER_DRAGON_SLUGS.has(entry.slug)
 }
 
-export function isSlayOnlyEntry(entry: CrateEntry): boolean {
-  if (entry.slug === 'omega-planetes') return true
-  return isElderDragonEntry(entry)
-}
-
 export function pickQuestTypeForMonster(entry: CrateEntry): QuestType {
-  if (isSlayOnlyEntry(entry)) return 'slay'
+  if (isElderDragonEntry(entry)) return 'slay'
   return RANDOM_QUEST_TYPES[Math.floor(Math.random() * RANDOM_QUEST_TYPES.length)]
 }
 
