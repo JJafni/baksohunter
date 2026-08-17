@@ -35,12 +35,15 @@ export const QUEST_TYPE_BY_ID = Object.fromEntries(
 
 const RANDOM_QUEST_TYPES: QuestType[] = ['hunt', 'slay', 'capture']
 
+/** Large monsters that can only be slayed (all rarity variants). */
+const SLAY_ONLY_SLUGS = new Set(['omega-planetes', 'jin-dahaad'])
+
 export function isElderDragonEntry(entry: CrateEntry): boolean {
   return entry.rarity === 'normal' && ELDER_DRAGON_SLUGS.has(entry.slug)
 }
 
 export function isSlayOnlyEntry(entry: CrateEntry): boolean {
-  if (entry.slug === 'omega-planetes') return true
+  if (SLAY_ONLY_SLUGS.has(entry.slug)) return true
   return isElderDragonEntry(entry)
 }
 
