@@ -17,6 +17,8 @@ interface StatefulButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
   /** When set, a random label is shown while loading. Omit for a static label. */
   loadingLabels?: string[]
   icon?: 'sword' | 'shield'
+  /** Hunt uses sandblasted matte; Draw uses grey shiny gradient. */
+  surface?: 'matte' | 'shiny'
 }
 
 export function StatefulButton({
@@ -25,6 +27,7 @@ export function StatefulButton({
   layoutId = 'crate-hunt-button',
   loadingLabels,
   icon = 'sword',
+  surface = 'matte',
   disabled = false,
   ...props
 }: StatefulButtonProps) {
@@ -71,6 +74,32 @@ export function StatefulButton({
   const isButtonDisabled = disabled || isLoading
   const label = isLoading && useSpinLabels ? loadingLabel : children
 
+  const isShiny = surface === 'shiny'
+
+  const labelContent = (
+    <>
+      <IconSlot icon={icon} tone={isShiny ? 'silver' : 'gold'} />
+      {useSpinLabels ? (
+        <span className="relative inline-block overflow-hidden text-center">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={String(label)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+              className="block whitespace-nowrap"
+            >
+              {label}
+            </motion.span>
+          </AnimatePresence>
+        </span>
+      ) : (
+        <span className="whitespace-nowrap">{children}</span>
+      )}
+    </>
+  )
+
   return (
     <motion.button
       layoutId={layoutId}
@@ -78,42 +107,31 @@ export function StatefulButton({
       aria-busy={isLoading}
       disabled={isButtonDisabled}
       className={cn(
-        'group flex w-full max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-lg border-2 px-6 py-3.5 text-sm font-bold uppercase tracking-[0.12em] ring-offset-2 ring-offset-wilds-950 transition-colors duration-200',
-        'border-[#9a7b3c] bg-[#2c261f] text-[#ede0c8] shadow-[0_0_18px_rgba(154,123,60,0.22)]',
-        'enabled:cursor-pointer enabled:hover:border-[#b8954a] enabled:hover:bg-[#3a3228] enabled:hover:shadow-[0_0_24px_rgba(184,149,74,0.28)]',
-        'disabled:cursor-not-allowed disabled:border-[#4a4234] disabled:bg-[#1a1714] disabled:text-[#7a7268] disabled:shadow-none disabled:hover:border-[#4a4234] disabled:hover:bg-[#1a1714] disabled:hover:shadow-none',
-        isLoading && 'cursor-wait',
+        'group relative flex w-full max-w-full items-center justify-center whitespace-nowrap rounded-lg text-sm font-bold uppercase tracking-[0.12em] ring-offset-2 ring-offset-wilds-950 transition-[border-color,color,box-shadow,filter] duration-200',
+        isShiny
+          ? 'wilds-shiny-button gap-0 border-0 p-[1px] text-[#e5e5e5] enabled:cursor-pointer enabled:hover:text-white disabled:cursor-not-allowed disabled:text-[#6b6b6b]'
+          : 'wilds-spin-matte gap-2 border-2 px-6 py-3.5 border-[#7a3030] text-[#f0e0e0] enabled:cursor-pointer enabled:hover:border-[#9a4040] enabled:hover:text-[#faf0f0] disabled:cursor-not-allowed disabled:border-[#3a2020] disabled:text-[#7a6060] disabled:hover:border-[#3a2020]',
+        !isShiny && isLoading && 'cursor-wait enabled:hover:border-[#9a4040]',
+        isShiny && isLoading && 'cursor-wait',
         className,
       )}
       {...buttonProps}
       onClick={handleClick}
     >
-      <span className="inline-flex items-center justify-center gap-1.5">
-        <IconSlot icon={icon} />
-        {useSpinLabels ? (
-          <span className="relative inline-block overflow-hidden text-center">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.span
-                key={String(label)}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2, ease: 'easeInOut' }}
-                className="block whitespace-nowrap"
-              >
-                {label}
-              </motion.span>
-            </AnimatePresence>
-          </span>
-        ) : (
-          <span className="whitespace-nowrap">{children}</span>
-        )}
-      </span>
+      {isShiny ? (
+        <span className="wilds-shiny-inner gap-2 px-6 py-3.5">{labelContent}</span>
+      ) : (
+        <span className="relative z-10 inline-flex items-center justify-center gap-1.5">{labelContent}</span>
+      )}
     </motion.button>
   )
 }
 
-function IconSlot({ icon }: { icon: 'sword' | 'shield' }) {
+function IconSlot({ icon, tone }: { icon: 'sword' | 'shield'; tone: 'gold' | 'silver' }) {
+  const iconClass =
+    tone === 'silver'
+      ? 'text-[#c8c8c8] transition-colors duration-200 group-disabled:text-[#5c5c5c]'
+      : 'text-[#e88888] transition-colors duration-200 group-disabled:text-[#5c4040]'
   return (
     <div className="relative h-[18px] w-[18px] shrink-0" aria-hidden="true">
       <motion.div className="button-icon absolute inset-0" initial={{ opacity: 1, scale: 1 }}>
@@ -128,7 +146,7 @@ function IconSlot({ icon }: { icon: 'sword' | 'shield' }) {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="text-[#d4b86a] transition-colors duration-200 group-disabled:text-[#5c5548]"
+            className={iconClass}
           >
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
@@ -143,7 +161,7 @@ function IconSlot({ icon }: { icon: 'sword' | 'shield' }) {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="text-[#d4b86a] transition-colors duration-200 group-disabled:text-[#5c5548]"
+            className={iconClass}
           >
             <path d="M14.5 17.5 3 6V3h3l11.5 11.5" />
             <path d="M13 19l6-6" />
@@ -167,7 +185,7 @@ function IconSlot({ icon }: { icon: 'sword' | 'shield' }) {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="animate-[spin_0.45s_linear_infinite] text-[#d4b86a] transition-colors duration-200 group-disabled:text-[#5c5548]"
+          className={`animate-[spin_0.45s_linear_infinite] ${iconClass}`}
         >
           <path stroke="none" d="M0 0h24v24H0z" fill="none" />
           <path d="M12 3a9 9 0 1 0 9 9" />

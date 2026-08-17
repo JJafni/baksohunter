@@ -1,7 +1,6 @@
 import type { CSSProperties } from 'react'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import {
-  MOBILE_REEL_HEIGHT,
   MOBILE_REEL_MAX_WIDTH,
 } from '../lib/crateConfig'
 
@@ -15,11 +14,9 @@ function HuntColumnSkeleton({ showGallery = false }: { showGallery?: boolean }) 
       className="flex w-full max-w-[620px] shrink-0 flex-col items-stretch gap-4"
       style={{ maxWidth: MOBILE_REEL_MAX_WIDTH }}
     >
-      <SkeletonBlock className="w-full rounded-2xl" style={{ height: MOBILE_REEL_HEIGHT }} />
       {showGallery ? <SkeletonBlock className="aspect-[16/10] w-full rounded-2xl" /> : null}
-      <SkeletonBlock className="h-14 w-full rounded-lg" />
-      <SkeletonBlock className="h-10 w-full max-w-md rounded-lg" />
       <SkeletonBlock className="h-12 w-full rounded-lg" />
+      <SkeletonBlock className="h-10 w-full max-w-md rounded-lg" />
     </div>
   )
 }
@@ -51,19 +48,15 @@ function AppSkeleton({ progress }: { progress: number }) {
           <div className="grid h-full min-h-0 w-full grid-cols-2">
             <div className="relative border-r border-wilds-gold/15 p-6">
               <SkeletonBlock className="absolute inset-0 h-full w-full rounded-none opacity-40" />
-              <div className="relative z-10 flex h-full flex-col gap-4">
-                <SkeletonBlock className="h-[172px] w-full rounded-2xl" />
-                <SkeletonBlock className="h-14 w-full rounded-lg" />
-                <SkeletonBlock className="h-10 w-full rounded-lg" />
-                <SkeletonBlock className="h-12 w-full rounded-lg" />
+              <div className="relative z-10 flex h-full flex-col items-center justify-center gap-4">
+                <SkeletonBlock className="h-12 w-full max-w-md rounded-lg" />
+                <SkeletonBlock className="h-10 w-full max-w-sm rounded-lg" />
               </div>
             </div>
             <div className="relative p-6">
               <SkeletonBlock className="absolute inset-0 h-full w-full rounded-none opacity-40" />
-              <div className="relative z-10 flex h-full flex-col gap-4">
-                <SkeletonBlock className="h-[172px] w-full rounded-2xl" />
-                <SkeletonBlock className="h-14 w-full rounded-lg" />
-                <SkeletonBlock className="h-12 w-full rounded-lg" />
+              <div className="relative z-10 flex h-full flex-col items-center justify-center gap-4">
+                <SkeletonBlock className="h-12 w-full max-w-md rounded-lg" />
               </div>
             </div>
           </div>

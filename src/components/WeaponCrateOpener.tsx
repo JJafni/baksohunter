@@ -21,8 +21,6 @@ function WeaponCrateOpener({ onHuntChange }: WeaponCrateOpenerProps) {
 
   return (
     <CrateHunt
-      heading="Forging"
-      subtitle="Weapons"
       poolCountLabel="Weapon Types in the pool"
       buttonLayoutId="weapon-crate-button"
       buttonLabels={{ open: 'DRAW', again: 'DRAW' }}
@@ -32,6 +30,7 @@ function WeaponCrateOpener({ onHuntChange }: WeaponCrateOpenerProps) {
       reelSide="right"
       spinLabels={['Drawing']}
       buttonIcon="shield"
+      buttonSurface="shiny"
       externalGallery={overlayMode}
       overlayMode={overlayMode}
       onHuntChange={onHuntChange}

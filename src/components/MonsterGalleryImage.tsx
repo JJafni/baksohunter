@@ -3,6 +3,7 @@ import { motion } from 'motion/react'
 import type { CrateEntry } from '../data/types'
 import { useGalleryDisplayResult } from '../hooks/useGalleryDisplayResult'
 import { getMonsterGalleryImageUrl, MONSTER_GALLERY_SOURCE_URL } from '../lib/monsterGalleryImages'
+import { hasLocalMonsterGallery } from '../lib/localGalleryAssets'
 
 const GALLERY_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 
@@ -76,6 +77,7 @@ function MonsterGalleryImage({
   const galleryUrl = getMonsterGalleryImageUrl(displayedResult.slug)
   const showHd = Boolean(galleryUrl) && !useIconFallback
   const imageUrl = showHd ? galleryUrl! : displayedResult.icon
+  const isLocalGallery = hasLocalMonsterGallery(displayedResult.slug)
 
   return (
     <figure
@@ -114,17 +116,21 @@ function MonsterGalleryImage({
       </div>
       <figcaption className="shrink-0 border-t border-wilds-gold/10 px-3 py-2 text-center text-[9px] uppercase tracking-[0.14em] text-wilds-muted sm:text-[10px]">
         {showHd ? (
-          <>
-            HD render via{' '}
-            <a
-              href={MONSTER_GALLERY_SOURCE_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="text-wilds-muted underline-offset-2 hover:text-wilds-gold-light hover:underline"
-            >
-              MHWilds Image Gallery
-            </a>
-          </>
+          isLocalGallery ? (
+            <span className="text-wilds-muted">HD render</span>
+          ) : (
+            <>
+              HD render via{' '}
+              <a
+                href={MONSTER_GALLERY_SOURCE_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="text-wilds-muted underline-offset-2 hover:text-wilds-gold-light hover:underline"
+              >
+                MHWilds Image Gallery
+              </a>
+            </>
+          )
         ) : (
           <span className="text-wilds-muted">HD render not available — showing hunt icon</span>
         )}

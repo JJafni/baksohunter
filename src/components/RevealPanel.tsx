@@ -3,6 +3,7 @@ import type { CrateEntry, Rarity } from '../data/types'
 import { getMonsterInfo } from '../data/monsterInfo'
 import { AnimatePresence, motion } from 'motion/react'
 import { ELDER_DRAGON_SLUGS } from '../data/monsters'
+import { getMonsterTitleUpdateLabel } from '../data/monsterTitleUpdates'
 import { getVisualRarity, RARITY_TEXT_CLASS } from '../lib/rarityColors'
 import MonsterInfoModal from './MonsterInfoModal'
 
@@ -80,36 +81,47 @@ function RevealPanel({
   const nameSizeClassFor = (entry: CrateEntry) => {
     const isLongName = entry.name.length >= 8
     if (isMobile) {
-      return isLongName ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
+      return isLongName ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'
     }
-    return isLongName ? 'text-3xl sm:text-4xl lg:text-[2.75rem]' : 'text-4xl sm:text-5xl lg:text-[3.25rem]'
+    return isLongName ? 'text-4xl sm:text-5xl lg:text-[3rem]' : 'text-5xl sm:text-6xl lg:text-[3.75rem]'
   }
 
-  const revealContent = (entry: CrateEntry) => (
-    <>
-      <div className={`flex items-center gap-2 ${nameRowClass}`}>
-        {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
-        <h2
-          className={`font-black uppercase leading-[0.95] tracking-tight text-wilds-parchment ${nameSizeClassFor(entry)}`}
+  const revealContent = (entry: CrateEntry) => {
+    const titleUpdateLabel = showMonsterInfo ? getMonsterTitleUpdateLabel(entry.slug) : null
+
+    return (
+      <div className="wilds-legibility-text">
+        <div className={`flex items-start gap-2 ${nameRowClass}`}>
+          {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
+          <div className="flex items-start gap-2">
+            <h2
+              className={`font-black uppercase leading-[0.95] tracking-tight text-wilds-parchment ${nameSizeClassFor(entry)}`}
+            >
+              {entry.name}
+            </h2>
+            {titleUpdateLabel ? (
+              <span className="shrink-0 pt-0.5 text-[10px] font-bold uppercase tracking-[0.28em] text-wilds-gold-light/90 sm:text-xs sm:pt-1">
+                {titleUpdateLabel}
+              </span>
+            ) : null}
+          </div>
+        </div>
+        <p
+          className={`${isMobile ? 'mt-2 text-sm sm:text-base' : 'mt-2.5 text-sm sm:text-base'} font-bold uppercase tracking-[0.2em] ${RARITY_TEXT[getVisualRarity(entry)]}`}
         >
-          {entry.name}
-        </h2>
+          {rarityLabelFor(entry, rarityLabels)}
+        </p>
+        {monsterInfo ? (
+          <MonsterInfoModal
+            info={monsterInfo}
+            icon={entry.icon}
+            open={infoOpen}
+            onClose={() => setInfoOpen(false)}
+          />
+        ) : null}
       </div>
-      <p
-        className={`${isMobile ? 'mt-2 text-xs sm:text-sm' : 'mt-2.5 text-xs sm:text-sm'} font-bold uppercase tracking-[0.2em] ${RARITY_TEXT[getVisualRarity(entry)]}`}
-      >
-        {rarityLabelFor(entry, rarityLabels)}
-      </p>
-      {monsterInfo ? (
-        <MonsterInfoModal
-          info={monsterInfo}
-          icon={entry.icon}
-          open={infoOpen}
-          onClose={() => setInfoOpen(false)}
-        />
-      ) : null}
-    </>
-  )
+    )
+  }
 
   return (
     <div
