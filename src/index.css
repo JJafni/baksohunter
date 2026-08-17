@@ -48,6 +48,24 @@
     );
   }
 
+  /* Legibility over busy monster backdrops */
+  .wilds-legibility-text {
+    text-shadow:
+      0 1px 2px rgb(0 0 0 / 0.95),
+      0 2px 10px rgb(0 0 0 / 0.85),
+      0 0 24px rgb(0 0 0 / 0.65);
+  }
+
+  .wilds-legibility-panel {
+    border-radius: 0.5rem;
+    background-color: rgb(15 13 10 / 0.62);
+    padding: 0.5rem 0.75rem;
+    box-shadow:
+      0 2px 10px rgb(0 0 0 / 0.55),
+      0 8px 28px rgb(0 0 0 / 0.72);
+    backdrop-filter: blur(6px);
+  }
+
   /* Hunt spin button — sandblasted matte surface (dark red). */
   .wilds-spin-matte {
     position: relative;

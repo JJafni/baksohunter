@@ -46,11 +46,11 @@ function MonsterRarityFilter({
     <div
       className={
         isBar
-          ? 'flex w-full flex-col items-center gap-2'
-          : 'flex w-[5.75rem] shrink-0 flex-col items-stretch gap-2 sm:w-[6.25rem]'
+          ? 'wilds-legibility-panel wilds-legibility-text flex w-full flex-col items-center gap-2'
+          : 'wilds-legibility-panel wilds-legibility-text flex w-[5.75rem] shrink-0 flex-col items-stretch gap-2 sm:w-[6.25rem]'
       }
     >
-      <p className="text-center text-[9px] font-bold uppercase leading-tight tracking-[0.16em] text-wilds-muted sm:text-[10px]">
+      <p className="text-center text-[9px] font-bold uppercase leading-tight tracking-[0.16em] text-wilds-parchment/90 sm:text-[10px]">
         Pool Filters
       </p>
       <div className={isBar ? 'flex flex-wrap items-center justify-center gap-2' : 'flex flex-col gap-1.5'}>
@@ -63,10 +63,10 @@ function MonsterRarityFilter({
               disabled={disabled}
               aria-pressed={on}
               onClick={() => toggle(key)}
-              className={`cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
+              className={`cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] shadow-[0_2px_8px_rgb(0_0_0_/_0.45)] transition sm:text-[10px] ${
                 on
                   ? activeClass
-                  : 'border-wilds-gold/15 bg-wilds-850/60 text-wilds-muted hover:border-wilds-gold/30 hover:text-wilds-parchment'
+                  : 'border-wilds-gold/25 bg-wilds-950/75 text-wilds-parchment/85 hover:border-wilds-gold/40 hover:text-wilds-parchment'
               } disabled:cursor-not-allowed disabled:opacity-50`}
             >
               {label}
@@ -88,10 +88,10 @@ function MonsterRarityFilter({
               disabled={disabled}
               aria-pressed={questTypeEnabled}
               onClick={() => onQuestTypeChange(!questTypeEnabled)}
-              className={`cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
+              className={`cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] shadow-[0_2px_8px_rgb(0_0_0_/_0.45)] transition sm:text-[10px] ${
                 questTypeEnabled
                   ? 'border-wilds-gold/50 bg-wilds-gold/10 text-wilds-gold-light'
-                  : 'border-wilds-gold/15 bg-wilds-850/60 text-wilds-muted hover:border-wilds-gold/30 hover:text-wilds-parchment'
+                  : 'border-wilds-gold/25 bg-wilds-950/75 text-wilds-parchment/85 hover:border-wilds-gold/40 hover:text-wilds-parchment'
               } disabled:cursor-not-allowed disabled:opacity-50`}
             >
               Hunt Type

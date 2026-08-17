@@ -86,7 +86,7 @@ function RevealPanel({
   }
 
   const revealContent = (entry: CrateEntry) => (
-    <>
+    <div className="wilds-legibility-text">
       <div className={`flex items-center gap-2 ${nameRowClass}`}>
         {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
         <h2
@@ -108,7 +108,7 @@ function RevealPanel({
           onClose={() => setInfoOpen(false)}
         />
       ) : null}
-    </>
+    </div>
   )
 
   return (
