@@ -80,9 +80,9 @@ function RevealPanel({
   const nameSizeClassFor = (entry: CrateEntry) => {
     const isLongName = entry.name.length >= 8
     if (isMobile) {
-      return isLongName ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
+      return isLongName ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'
     }
-    return isLongName ? 'text-3xl sm:text-4xl lg:text-[2.75rem]' : 'text-4xl sm:text-5xl lg:text-[3.25rem]'
+    return isLongName ? 'text-4xl sm:text-5xl lg:text-[3rem]' : 'text-5xl sm:text-6xl lg:text-[3.75rem]'
   }
 
   const revealContent = (entry: CrateEntry) => (
@@ -96,7 +96,7 @@ function RevealPanel({
         </h2>
       </div>
       <p
-        className={`${isMobile ? 'mt-2 text-xs sm:text-sm' : 'mt-2.5 text-xs sm:text-sm'} font-bold uppercase tracking-[0.2em] ${RARITY_TEXT[getVisualRarity(entry)]}`}
+        className={`${isMobile ? 'mt-2 text-sm sm:text-base' : 'mt-2.5 text-sm sm:text-base'} font-bold uppercase tracking-[0.2em] ${RARITY_TEXT[getVisualRarity(entry)]}`}
       >
         {rarityLabelFor(entry, rarityLabels)}
       </p>
