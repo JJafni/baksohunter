@@ -26,11 +26,11 @@ function TagList({ items, empty = '—' }: { items: string[]; empty?: string }) 
   }
 
   return (
-    <div className="flex flex-wrap justify-center gap-0.5">
+    <div className="flex flex-wrap justify-center gap-1">
       {items.map((item) => (
         <span
           key={item}
-          className={`text-[10px] font-bold uppercase tracking-wide ${ELEMENT_CLASS[item.toLowerCase()] ?? 'text-wilds-parchment'}`}
+          className={`text-xs font-bold uppercase tracking-wide sm:text-sm ${ELEMENT_CLASS[item.toLowerCase()] ?? 'text-wilds-parchment'}`}
         >
           {formatLabel(item)}
         </span>
@@ -41,9 +41,9 @@ function TagList({ items, empty = '—' }: { items: string[]; empty?: string }) 
 
 function InfoCell({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="flex min-w-0 flex-col gap-0.5 p-1.5 text-center">
-      <p className="text-[8px] font-bold uppercase tracking-[0.12em] text-wilds-muted">{label}</p>
-      <div className="text-[10px] leading-snug text-wilds-parchment">{children}</div>
+    <div className="flex min-w-0 flex-col gap-1 p-2.5 text-center sm:p-3">
+      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-wilds-muted sm:text-xs">{label}</p>
+      <div className="text-xs leading-snug text-wilds-parchment sm:text-sm">{children}</div>
     </div>
   )
 }
@@ -134,32 +134,32 @@ function MonsterInfoModal({ info, icon, open, onClose }: MonsterInfoModalProps) 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className={`relative z-10 w-full max-w-md rounded-md border bg-wilds-900 shadow-2xl ${WILDS_PANEL_BORDER}`}
+            className={`relative z-10 w-full max-w-xl rounded-md border bg-wilds-900 shadow-2xl sm:max-w-2xl ${WILDS_PANEL_BORDER}`}
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-2 border-b border-wilds-gold/15 px-3 py-2 sm:px-4">
+            <div className="flex items-start justify-between gap-3 border-b border-wilds-gold/15 px-4 py-3 sm:px-6 sm:py-4">
               <div className="min-w-0">
                 <h2
                   id="monster-info-title"
-                  className="truncate font-black uppercase tracking-tight text-wilds-parchment text-base sm:text-lg"
+                  className="truncate font-black uppercase tracking-tight text-wilds-parchment text-lg sm:text-xl"
                 >
                   {info.name}
                 </h2>
-                <p className="text-[9px] uppercase tracking-[0.14em] text-wilds-muted">MHWilds gameplay info</p>
+                <p className="text-[10px] uppercase tracking-[0.14em] text-wilds-muted sm:text-xs">MHWilds gameplay info</p>
               </div>
               <button
                 type="button"
                 onClick={onClose}
-                className="shrink-0 rounded-sm border border-wilds-gold/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-wilds-muted transition hover:border-wilds-gold/40 hover:text-wilds-parchment"
+                className="shrink-0 rounded-sm border border-wilds-gold/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-wilds-muted transition hover:border-wilds-gold/40 hover:text-wilds-parchment sm:text-xs"
               >
                 Close
               </button>
             </div>
 
-            <div className="space-y-1.5 p-2.5 sm:p-3">
-              <div className="flex justify-center border-b border-wilds-gold/15 pb-2">
+            <div className="space-y-2.5 p-4 sm:space-y-3 sm:p-6">
+              <div className="flex justify-center border-b border-wilds-gold/15 pb-3 sm:pb-4">
                 {icon ? (
-                  <img src={icon} alt="" className="size-20 object-contain sm:size-[5.5rem]" draggable={false} />
+                  <img src={icon} alt="" className="size-28 object-contain sm:size-36" draggable={false} />
                 ) : null}
               </div>
 
@@ -215,7 +215,7 @@ function MonsterInfoModal({ info, icon, open, onClose }: MonsterInfoModalProps) 
                 href={info.wikiUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block pt-0.5 text-center text-[9px] uppercase tracking-[0.14em] text-wilds-gold-light/80 transition hover:text-wilds-gold-light"
+                className="block pt-1 text-center text-[10px] uppercase tracking-[0.14em] text-wilds-gold-light/80 transition hover:text-wilds-gold-light sm:text-xs"
               >
                 View on Monster Hunter Wiki
               </a>
