@@ -62,10 +62,8 @@ type CrateHuntProps = {
 
 /** Shared row heights so monster and weapon columns line up horizontally. */
 const FOOTER_ROW_H = '2.75rem'
-/** Fixed stacked reveal row — keeps name, filters, and button from overlapping. */
-const STACKED_REVEAL_ROW_H = '6.5rem'
-/** Reserved filter strip above spin buttons (both columns, for alignment). */
-const FILTER_DOCK_MIN_H = '5.25rem'
+/** Fixed mobile reveal row — keeps filters/button from jumping when the name appears. */
+const MOBILE_REVEAL_ROW_H = '4.75rem'
 
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 const CONTROLS_LAYOUT = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
@@ -199,9 +197,17 @@ function CrateHunt({
 
   const buttonLabel = phase === 'revealed' ? buttonLabels.again : buttonLabels.open
   const canSpin = pool.length > 0
+  const hasFilters = Boolean(filters)
   const reelOnLeft = reelSide === 'left'
-  const reelColClass = reelOnLeft ? 'col-start-1' : 'col-start-2'
-  const nameColClass = reelOnLeft ? 'col-start-2' : 'col-start-1'
+  const filterColClass = reelOnLeft ? 'col-start-1' : 'col-start-3'
+  const reelColClass = hasFilters ? 'col-start-2' : reelOnLeft ? 'col-start-1' : 'col-start-2'
+  const nameColClass = hasFilters
+    ? reelOnLeft
+      ? 'col-start-3'
+      : 'col-start-1'
+    : reelOnLeft
+      ? 'col-start-2'
+      : 'col-start-1'
 
   const blockWidth = useStackedLayout ? '100%' : REEL_WIDTH
   const stretchClass = isEntering
@@ -229,22 +235,15 @@ function CrateHunt({
   const columnMaxWidth = HUNT_COLUMN_MAX_WIDTH
 
   const filtersDisabled = phase === 'spinning'
-
-  const filterDock = (
-    <div
-      className="mb-2 flex w-full items-end justify-center px-1"
-      style={{ minHeight: FILTER_DOCK_MIN_H }}
-    >
-      {filters ? filters({ disabled: filtersDisabled, layout: 'bar' }) : null}
+  const filterLayout = useStackedLayout ? 'bar' : 'sidebar'
+  const filtersSlot = filters ? (
+    <div className={useStackedLayout ? 'w-full' : 'self-center'}>
+      {filters({ disabled: filtersDisabled, layout: filterLayout })}
     </div>
-  )
+  ) : null
 
   const actions = (
-    <div
-      className={`flex w-full flex-col items-center ${actionsPadding}`}
-      style={{ width: blockWidth, maxWidth: useStackedLayout ? columnMaxWidth : undefined }}
-    >
-      {filterDock}
+    <div className={`flex flex-col items-center ${actionsPadding}`} style={{ width: blockWidth }}>
       <StatefulButton
         layoutId={buttonLayoutId}
         loadingLabels={spinLabels}
@@ -276,14 +275,22 @@ function CrateHunt({
       <QuestTypeBadge questType={questType} visible={phase === 'revealed'} revealKey={spinKey} />
     ) : null
 
-  const stackedRevealSlot = useStackedLayout ? (
+  const stackedRevealSlot = !useStackedLayout ? null : isMobile ? (
     <motion.div
-      className="flex w-full shrink-0 items-center justify-center overflow-hidden px-2"
+      className="flex w-full shrink-0 items-center justify-center overflow-hidden"
       initial={false}
-      animate={{ height: phase === 'revealed' ? STACKED_REVEAL_ROW_H : 0 }}
+      animate={{ height: phase === 'idle' ? 0 : MOBILE_REVEAL_ROW_H }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
     >
-      {phase === 'revealed' ? namePanel : null}
+      {phase !== 'idle' ? namePanel : null}
+    </motion.div>
+  ) : phase !== 'idle' ? (
+    <motion.div
+      layout
+      className="w-full transition-[grid-template-rows] duration-[550ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+      style={{ display: 'grid', gridTemplateRows: phase === 'revealed' ? '1fr' : '0fr' }}
+    >
+      <div className="min-h-0 overflow-hidden">{namePanel}</div>
     </motion.div>
   ) : null
 
@@ -348,12 +355,12 @@ function CrateHunt({
           <motion.div
             layout
             transition={{ layout: CONTROLS_LAYOUT }}
-            className={`flex w-full max-w-full flex-col items-center gap-2 ${
+            className={`flex w-full flex-col items-center gap-2 ${
               overlayMode && phase !== 'idle' ? 'mt-auto' : ''
             }`}
-            style={{ maxWidth: columnMaxWidth }}
           >
             {stackedRevealSlot}
+            {filtersSlot}
             {actions}
           </motion.div>
         </motion.div>
@@ -376,10 +383,20 @@ function CrateHunt({
       <div
         className="grid gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6"
         style={{
-          gridTemplateColumns: reelOnLeft ? `${REEL_WIDTH}px auto` : `auto ${REEL_WIDTH}px`,
+          gridTemplateColumns: hasFilters
+            ? reelOnLeft
+              ? `auto ${REEL_WIDTH}px auto`
+              : `auto ${REEL_WIDTH}px auto`
+            : reelOnLeft
+              ? `${REEL_WIDTH}px auto`
+              : `auto ${REEL_WIDTH}px`,
           gridTemplateRows: 'auto auto',
         }}
       >
+        {filtersSlot ? (
+          <div className={`${filterColClass} row-start-1 self-center`}>{filtersSlot}</div>
+        ) : null}
+
         <div className={`${reelColClass} row-start-1`}>
           <SpinnerUiFade visible={showSpinnerUi}>{reelSlot}</SpinnerUiFade>
         </div>

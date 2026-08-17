@@ -46,20 +46,14 @@ function MonsterRarityFilter({
     <div
       className={
         isBar
-          ? 'flex w-full max-w-full flex-col items-center gap-1.5'
+          ? 'flex w-full flex-col items-center gap-2'
           : 'flex w-[5.75rem] shrink-0 flex-col items-stretch gap-2 sm:w-[6.25rem]'
       }
     >
       <p className="text-center text-[9px] font-bold uppercase leading-tight tracking-[0.16em] text-wilds-muted sm:text-[10px]">
         Pool Filters
       </p>
-      <div
-        className={
-          isBar
-            ? 'flex w-full max-w-full flex-wrap items-center justify-center gap-1.5'
-            : 'flex flex-col gap-1.5'
-        }
-      >
+      <div className={isBar ? 'flex flex-wrap items-center justify-center gap-2' : 'flex flex-col gap-1.5'}>
         {FILTER_OPTIONS.map(({ key, label, activeClass }) => {
           const on = value[key]
           return (
