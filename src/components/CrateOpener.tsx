@@ -3,12 +3,19 @@ import type { CrateHuntContext } from './CrateHunt'
 import CrateHunt from './CrateHunt'
 import MonsterGalleryImage from './MonsterGalleryImage'
 import HuntStarFilter from './HuntStarFilter'
+import MonsterExcludeModal from './MonsterExcludeModal'
 import MonsterRarityFilter from './MonsterRarityFilter'
+import MonstersPickerButton from './MonstersPickerButton'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import { pickQuestTypeForMonster } from '../data/questTypes'
 import { MONSTER_POOL } from '../data/monsters'
 import type { Rarity } from '../data/types'
 import { SPIN_LABELS } from '../lib/spinLabels'
+import {
+  filterPoolByExcluded,
+  uniqueMonsterSpecies,
+  type MonsterExcludeState,
+} from '../lib/monsterExcludeFilter'
 import {
   DEFAULT_MONSTER_POOL_FILTER,
   filterMonsterPool,
@@ -38,11 +45,16 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
   const [poolFilter, setPoolFilter] = useState<MonsterPoolFilterState>(DEFAULT_MONSTER_POOL_FILTER)
   const [starFilter, setStarFilter] = useState<HuntStarFilterState>(DEFAULT_HUNT_STAR_FILTER)
   const [questTypeEnabled, setQuestTypeEnabled] = useState(true)
+  const [excludedMonsters, setExcludedMonsters] = useState<MonsterExcludeState>(() => new Set())
+  const [monsterModalOpen, setMonsterModalOpen] = useState(false)
+
+  const monsterSpecies = useMemo(() => uniqueMonsterSpecies(MONSTER_POOL), [])
 
   const filteredPool = useMemo(() => {
     const byRarity = filterMonsterPool(MONSTER_POOL, poolFilter)
-    return filterPoolByStars(byRarity, starFilter)
-  }, [poolFilter, starFilter])
+    const byExclusion = filterPoolByExcluded(byRarity, excludedMonsters)
+    return filterPoolByStars(byExclusion, starFilter)
+  }, [poolFilter, starFilter, excludedMonsters])
 
   const pickRandom = useCallback(() => pickRandomFromPool(filteredPool), [filteredPool])
 
@@ -55,53 +67,70 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
   const overlayMode = !isMobile && Boolean(onHuntChange)
 
   return (
-    <CrateHunt
-      poolCountLabel={poolCountLabel}
-      buttonLayoutId="monster-crate-button"
-      buttonLabels={{ open: 'Hunt', again: 'Hunt' }}
-      rarityLabels={RARITY_LABELS}
-      pool={filteredPool}
-      pickRandom={pickRandom}
-      pickRandomQuestType={pickQuestTypeForMonster}
-      pickRandomHuntStar={pickHuntStar}
-      questTypeEnabled={questTypeEnabled}
-      reelSide="left"
-      spinLabels={SPIN_LABELS}
-      externalGallery={overlayMode}
-      overlayMode={overlayMode}
-      showMonsterInfo
-      onHuntChange={onHuntChange}
-      filters={({ disabled, layout }) => (
-        <MonsterRarityFilter
-          value={poolFilter}
-          onChange={setPoolFilter}
-          questTypeEnabled={questTypeEnabled}
-          onQuestTypeChange={setQuestTypeEnabled}
-          disabled={disabled}
-          variant={layout}
-          trailing={
-            <HuntStarFilter
-              value={starFilter}
-              onChange={setStarFilter}
-              disabled={disabled}
-              variant={layout}
-              embedded
-            />
-          }
-        />
-      )}
-      belowReel={
-        isMobile
-          ? ({ result, phase }) => (
-              <MonsterGalleryImage
-                result={result}
-                visible={phase === 'revealed'}
-                emphasized={false}
+    <>
+      <CrateHunt
+        poolCountLabel={poolCountLabel}
+        buttonLayoutId="monster-crate-button"
+        buttonLabels={{ open: 'Hunt', again: 'Hunt' }}
+        rarityLabels={RARITY_LABELS}
+        pool={filteredPool}
+        pickRandom={pickRandom}
+        pickRandomQuestType={pickQuestTypeForMonster}
+        pickRandomHuntStar={pickHuntStar}
+        questTypeEnabled={questTypeEnabled}
+        reelSide="left"
+        spinLabels={SPIN_LABELS}
+        externalGallery={overlayMode}
+        overlayMode={overlayMode}
+        showMonsterInfo
+        onHuntChange={onHuntChange}
+        companionButton={({ disabled }) => (
+          <MonstersPickerButton
+            excludedCount={excludedMonsters.size}
+            disabled={disabled}
+            onClick={() => setMonsterModalOpen(true)}
+          />
+        )}
+        filters={({ disabled, layout }) => (
+          <MonsterRarityFilter
+            value={poolFilter}
+            onChange={setPoolFilter}
+            questTypeEnabled={questTypeEnabled}
+            onQuestTypeChange={setQuestTypeEnabled}
+            disabled={disabled}
+            variant={layout}
+            trailing={
+              <HuntStarFilter
+                value={starFilter}
+                onChange={setStarFilter}
+                disabled={disabled}
+                variant={layout}
+                embedded
               />
-            )
-          : undefined
-      }
-    />
+            }
+          />
+        )}
+        belowReel={
+          isMobile
+            ? ({ result, phase }) => (
+                <MonsterGalleryImage
+                  result={result}
+                  visible={phase === 'revealed'}
+                  emphasized={false}
+                />
+              )
+            : undefined
+        }
+      />
+
+      <MonsterExcludeModal
+        open={monsterModalOpen}
+        onClose={() => setMonsterModalOpen(false)}
+        species={monsterSpecies}
+        excluded={excludedMonsters}
+        onChange={setExcludedMonsters}
+      />
+    </>
   )
 }
 

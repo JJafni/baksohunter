@@ -63,6 +63,8 @@ type CrateHuntProps = {
   overlayMode?: boolean
   /** Inline name + subtitle on reveal (weapon column). */
   revealLayout?: 'stacked' | 'inline'
+  /** Optional button beside the primary action (1/3 width). */
+  companionButton?: (ctx: { disabled: boolean }) => ReactNode
   onHuntChange?: (ctx: CrateHuntContext) => void
 }
 
@@ -131,6 +133,7 @@ function CrateHunt({
   showMonsterInfo = false,
   overlayMode = false,
   revealLayout = 'stacked',
+  companionButton,
   onHuntChange,
 }: CrateHuntProps) {
   const isMobile = useIsMobileLayout()
@@ -287,17 +290,22 @@ function CrateHunt({
       style={{ maxWidth: columnMaxWidth }}
     >
       {filterRow}
-      <StatefulButton
-        layoutId={buttonLayoutId}
-        loadingLabels={spinLabels}
-        icon={buttonIcon}
-        surface={buttonSurface}
-        onClick={startHunt}
-        disabled={phase === 'spinning' || !canSpin}
-        className="w-full"
-      >
-        {buttonLabel}
-      </StatefulButton>
+      <div className="flex w-full gap-2">
+        {companionButton ? (
+          <div className="w-1/3 min-w-0 shrink-0">{companionButton({ disabled: filtersDisabled })}</div>
+        ) : null}
+        <StatefulButton
+          layoutId={buttonLayoutId}
+          loadingLabels={spinLabels}
+          icon={buttonIcon}
+          surface={buttonSurface}
+          onClick={startHunt}
+          disabled={phase === 'spinning' || !canSpin}
+          className={companionButton ? 'min-w-0 flex-[2]' : 'w-full'}
+        >
+          {buttonLabel}
+        </StatefulButton>
+      </div>
       {poolLine}
     </div>
   )
