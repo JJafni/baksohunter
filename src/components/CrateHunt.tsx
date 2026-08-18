@@ -63,7 +63,7 @@ type CrateHuntProps = {
   overlayMode?: boolean
   /** Inline name + subtitle on reveal (weapon column). */
   revealLayout?: 'stacked' | 'inline'
-  /** Optional button beside the primary action (1/3 width). */
+  /** Optional button beside the primary action (1/4 width). */
   companionButton?: (ctx: { disabled: boolean }) => ReactNode
   onHuntChange?: (ctx: CrateHuntContext) => void
 }
@@ -292,7 +292,7 @@ function CrateHunt({
       {filterRow}
       <div className="flex w-full gap-2">
         {companionButton ? (
-          <div className="w-1/3 min-w-0 shrink-0">{companionButton({ disabled: filtersDisabled })}</div>
+          <div className="w-1/4 min-w-0 shrink-0">{companionButton({ disabled: filtersDisabled })}</div>
         ) : null}
         <StatefulButton
           layoutId={buttonLayoutId}
@@ -301,7 +301,7 @@ function CrateHunt({
           surface={buttonSurface}
           onClick={startHunt}
           disabled={phase === 'spinning' || !canSpin}
-          className={companionButton ? 'min-w-0 flex-[2]' : 'w-full'}
+          className={companionButton ? 'min-w-0 flex-[3]' : 'w-full'}
         >
           {buttonLabel}
         </StatefulButton>
