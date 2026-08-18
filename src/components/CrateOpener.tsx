@@ -8,7 +8,7 @@ import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import { pickQuestTypeForMonster } from '../data/questTypes'
 import { MONSTER_POOL } from '../data/monsters'
 import type { Rarity } from '../data/types'
-import { SPIN_LABELS } from './ui/stateful-button'
+import { SPIN_LABELS } from '../lib/spinLabels'
 import {
   DEFAULT_MONSTER_POOL_FILTER,
   filterMonsterPool,
