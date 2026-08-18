@@ -62,6 +62,8 @@ type CrateHuntProps = {
   showMonsterInfo?: boolean
   /** When true, hunt UI overlays a backdrop image panel. */
   overlayMode?: boolean
+  /** Inline name + subtitle on reveal (weapon column). */
+  revealLayout?: 'stacked' | 'inline'
   onHuntChange?: (ctx: CrateHuntContext) => void
 }
 
@@ -79,9 +81,10 @@ function SpinnerUiFade({ visible, children }: { visible: boolean; children: Reac
       initial={false}
       animate={{ opacity: visible ? 1 : 0 }}
       transition={SPINNER_UI_FADE}
-      className={`w-full ${visible ? '' : 'pointer-events-none'}`}
+      className="grid w-full transition-[grid-template-rows] duration-700 ease-in-out"
+      style={{ gridTemplateRows: visible ? '1fr' : '0fr' }}
     >
-      {children}
+      <div className={`min-h-0 overflow-hidden ${visible ? '' : 'pointer-events-none'}`}>{children}</div>
     </motion.div>
   )
 }
@@ -106,6 +109,7 @@ function CrateHunt({
   externalGallery = false,
   showMonsterInfo = false,
   overlayMode = false,
+  revealLayout = 'stacked',
   onHuntChange,
 }: CrateHuntProps) {
   const isMobile = useIsMobileLayout()
@@ -237,13 +241,11 @@ function CrateHunt({
 
   const filtersDisabled = phase === 'spinning'
 
-  const filterRow = (
-    <div
-      className="mb-2 flex w-full items-end justify-center overflow-visible px-1 max-lg:min-h-[7.5rem] lg:min-h-[5.25rem]"
-    >
-      {filters ? filters({ disabled: filtersDisabled, layout: 'bar' }) : null}
+  const filterRow = filters ? (
+    <div className="mb-2 flex w-full items-end justify-center overflow-visible px-1 max-lg:min-h-[7.5rem] lg:min-h-[5.25rem]">
+      {filters({ disabled: filtersDisabled, layout: 'bar' })}
     </div>
-  )
+  ) : null
 
   const actions = (
     <div className={`flex flex-col items-center ${actionsPadding}`} style={{ width: blockWidth }}>
@@ -269,7 +271,8 @@ function CrateHunt({
       revealKey={spinKey}
       rarityLabels={rarityLabels}
       align={useStackedLayout ? 'center' : reelSide === 'left' ? 'right' : 'left'}
-      variant={useStackedLayout ? 'mobile' : 'desktop'}
+      variant={isMobile ? 'mobile' : 'desktop'}
+      layout={revealLayout}
       showMonsterInfo={showMonsterInfo}
       huntStar={pickRandomHuntStar ? huntStar : null}
     />
@@ -293,7 +296,7 @@ function CrateHunt({
     <motion.div
       layout
       className="w-full transition-[grid-template-rows] duration-[550ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
-      style={{ display: 'grid', gridTemplateRows: phase === 'revealed' ? '1fr' : '0fr' }}
+      style={{ display: 'grid', gridTemplateRows: phase === 'revealed' ? 'auto' : '0fr' }}
     >
       <div className="min-h-0 overflow-hidden">{namePanel}</div>
     </motion.div>
@@ -348,7 +351,7 @@ function CrateHunt({
           transition={{ layout: CONTROLS_LAYOUT }}
           className={`flex w-full flex-col items-center ${
             overlayMode
-              ? `mx-auto h-full min-h-0 gap-3 py-2 ${phase === 'idle' ? 'justify-center' : ''}`
+              ? `mx-auto h-full min-h-0 gap-3 py-2 ${phase === 'idle' ? 'justify-center' : showSpinnerUi ? '' : 'justify-end'}`
               : 'gap-4 lg:gap-3'
           }`}
           style={overlayMode ? { maxWidth: HUNT_COLUMN_MAX_WIDTH } : undefined}
@@ -360,8 +363,8 @@ function CrateHunt({
           <motion.div
             layout
             transition={{ layout: CONTROLS_LAYOUT }}
-            className={`flex w-full flex-col items-center gap-2 ${
-              overlayMode && phase !== 'idle' ? 'mt-auto' : ''
+            className={`flex w-full flex-col items-center gap-3 ${
+              overlayMode && phase !== 'idle' && showSpinnerUi ? 'mt-auto' : ''
             }`}
           >
             {stackedRevealSlot}

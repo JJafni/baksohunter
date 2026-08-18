@@ -17,6 +17,7 @@ type RevealPanelProps = {
   rarityLabels: Record<Rarity, string>
   align?: 'left' | 'right' | 'center'
   variant?: 'desktop' | 'mobile'
+  layout?: 'stacked' | 'inline'
   showMonsterInfo?: boolean
   huntStar?: HuntStar | null
 }
@@ -56,11 +57,13 @@ function RevealPanel({
   rarityLabels,
   align = 'left',
   variant = 'desktop',
+  layout = 'stacked',
   showMonsterInfo = false,
   huntStar = null,
 }: RevealPanelProps) {
   const [infoOpen, setInfoOpen] = useState(false)
   const isMobile = variant === 'mobile'
+  const useInlineLayout = layout === 'inline'
   const monsterInfo = result && showMonsterInfo ? getMonsterInfo(result.slug) : undefined
 
   useEffect(() => {
@@ -89,10 +92,54 @@ function RevealPanel({
     return isLongName ? 'text-4xl sm:text-5xl lg:text-[3rem]' : 'text-5xl sm:text-6xl lg:text-[3.75rem]'
   }
 
+  const inlineNameSizeClassFor = (entry: CrateEntry) => {
+    const isLongName = entry.name.length >= 10
+    if (isMobile) {
+      return isLongName ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
+    }
+    return isLongName ? 'text-4xl sm:text-5xl lg:text-6xl' : 'text-5xl sm:text-6xl lg:text-7xl'
+  }
+
   const revealContent = (entry: CrateEntry) => {
     const titleUpdateLabel = showMonsterInfo ? getMonsterTitleUpdateLabel(entry.slug) : null
     const rarityLabel = rarityLabelFor(entry, rarityLabels)
     const visualRarity = getVisualRarity(entry)
+
+    if (useInlineLayout) {
+      return (
+        <div className="wilds-legibility-text flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-center">
+          {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
+          <h2
+            className={`font-black uppercase leading-none tracking-tight text-wilds-parchment ${inlineNameSizeClassFor(entry)}`}
+          >
+            {entry.name}
+          </h2>
+          {titleUpdateLabel ? (
+            <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.24em] text-wilds-gold-light/90 sm:text-[10px]">
+              {titleUpdateLabel}
+            </span>
+          ) : null}
+          <p
+            className={`text-xs font-bold uppercase tracking-[0.18em] sm:text-sm ${RARITY_TEXT[visualRarity]}`}
+          >
+            {rarityLabel}
+          </p>
+          {huntStar ? (
+            <p className="text-base font-black tracking-[0.08em] text-wilds-gold-light sm:text-lg">
+              {formatHuntStar(huntStar)}
+            </p>
+          ) : null}
+          {monsterInfo ? (
+            <MonsterInfoModal
+              info={monsterInfo}
+              icon={entry.icon}
+              open={infoOpen}
+              onClose={() => setInfoOpen(false)}
+            />
+          ) : null}
+        </div>
+      )
+    }
 
     if (isMobile) {
       return (
