@@ -33,6 +33,7 @@ function WeaponCrateOpener({ onHuntChange }: WeaponCrateOpenerProps) {
       buttonSurface="shiny"
       externalGallery={overlayMode}
       overlayMode={overlayMode}
+      revealLayout="inline"
       onHuntChange={onHuntChange}
       belowReel={
         isMobile

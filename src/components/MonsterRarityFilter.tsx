@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { MonsterPoolFilterState } from '../lib/rarityFilter'
 
 type MonsterRarityFilterProps = {
@@ -7,6 +8,8 @@ type MonsterRarityFilterProps = {
   onQuestTypeChange?: (enabled: boolean) => void
   disabled?: boolean
   variant?: 'sidebar' | 'bar'
+  /** Rendered after Hunt Type in bar layout (e.g. star difficulty dropdown). */
+  trailing?: ReactNode
 }
 
 const FILTER_OPTIONS: {
@@ -35,6 +38,7 @@ function MonsterRarityFilter({
   onQuestTypeChange,
   disabled = false,
   variant = 'sidebar',
+  trailing,
 }: MonsterRarityFilterProps) {
   const toggle = (key: keyof MonsterPoolFilterState) => {
     onChange({ ...value, [key]: !value[key] })
@@ -46,14 +50,18 @@ function MonsterRarityFilter({
     <div
       className={
         isBar
-          ? 'wilds-legibility-text flex w-full flex-col items-center gap-2'
+          ? 'wilds-legibility-text mx-auto flex w-fit max-w-full flex-col items-center gap-2'
           : 'wilds-legibility-text flex w-[5.75rem] shrink-0 flex-col items-stretch gap-2 sm:w-[6.25rem]'
       }
     >
-      <p className="text-center text-[9px] font-bold uppercase leading-tight tracking-[0.16em] text-wilds-parchment/90 sm:text-[10px]">
-        Pool Filters
-      </p>
-      <div className={isBar ? 'flex flex-wrap items-center justify-center gap-2' : 'flex flex-col gap-1.5'}>
+      <p className="filter-section-label">Pool Filters</p>
+      <div
+        className={
+          isBar
+            ? 'mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-2.5 lg:gap-2'
+            : 'flex flex-col gap-2 lg:gap-1.5'
+        }
+      >
         {FILTER_OPTIONS.map(({ key, label, activeClass }) => {
           const on = value[key]
           return (
@@ -63,7 +71,7 @@ function MonsterRarityFilter({
               disabled={disabled}
               aria-pressed={on}
               onClick={() => toggle(key)}
-              className={`cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
+              className={`filter-chip ${
                 on
                   ? activeClass
                   : 'border-wilds-gold/25 bg-wilds-950/75 text-wilds-parchment/85 hover:border-wilds-gold/40 hover:text-wilds-parchment'
@@ -88,7 +96,7 @@ function MonsterRarityFilter({
               disabled={disabled}
               aria-pressed={questTypeEnabled}
               onClick={() => onQuestTypeChange(!questTypeEnabled)}
-              className={`cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
+              className={`filter-chip ${
                 questTypeEnabled
                   ? 'border-wilds-gold/50 bg-wilds-gold/10 text-wilds-gold-light'
                   : 'border-wilds-gold/25 bg-wilds-950/75 text-wilds-parchment/85 hover:border-wilds-gold/40 hover:text-wilds-parchment'
@@ -96,6 +104,19 @@ function MonsterRarityFilter({
             >
               Hunt Type
             </button>
+            {trailing ? (
+              <>
+                <div
+                  aria-hidden="true"
+                  className={
+                    isBar
+                      ? 'mx-0.5 h-5 w-px shrink-0 self-center bg-wilds-gold/20'
+                      : 'my-0.5 h-px w-full shrink-0 bg-wilds-gold/20'
+                  }
+                />
+                {trailing}
+              </>
+            ) : null}
           </>
         ) : null}
       </div>

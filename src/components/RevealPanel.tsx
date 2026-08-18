@@ -4,10 +4,14 @@ import { getMonsterInfo } from '../data/monsterInfo'
 import { AnimatePresence, motion } from 'motion/react'
 import { ELDER_DRAGON_SLUGS } from '../data/monsters'
 import { getMonsterTitleUpdateLabel } from '../data/monsterTitleUpdates'
+import { formatHuntStar, type HuntStar } from '../data/huntStars'
 import { getVisualRarity, RARITY_TEXT_CLASS } from '../lib/rarityColors'
 import MonsterInfoModal from './MonsterInfoModal'
+import QuestTypeBadge from './QuestTypeBadge'
+import type { QuestType } from '../data/questTypes'
 
 const REVEAL_MOTION = { duration: 0.42, ease: [0.22, 1, 0.36, 1] as const }
+const METADATA_LAYOUT_MOTION = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
 
 type RevealPanelProps = {
   result: CrateEntry | null
@@ -16,7 +20,11 @@ type RevealPanelProps = {
   rarityLabels: Record<Rarity, string>
   align?: 'left' | 'right' | 'center'
   variant?: 'desktop' | 'mobile'
+  layout?: 'stacked' | 'inline'
   showMonsterInfo?: boolean
+  huntStar?: HuntStar | null
+  questType?: QuestType | null
+  questTypeVisible?: boolean
 }
 
 const RARITY_TEXT = RARITY_TEXT_CLASS
@@ -54,10 +62,15 @@ function RevealPanel({
   rarityLabels,
   align = 'left',
   variant = 'desktop',
+  layout = 'stacked',
   showMonsterInfo = false,
+  huntStar = null,
+  questType = null,
+  questTypeVisible = false,
 }: RevealPanelProps) {
   const [infoOpen, setInfoOpen] = useState(false)
   const isMobile = variant === 'mobile'
+  const useInlineLayout = layout === 'inline'
   const monsterInfo = result && showMonsterInfo ? getMonsterInfo(result.slug) : undefined
 
   useEffect(() => {
@@ -86,31 +99,104 @@ function RevealPanel({
     return isLongName ? 'text-4xl sm:text-5xl lg:text-[3rem]' : 'text-5xl sm:text-6xl lg:text-[3.75rem]'
   }
 
+  const inlineNameSizeClassFor = (entry: CrateEntry) => {
+    const isLongName = entry.name.length >= 10
+    if (isMobile) {
+      return isLongName ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
+    }
+    return isLongName ? 'text-4xl sm:text-5xl lg:text-6xl' : 'text-5xl sm:text-6xl lg:text-7xl'
+  }
+
+  const metadataRow = (visualRarity: ReturnType<typeof getVisualRarity>, rarityLabel: string) => (
+    <motion.div
+      layout
+      transition={METADATA_LAYOUT_MOTION}
+      className={`inline-flex max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 ${nameRowClass}`}
+    >
+      {questType ? (
+        <QuestTypeBadge
+          questType={questType}
+          visible={questTypeVisible}
+          revealKey={revealKey}
+          variant="inline"
+        />
+      ) : null}
+      <motion.span layout transition={METADATA_LAYOUT_MOTION} className="inline-flex items-center gap-x-1.5">
+        <span
+          className={`font-bold uppercase tracking-[0.14em] ${isMobile ? 'text-[10px] sm:text-xs' : 'text-sm sm:text-base'} ${RARITY_TEXT[visualRarity]}`}
+        >
+          {rarityLabel}
+        </span>
+        {huntStar ? (
+          <span
+            className={`font-black tracking-[0.08em] text-wilds-gold-light ${isMobile ? 'text-sm sm:text-base' : 'text-base sm:text-lg'}`}
+          >
+            {formatHuntStar(huntStar)}
+          </span>
+        ) : null}
+      </motion.span>
+    </motion.div>
+  )
+
+  const nameRow = (entry: CrateEntry, titleUpdateLabel: string | null, nameClass: string) => (
+    <div className={`inline-flex max-w-full items-center gap-2 ${nameRowClass}`}>
+      {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
+      <h2
+        className={`font-black uppercase leading-[0.95] tracking-tight text-wilds-parchment ${nameClass}`}
+      >
+        {entry.name}
+      </h2>
+      {titleUpdateLabel ? (
+        <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.24em] text-wilds-gold-light/90 sm:text-[10px]">
+          {titleUpdateLabel}
+        </span>
+      ) : null}
+    </div>
+  )
+
   const revealContent = (entry: CrateEntry) => {
     const titleUpdateLabel = showMonsterInfo ? getMonsterTitleUpdateLabel(entry.slug) : null
+    const rarityLabel = rarityLabelFor(entry, rarityLabels)
+    const visualRarity = getVisualRarity(entry)
+
+    if (useInlineLayout) {
+      return (
+        <div className="wilds-legibility-text flex flex-col items-center gap-1.5 text-center">
+          {nameRow(entry, titleUpdateLabel, inlineNameSizeClassFor(entry))}
+          {metadataRow(visualRarity, rarityLabel)}
+          {monsterInfo ? (
+            <MonsterInfoModal
+              info={monsterInfo}
+              icon={entry.icon}
+              open={infoOpen}
+              onClose={() => setInfoOpen(false)}
+            />
+          ) : null}
+        </div>
+      )
+    }
+
+    if (isMobile) {
+      return (
+        <div className="wilds-legibility-text flex flex-col items-center gap-1.5 text-center">
+          {nameRow(entry, titleUpdateLabel, nameSizeClassFor(entry))}
+          {metadataRow(visualRarity, rarityLabel)}
+          {monsterInfo ? (
+            <MonsterInfoModal
+              info={monsterInfo}
+              icon={entry.icon}
+              open={infoOpen}
+              onClose={() => setInfoOpen(false)}
+            />
+          ) : null}
+        </div>
+      )
+    }
 
     return (
       <div className="wilds-legibility-text">
-        <div className={`flex items-start gap-2 ${nameRowClass}`}>
-          {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
-          <div className="flex items-start gap-2">
-            <h2
-              className={`font-black uppercase leading-[0.95] tracking-tight text-wilds-parchment ${nameSizeClassFor(entry)}`}
-            >
-              {entry.name}
-            </h2>
-            {titleUpdateLabel ? (
-              <span className="shrink-0 pt-0.5 text-[10px] font-bold uppercase tracking-[0.28em] text-wilds-gold-light/90 sm:text-xs sm:pt-1">
-                {titleUpdateLabel}
-              </span>
-            ) : null}
-          </div>
-        </div>
-        <p
-          className={`${isMobile ? 'mt-2 text-sm sm:text-base' : 'mt-2.5 text-sm sm:text-base'} font-bold uppercase tracking-[0.2em] ${RARITY_TEXT[getVisualRarity(entry)]}`}
-        >
-          {rarityLabelFor(entry, rarityLabels)}
-        </p>
+        {nameRow(entry, titleUpdateLabel, nameSizeClassFor(entry))}
+        <div className="mt-2">{metadataRow(visualRarity, rarityLabel)}</div>
         {monsterInfo ? (
           <MonsterInfoModal
             info={monsterInfo}
@@ -140,7 +226,7 @@ function RevealPanel({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={REVEAL_MOTION}
-              className={`w-full ${alignClass} flex flex-col`}
+              className={`w-full ${alignClass}`}
             >
               {revealContent(result)}
             </motion.div>

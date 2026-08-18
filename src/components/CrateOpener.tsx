@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import type { CrateHuntContext } from './CrateHunt'
 import CrateHunt from './CrateHunt'
 import MonsterGalleryImage from './MonsterGalleryImage'
+import HuntStarFilter from './HuntStarFilter'
 import MonsterRarityFilter from './MonsterRarityFilter'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import { pickQuestTypeForMonster } from '../data/questTypes'
@@ -15,6 +16,12 @@ import {
   pickRandomFromPool,
   type MonsterPoolFilterState,
 } from '../lib/rarityFilter'
+import {
+  DEFAULT_HUNT_STAR_FILTER,
+  filterPoolByStars,
+  pickStarForMonsterWithFilter,
+  type HuntStarFilterState,
+} from '../lib/starFilter'
 
 const RARITY_LABELS: Record<Rarity, string> = {
   normal: 'Large Monster',
@@ -29,11 +36,20 @@ type CrateOpenerProps = {
 function CrateOpener({ onHuntChange }: CrateOpenerProps) {
   const isMobile = useIsMobileLayout()
   const [poolFilter, setPoolFilter] = useState<MonsterPoolFilterState>(DEFAULT_MONSTER_POOL_FILTER)
+  const [starFilter, setStarFilter] = useState<HuntStarFilterState>(DEFAULT_HUNT_STAR_FILTER)
   const [questTypeEnabled, setQuestTypeEnabled] = useState(true)
 
-  const filteredPool = useMemo(() => filterMonsterPool(MONSTER_POOL, poolFilter), [poolFilter])
+  const filteredPool = useMemo(() => {
+    const byRarity = filterMonsterPool(MONSTER_POOL, poolFilter)
+    return filterPoolByStars(byRarity, starFilter)
+  }, [poolFilter, starFilter])
 
   const pickRandom = useCallback(() => pickRandomFromPool(filteredPool), [filteredPool])
+
+  const pickHuntStar = useCallback(
+    (entry: (typeof MONSTER_POOL)[number]) => pickStarForMonsterWithFilter(entry, starFilter),
+    [starFilter],
+  )
 
   const poolCountLabel = formatPoolCountLabel(filteredPool.length)
   const overlayMode = !isMobile && Boolean(onHuntChange)
@@ -47,6 +63,7 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
       pool={filteredPool}
       pickRandom={pickRandom}
       pickRandomQuestType={pickQuestTypeForMonster}
+      pickRandomHuntStar={pickHuntStar}
       questTypeEnabled={questTypeEnabled}
       reelSide="left"
       spinLabels={SPIN_LABELS}
@@ -62,6 +79,15 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
           onQuestTypeChange={setQuestTypeEnabled}
           disabled={disabled}
           variant={layout}
+          trailing={
+            <HuntStarFilter
+              value={starFilter}
+              onChange={setStarFilter}
+              disabled={disabled}
+              variant={layout}
+              embedded
+            />
+          }
         />
       )}
       belowReel={

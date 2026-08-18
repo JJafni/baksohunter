@@ -58,8 +58,8 @@ function HuntLayout({
 
   return (
     <div className="grid h-full min-h-0 w-full grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:items-stretch lg:gap-0">
-      <section className="relative flex min-h-0 w-full justify-center lg:overflow-hidden lg:border-r lg:border-wilds-gold/15">
-        <div className="pointer-events-none absolute inset-0 hidden lg:block">
+      <section className="relative flex min-h-0 w-full justify-center lg:items-center lg:border-r lg:border-wilds-gold/15">
+        <div className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
           <MonsterGalleryImage
             result={monsterHunt.result}
             visible={monsterHunt.phase === 'revealed'}
@@ -72,12 +72,12 @@ function HuntLayout({
           />
         </div>
 
-        <div className="relative z-10 flex h-full min-h-0 w-full flex-col items-center lg:px-8 lg:py-5">
+        <div className="relative z-10 flex h-full min-h-0 w-full flex-col items-center overflow-visible lg:px-8 lg:py-5">
           <CrateOpener onHuntChange={onMonsterHuntChange} />
         </div>
       </section>
 
-      <section className="relative flex min-h-0 w-full justify-center lg:overflow-hidden">
+      <section className="relative flex min-h-0 w-full justify-center lg:items-center lg:overflow-hidden">
         <div className="pointer-events-none absolute inset-0 hidden lg:block">
           <WeaponGalleryImage
             result={weaponHunt.result}
@@ -103,12 +103,14 @@ function AppContent() {
   const [monsterHunt, setMonsterHunt] = useState<CrateHuntContext>({
     result: null,
     questType: null,
+    huntStar: null,
     phase: 'idle',
     spinnerUiVisible: true,
   })
   const [weaponHunt, setWeaponHunt] = useState<CrateHuntContext>({
     result: null,
     questType: null,
+    huntStar: null,
     phase: 'idle',
     spinnerUiVisible: true,
   })
