@@ -25,20 +25,20 @@ function MonsterExcludeTile({ entry, isExcluded, onToggle }: MonsterExcludeTileP
   }, [entry.icon])
 
   return (
-    <li>
+    <li className="flex">
       <button
         type="button"
         aria-pressed={isExcluded}
         aria-label={`${isExcluded ? 'Include' : 'Exclude'} ${entry.name}`}
         title={entry.name}
         onClick={onToggle}
-        className={`group relative flex w-full cursor-pointer flex-col items-center gap-1.5 rounded-md border p-2 sm:p-2.5 ${
+        className={`group relative flex h-full w-full cursor-pointer flex-col items-center gap-1.5 rounded-md border p-2 sm:p-2.5 ${
           isExcluded
             ? 'border-wilds-gold/15 bg-wilds-950/40 opacity-45 grayscale'
             : 'border-wilds-gold/35 bg-wilds-900/80 transition-colors hover:border-wilds-gold/55 hover:bg-wilds-850/90'
         }`}
       >
-        <span className="relative flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14">
+        <span className="relative flex h-12 w-12 shrink-0 items-center justify-center sm:h-14 sm:w-14">
           {!loaded ? (
             <span
               aria-hidden="true"
@@ -65,7 +65,7 @@ function MonsterExcludeTile({ entry, isExcluded, onToggle }: MonsterExcludeTileP
             </span>
           ) : null}
         </span>
-        <span className="line-clamp-2 w-full text-center text-[9px] font-bold uppercase leading-tight tracking-wide text-wilds-parchment/90 sm:text-[10px]">
+        <span className="line-clamp-2 h-[2.5em] w-full shrink-0 text-center text-[9px] font-bold uppercase leading-tight tracking-wide text-wilds-parchment/90 sm:text-[10px]">
           {entry.name}
         </span>
       </button>
@@ -178,7 +178,7 @@ function MonsterExcludeModal({ open, onClose, species, excluded, onChange }: Mon
             </div>
 
             <div className="wilds-scrollbar min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5">
-              <ul className="grid grid-cols-4 gap-2.5 sm:grid-cols-5 sm:gap-3 md:grid-cols-6">
+              <ul className="grid auto-rows-fr grid-cols-4 gap-2.5 sm:grid-cols-5 sm:gap-3 md:grid-cols-6">
                 {species.map((entry) => (
                   <MonsterExcludeTile
                     key={entry.slug}
