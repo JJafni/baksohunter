@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { MonsterPoolFilterState } from '../lib/rarityFilter'
 
 type MonsterRarityFilterProps = {
@@ -7,6 +8,8 @@ type MonsterRarityFilterProps = {
   onQuestTypeChange?: (enabled: boolean) => void
   disabled?: boolean
   variant?: 'sidebar' | 'bar'
+  /** Rendered after Hunt Type in bar layout (e.g. star difficulty dropdown). */
+  trailing?: ReactNode
 }
 
 const FILTER_OPTIONS: {
@@ -35,6 +38,7 @@ function MonsterRarityFilter({
   onQuestTypeChange,
   disabled = false,
   variant = 'sidebar',
+  trailing,
 }: MonsterRarityFilterProps) {
   const toggle = (key: keyof MonsterPoolFilterState) => {
     onChange({ ...value, [key]: !value[key] })
@@ -96,6 +100,19 @@ function MonsterRarityFilter({
             >
               Hunt Type
             </button>
+            {trailing ? (
+              <>
+                <div
+                  aria-hidden="true"
+                  className={
+                    isBar
+                      ? 'mx-0.5 h-5 w-px shrink-0 self-center bg-wilds-gold/20'
+                      : 'my-0.5 h-px w-full shrink-0 bg-wilds-gold/20'
+                  }
+                />
+                {trailing}
+              </>
+            ) : null}
           </>
         ) : null}
       </div>
