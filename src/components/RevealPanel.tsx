@@ -91,6 +91,54 @@ function RevealPanel({
 
   const revealContent = (entry: CrateEntry) => {
     const titleUpdateLabel = showMonsterInfo ? getMonsterTitleUpdateLabel(entry.slug) : null
+    const rarityLabel = rarityLabelFor(entry, rarityLabels)
+    const visualRarity = getVisualRarity(entry)
+
+    if (isMobile) {
+      return (
+        <div className="wilds-legibility-text flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
+          {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
+          <h2
+            className={`font-black uppercase leading-none tracking-tight text-wilds-parchment ${
+              entry.name.length >= 10 ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
+            }`}
+          >
+            {entry.name}
+          </h2>
+          {titleUpdateLabel ? (
+            <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.24em] text-wilds-gold-light/90 sm:text-[10px]">
+              {titleUpdateLabel}
+            </span>
+          ) : null}
+          <span aria-hidden="true" className="text-wilds-muted/45">
+            ·
+          </span>
+          <p
+            className={`text-[10px] font-bold uppercase tracking-[0.14em] sm:text-xs ${RARITY_TEXT[visualRarity]}`}
+          >
+            {rarityLabel}
+          </p>
+          {huntStar ? (
+            <>
+              <span aria-hidden="true" className="text-wilds-muted/45">
+                ·
+              </span>
+              <p className="text-sm font-black tracking-[0.08em] text-wilds-gold-light sm:text-base">
+                {formatHuntStar(huntStar)}
+              </p>
+            </>
+          ) : null}
+          {monsterInfo ? (
+            <MonsterInfoModal
+              info={monsterInfo}
+              icon={entry.icon}
+              open={infoOpen}
+              onClose={() => setInfoOpen(false)}
+            />
+          ) : null}
+        </div>
+      )
+    }
 
     return (
       <div className="wilds-legibility-text">
@@ -110,14 +158,12 @@ function RevealPanel({
           </div>
         </div>
         <p
-          className={`${isMobile ? 'mt-2 text-sm sm:text-base' : 'mt-2.5 text-sm sm:text-base'} font-bold uppercase tracking-[0.2em] ${RARITY_TEXT[getVisualRarity(entry)]}`}
+          className={`mt-2.5 text-sm font-bold uppercase tracking-[0.2em] sm:text-base ${RARITY_TEXT[visualRarity]}`}
         >
-          {rarityLabelFor(entry, rarityLabels)}
+          {rarityLabel}
         </p>
         {huntStar ? (
-          <p
-            className={`${isMobile ? 'mt-1.5 text-base sm:text-lg' : 'mt-2 text-base sm:text-lg'} font-black tracking-[0.08em] text-wilds-gold-light`}
-          >
+          <p className="mt-2 text-base font-black tracking-[0.08em] text-wilds-gold-light sm:text-lg">
             {formatHuntStar(huntStar)}
           </p>
         ) : null}
@@ -150,7 +196,7 @@ function RevealPanel({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={REVEAL_MOTION}
-              className={`w-full ${alignClass} flex flex-col`}
+              className={`w-full ${alignClass}`}
             >
               {revealContent(result)}
             </motion.div>
