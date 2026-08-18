@@ -2,14 +2,6 @@ import { cn } from '../../lib/utils'
 import React, { useRef, useState } from 'react'
 import { AnimatePresence, motion, useAnimate } from 'motion/react'
 
-export const SPIN_LABELS = [
-  'Get ready...',
-  'Cooked?',
-  'Fingers crossed',
-  'Picking',
-  'GG',
-]
-
 interface StatefulButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string
   children: React.ReactNode
@@ -70,7 +62,15 @@ export function StatefulButton({
     }
   }
 
-  const { onClick, onDrag, onDragStart, onDragEnd, onAnimationStart, onAnimationEnd, ...buttonProps } = props
+  const {
+    onClick: _onClick,
+    onDrag: _onDrag,
+    onDragStart: _onDragStart,
+    onDragEnd: _onDragEnd,
+    onAnimationStart: _onAnimationStart,
+    onAnimationEnd: _onAnimationEnd,
+    ...buttonProps
+  } = props
   const isButtonDisabled = disabled || isLoading
   const label = isLoading && useSpinLabels ? loadingLabel : children
 
