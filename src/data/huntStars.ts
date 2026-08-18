@@ -128,19 +128,28 @@ const TEMPERED_STARS: Record<string, HuntStar[]> = (() => {
   return map
 })()
 
-/** Arch-tempered event quests are 10★ (Freedom from Solitude, Ruler of the Desert Kingdom, etc.). */
+/**
+ * Arch-tempered event quest stars — not every AT monster has an 8★ hunt.
+ * @see https://monsterhunterwiki.org/wiki/Category:MHWilds_%E2%98%858_Quests
+ * @see https://game8.co/games/Monster-Hunter-Wilds/archives/507871
+ */
 const ARCH_TEMPERED_STARS: Record<string, HuntStar[]> = {
+  // Freedom from Solitude (TU4) — 10★ only.
   arkveld: [10],
-  'jin-dahaad': [10],
-  'nu-udra': [10],
-  'rey-dau': [10],
-  'uth-duna': [10],
+  // Heart of Judecca (9★) + Frozen Knells of the East (10★).
+  'jin-dahaad': [9, 10],
+  // Be Cursed, Ye Shadowy Flame (9★) + Scion of the Dark Cradle (10★).
+  'nu-udra': [9, 10],
+  // A Silent Flash (8★) + Ruler of the Desert Kingdom (10★).
+  'rey-dau': [8, 10],
+  // These Roots Run Deep (8★) + Summons from the Land Beyond (10★).
+  'uth-duna': [8, 10],
 }
 
 const DEFAULT_STARS_BY_RARITY: Record<Rarity, HuntStar[]> = {
   normal: stars(1, 8),
   tempered: [5, 6, 7, 8, 9],
-  'arch-tempered': [9, 10],
+  'arch-tempered': [8, 9, 10],
 }
 
 const STARS_BY_RARITY: Record<Rarity, Record<string, HuntStar[]>> = {
