@@ -75,12 +75,8 @@ function HuntStarFilter({
   const isDefault = isDefaultStarFilter(value)
 
   const menuPositionClass = opensUpward
-    ? embedded
-      ? 'bottom-full right-0 mb-1.5 origin-bottom-right'
-      : 'bottom-full left-1/2 mb-1.5 -translate-x-1/2 origin-bottom'
-    : embedded
-      ? 'top-full right-0 mt-1.5 origin-top-right'
-      : 'top-full left-1/2 mt-1.5 -translate-x-1/2 origin-top'
+    ? 'bottom-full left-1/2 mb-1.5 -translate-x-1/2 origin-bottom'
+    : 'top-full left-1/2 mt-1.5 -translate-x-1/2 origin-top'
 
   const menuShadowClass = opensUpward
     ? 'shadow-[0_-8px_32px_rgba(0,0,0,0.55)]'
