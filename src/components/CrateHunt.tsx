@@ -73,6 +73,7 @@ const FOOTER_ROW_H = '2.75rem'
 const MOBILE_REVEAL_ROW_H = '4.25rem'
 /** Bottom filter row above spin buttons — both columns reserve this height. */
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
+const SPINNER_UI_FADE_MS = SPINNER_UI_FADE.duration * 1000
 const CONTROLS_LAYOUT = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
 
 function SpinnerUiFade({ visible, children }: { visible: boolean; children: ReactNode }) {
@@ -81,11 +82,32 @@ function SpinnerUiFade({ visible, children }: { visible: boolean; children: Reac
       initial={false}
       animate={{ opacity: visible ? 1 : 0 }}
       transition={SPINNER_UI_FADE}
-      className="grid w-full transition-[grid-template-rows] duration-700 ease-in-out"
-      style={{ gridTemplateRows: visible ? '1fr' : '0fr' }}
+      className={`w-full shrink-0 ${visible ? '' : 'pointer-events-none'}`}
     >
-      <div className={`min-h-0 overflow-hidden ${visible ? '' : 'pointer-events-none'}`}>{children}</div>
+      {children}
     </motion.div>
+  )
+}
+
+function SpinnerLayoutSlot({
+  holdLayout,
+  children,
+}: {
+  holdLayout: boolean
+  children: ReactNode
+}) {
+  return (
+    <div
+      className="grid w-full overflow-hidden"
+      style={{
+        gridTemplateRows: holdLayout ? '1fr' : '0fr',
+        transitionProperty: 'grid-template-rows',
+        transitionDuration: holdLayout ? '300ms' : '0ms',
+        transitionTimingFunction: 'ease-in-out',
+      }}
+    >
+      <div className="min-h-0 overflow-hidden">{children}</div>
+    </div>
   )
 }
 
@@ -200,6 +222,17 @@ function CrateHunt({
   }, [phase, spinKey, clearSpinnerFadeTimer, spinnerFadeEnabled])
 
   const showSpinnerUi = spinnerFadeEnabled ? spinnerUiVisible : true
+  const [spinnerHoldLayout, setSpinnerHoldLayout] = useState(true)
+
+  useEffect(() => {
+    if (showSpinnerUi) {
+      setSpinnerHoldLayout(true)
+      return
+    }
+
+    const timer = window.setTimeout(() => setSpinnerHoldLayout(false), SPINNER_UI_FADE_MS)
+    return () => window.clearTimeout(timer)
+  }, [showSpinnerUi])
 
   useEffect(() => {
     onHuntChange?.({ result, questType, huntStar, phase, spinnerUiVisible })
@@ -353,30 +386,29 @@ function CrateHunt({
         />
 
         <motion.div
-          layout
           transition={{ layout: CONTROLS_LAYOUT }}
           className={`mx-auto flex w-full flex-col items-center ${
             overlayMode
-              ? `h-full min-h-0 gap-3 py-2 ${phase === 'idle' ? 'justify-center' : showSpinnerUi ? 'justify-start' : 'justify-end'}`
+              ? `h-full min-h-0 gap-3 py-2 ${phase === 'idle' ? 'justify-center' : spinnerHoldLayout ? 'justify-start' : 'justify-end'}`
               : 'gap-4 lg:gap-3'
           }`}
           style={{ maxWidth: columnMaxWidth }}
         >
-          <SpinnerUiFade visible={showSpinnerUi}>
-            {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
-          </SpinnerUiFade>
+          <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
+            <SpinnerUiFade visible={showSpinnerUi}>
+              {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
+            </SpinnerUiFade>
+          </SpinnerLayoutSlot>
           {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
-          <motion.div
-            layout
-            transition={{ layout: CONTROLS_LAYOUT }}
+          <div
             className={`mx-auto flex w-full flex-col items-center gap-3 ${
-              overlayMode && phase !== 'idle' && showSpinnerUi ? 'mt-auto' : ''
+              overlayMode && phase !== 'idle' && spinnerHoldLayout ? 'mt-auto' : ''
             }`}
             style={{ maxWidth: columnMaxWidth }}
           >
             {stackedRevealSlot}
             {actions}
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     )
@@ -402,7 +434,9 @@ function CrateHunt({
         }}
       >
         <div className={`${reelColClass} row-start-1`}>
-          <SpinnerUiFade visible={showSpinnerUi}>{reelSlot}</SpinnerUiFade>
+          <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
+            <SpinnerUiFade visible={showSpinnerUi}>{reelSlot}</SpinnerUiFade>
+          </SpinnerLayoutSlot>
         </div>
 
         <div className={`${nameColClass} row-start-1 self-center`}>{nameSlot}</div>
