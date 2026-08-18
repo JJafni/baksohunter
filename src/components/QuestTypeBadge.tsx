@@ -4,6 +4,7 @@ import { QUEST_TYPE_REVEAL_DELAY_MS } from '../lib/crateConfig'
 import { QUEST_TYPE_BY_ID, type QuestType } from '../data/questTypes'
 
 const BADGE_MOTION = { duration: 0.42, ease: [0.22, 1, 0.36, 1] as const }
+const INLINE_BADGE_MOTION = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
 
 type QuestTypeBadgeProps = {
   questType: QuestType | null
@@ -38,15 +39,31 @@ function QuestTypeBadge({
       {showBadge && quest ? (
         <motion.div
           key={`${quest.id}-${revealKey}`}
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.92 }}
-          transition={BADGE_MOTION}
-          className={isInline ? 'inline-flex shrink-0' : 'pointer-events-none absolute top-0 right-0 z-20'}
+          initial={
+            isInline
+              ? { width: 0, opacity: 0, marginRight: 0 }
+              : { opacity: 0, scale: 0.92 }
+          }
+          animate={
+            isInline
+              ? { width: 'auto', opacity: 1, marginRight: 8 }
+              : { opacity: 1, scale: 1 }
+          }
+          exit={
+            isInline
+              ? { width: 0, opacity: 0, marginRight: 0 }
+              : { opacity: 0, scale: 0.92 }
+          }
+          transition={isInline ? INLINE_BADGE_MOTION : BADGE_MOTION}
+          className={
+            isInline
+              ? 'inline-flex shrink-0 overflow-hidden'
+              : 'pointer-events-none absolute top-0 right-0 z-20'
+          }
         >
           <div
-            className={`flex items-center gap-1.5 rounded-sm border border-wilds-gold/20 bg-wilds-950/75 backdrop-blur-sm ${
-              isInline ? 'px-1.5 py-0.5 sm:px-2 sm:py-1' : 'px-1.5 py-1 sm:px-2 sm:py-1.5'
+            className={`flex items-center gap-1.5 whitespace-nowrap rounded-sm border border-wilds-gold/20 bg-wilds-950/75 backdrop-blur-sm ${
+              isInline ? 'px-2 py-1 sm:px-2.5 sm:py-1' : 'px-1.5 py-1 sm:px-2 sm:py-1.5'
             }`}
           >
             <img
@@ -54,12 +71,12 @@ function QuestTypeBadge({
               alt=""
               width={20}
               height={20}
-              className={`shrink-0 object-contain ${isInline ? 'size-4 sm:size-[18px]' : 'size-5 sm:size-[22px]'}`}
+              className={`shrink-0 object-contain ${isInline ? 'size-[18px] sm:size-5' : 'size-5 sm:size-[22px]'}`}
               draggable={false}
             />
             <p
               className={`font-bold uppercase tracking-[0.16em] text-wilds-gold-light ${
-                isInline ? 'text-[10px] sm:text-[11px]' : 'text-[11px] sm:text-xs'
+                isInline ? 'text-[11px] sm:text-xs' : 'text-[11px] sm:text-xs'
               }`}
             >
               {quest.label}

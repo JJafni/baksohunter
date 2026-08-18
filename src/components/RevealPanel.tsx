@@ -11,6 +11,7 @@ import QuestTypeBadge from './QuestTypeBadge'
 import type { QuestType } from '../data/questTypes'
 
 const REVEAL_MOTION = { duration: 0.42, ease: [0.22, 1, 0.36, 1] as const }
+const METADATA_LAYOUT_MOTION = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
 
 type RevealPanelProps = {
   result: CrateEntry | null
@@ -107,8 +108,20 @@ function RevealPanel({
   }
 
   const metadataRow = (visualRarity: ReturnType<typeof getVisualRarity>, rarityLabel: string) => (
-    <div className={`inline-flex max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 ${nameRowClass}`}>
-      <span className="inline-flex items-center gap-x-1.5">
+    <motion.div
+      layout
+      transition={METADATA_LAYOUT_MOTION}
+      className={`inline-flex max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 ${nameRowClass}`}
+    >
+      {questType ? (
+        <QuestTypeBadge
+          questType={questType}
+          visible={questTypeVisible}
+          revealKey={revealKey}
+          variant="inline"
+        />
+      ) : null}
+      <motion.span layout transition={METADATA_LAYOUT_MOTION} className="inline-flex items-center gap-x-1.5">
         <span
           className={`font-bold uppercase tracking-[0.14em] ${isMobile ? 'text-[10px] sm:text-xs' : 'text-sm sm:text-base'} ${RARITY_TEXT[visualRarity]}`}
         >
@@ -121,16 +134,8 @@ function RevealPanel({
             {formatHuntStar(huntStar)}
           </span>
         ) : null}
-      </span>
-      {questType ? (
-        <QuestTypeBadge
-          questType={questType}
-          visible={questTypeVisible}
-          revealKey={revealKey}
-          variant="inline"
-        />
-      ) : null}
-    </div>
+      </motion.span>
+    </motion.div>
   )
 
   const nameRow = (entry: CrateEntry, titleUpdateLabel: string | null, nameClass: string) => (
