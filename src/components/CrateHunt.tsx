@@ -73,7 +73,7 @@ const MOBILE_REVEAL_ROW_H = '4.25rem'
 /** Bottom filter row above spin buttons — both columns reserve this height. */
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 const SPINNER_UI_FADE_MS = SPINNER_UI_FADE.duration * 1000
-const CONTROLS_LAYOUT = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
+const CONTROLS_LAYOUT = { duration: OPEN_MS / 1000, ease: [0.22, 1, 0.36, 1] as const }
 
 function SpinnerUiFade({ visible, children }: { visible: boolean; children: ReactNode }) {
   return (
@@ -282,13 +282,15 @@ function CrateHunt({
   )
 
   const actions = (
-    <div
+    <motion.div
+      layout={useStackedLayout ? 'position' : false}
+      transition={{ layout: CONTROLS_LAYOUT }}
       className={`mx-auto flex w-full flex-col items-center ${actionsPadding}`}
       style={{ maxWidth: columnMaxWidth }}
     >
       {filterRow}
       <StatefulButton
-        layoutId={buttonLayoutId}
+        layoutId={useStackedLayout ? undefined : buttonLayoutId}
         loadingLabels={spinLabels}
         icon={buttonIcon}
         surface={buttonSurface}
@@ -299,7 +301,7 @@ function CrateHunt({
         {buttonLabel}
       </StatefulButton>
       {poolLine}
-    </div>
+    </motion.div>
   )
 
   const namePanel = (
@@ -323,7 +325,7 @@ function CrateHunt({
       className="flex w-full shrink-0 items-center justify-center overflow-hidden"
       initial={false}
       animate={{ height: phase === 'idle' ? 0 : MOBILE_REVEAL_ROW_H }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: OPEN_MS / 1000, ease: [0.22, 1, 0.36, 1] }}
     >
       {phase !== 'idle' ? namePanel : null}
     </motion.div>
@@ -342,7 +344,7 @@ function CrateHunt({
       <motion.div
         initial={{ opacity: 0, scale: 0.88 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: OPEN_MS / 1000, ease: [0.22, 1, 0.36, 1] }}
         className={`w-full ${stretchClass}`}
         style={{ width: blockWidth, maxWidth: columnMaxWidth }}
       >
@@ -381,6 +383,7 @@ function CrateHunt({
         />
 
         <motion.div
+          layout
           transition={{ layout: CONTROLS_LAYOUT }}
           className={`mx-auto flex w-full flex-col items-center ${
             overlayMode
@@ -395,7 +398,9 @@ function CrateHunt({
             </SpinnerUiFade>
           </SpinnerLayoutSlot>
           {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
-          <div
+          <motion.div
+            layout
+            transition={{ layout: CONTROLS_LAYOUT }}
             className={`mx-auto flex w-full flex-col items-center gap-3 ${
               overlayMode && phase !== 'idle' && spinnerHoldLayout ? 'mt-auto' : ''
             }`}
@@ -403,7 +408,7 @@ function CrateHunt({
           >
             {stackedRevealSlot}
             {actions}
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     )
