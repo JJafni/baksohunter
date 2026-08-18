@@ -70,7 +70,7 @@ type CrateHuntProps = {
 /** Shared row heights so monster and weapon columns line up horizontally. */
 const FOOTER_ROW_H = '2.75rem'
 /** Fixed mobile reveal row — keeps filters/button from jumping when the name appears. */
-const MOBILE_REVEAL_ROW_H = '4.75rem'
+const MOBILE_REVEAL_ROW_H = '4.25rem'
 /** Bottom filter row above spin buttons — both columns reserve this height. */
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 const CONTROLS_LAYOUT = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
@@ -81,10 +81,10 @@ function SpinnerUiFade({ visible, children }: { visible: boolean; children: Reac
       initial={false}
       animate={{ opacity: visible ? 1 : 0 }}
       transition={SPINNER_UI_FADE}
-      className={`w-full max-lg:contents lg:grid lg:overflow-hidden lg:transition-[grid-template-rows] lg:duration-700 lg:ease-in-out ${visible ? '' : 'pointer-events-none'}`}
+      className="grid w-full transition-[grid-template-rows] duration-700 ease-in-out"
       style={{ gridTemplateRows: visible ? '1fr' : '0fr' }}
     >
-      <div className="min-h-0 max-lg:contents lg:overflow-hidden">{children}</div>
+      <div className={`min-h-0 overflow-hidden ${visible ? '' : 'pointer-events-none'}`}>{children}</div>
     </motion.div>
   )
 }
@@ -241,24 +241,18 @@ function CrateHunt({
 
   const filtersDisabled = phase === 'spinning'
 
-  const filterRow = filters ? (
-    <div
-      className={`mb-2 flex w-full items-end justify-center overflow-visible px-1 ${
-        isMobile ? 'min-h-[7.5rem]' : 'lg:min-h-[5.25rem]'
-      }`}
-    >
-      {isMobile ? (
-        filters({ disabled: filtersDisabled, layout: 'bar' })
-      ) : (
+  const filterRow = (
+    <div className="mb-2 flex w-full items-center justify-center overflow-visible px-1 max-lg:min-h-[7.5rem] lg:min-h-[5.25rem]">
+      {filters ? (
         <div className="mx-auto w-fit max-w-full">{filters({ disabled: filtersDisabled, layout: 'bar' })}</div>
-      )}
+      ) : null}
     </div>
-  ) : null
+  )
 
   const actions = (
     <div
-      className={`flex flex-col items-center ${actionsPadding} ${isMobile ? 'w-full' : 'mx-auto w-full'}`}
-      style={isMobile ? undefined : { maxWidth: columnMaxWidth }}
+      className={`mx-auto flex w-full flex-col items-center ${actionsPadding}`}
+      style={{ maxWidth: columnMaxWidth }}
     >
       {filterRow}
       <StatefulButton
@@ -346,8 +340,8 @@ function CrateHunt({
   if (useStackedLayout) {
     return (
       <div
-        className={`relative mx-auto w-full shrink-0 ${overlayMode && !isMobile ? 'flex h-full flex-col' : ''}`}
-        style={{ maxWidth: isMobile ? undefined : columnMaxWidth }}
+        className={`relative mx-auto w-full shrink-0 ${overlayMode ? 'flex h-full flex-col' : ''}`}
+        style={{ maxWidth: columnMaxWidth }}
       >
         {questTypeBadge}
         <div
@@ -361,12 +355,12 @@ function CrateHunt({
         <motion.div
           layout
           transition={{ layout: CONTROLS_LAYOUT }}
-          className={`flex w-full flex-col items-center ${
+          className={`mx-auto flex w-full flex-col items-center ${
             overlayMode
-              ? `mx-auto h-full min-h-0 gap-3 py-2 ${phase === 'idle' ? 'justify-center' : isMobile ? '' : showSpinnerUi ? 'justify-start' : 'justify-end'}`
+              ? `h-full min-h-0 gap-3 py-2 ${phase === 'idle' ? 'justify-center' : showSpinnerUi ? 'justify-start' : 'justify-end'}`
               : 'gap-4 lg:gap-3'
           }`}
-          style={overlayMode && !isMobile ? { maxWidth: columnMaxWidth } : undefined}
+          style={{ maxWidth: columnMaxWidth }}
         >
           <SpinnerUiFade visible={showSpinnerUi}>
             {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
@@ -375,10 +369,10 @@ function CrateHunt({
           <motion.div
             layout
             transition={{ layout: CONTROLS_LAYOUT }}
-            className={`flex w-full flex-col items-center gap-2 ${
-              overlayMode && !isMobile && phase !== 'idle' && showSpinnerUi ? 'mt-auto' : ''
-            } ${overlayMode && !isMobile ? 'mx-auto' : ''}`}
-            style={overlayMode && !isMobile ? { maxWidth: columnMaxWidth } : undefined}
+            className={`mx-auto flex w-full flex-col items-center gap-3 ${
+              overlayMode && phase !== 'idle' && showSpinnerUi ? 'mt-auto' : ''
+            }`}
+            style={{ maxWidth: columnMaxWidth }}
           >
             {stackedRevealSlot}
             {actions}
