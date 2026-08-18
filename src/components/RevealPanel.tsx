@@ -143,38 +143,34 @@ function RevealPanel({
 
     if (isMobile) {
       return (
-        <div className="wilds-legibility-text flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
-          {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
-          <h2
-            className={`font-black uppercase leading-none tracking-tight text-wilds-parchment ${
-              entry.name.length >= 10 ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
-            }`}
-          >
-            {entry.name}
-          </h2>
-          {titleUpdateLabel ? (
-            <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.24em] text-wilds-gold-light/90 sm:text-[10px]">
-              {titleUpdateLabel}
-            </span>
-          ) : null}
-          <span aria-hidden="true" className="text-wilds-muted/45">
-            ·
-          </span>
-          <p
-            className={`text-[10px] font-bold uppercase tracking-[0.14em] sm:text-xs ${RARITY_TEXT[visualRarity]}`}
-          >
-            {rarityLabel}
-          </p>
-          {huntStar ? (
-            <>
-              <span aria-hidden="true" className="text-wilds-muted/45">
-                ·
+        <div className="wilds-legibility-text flex flex-col items-center gap-1.5 text-center">
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+            {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
+            <h2
+              className={`font-black uppercase leading-none tracking-tight text-wilds-parchment ${
+                entry.name.length >= 10 ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
+              }`}
+            >
+              {entry.name}
+            </h2>
+            {titleUpdateLabel ? (
+              <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.24em] text-wilds-gold-light/90 sm:text-[10px]">
+                {titleUpdateLabel}
               </span>
+            ) : null}
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">
+            <p
+              className={`text-[10px] font-bold uppercase tracking-[0.14em] sm:text-xs ${RARITY_TEXT[visualRarity]}`}
+            >
+              {rarityLabel}
+            </p>
+            {huntStar ? (
               <p className="text-sm font-black tracking-[0.08em] text-wilds-gold-light sm:text-base">
                 {formatHuntStar(huntStar)}
               </p>
-            </>
-          ) : null}
+            ) : null}
+          </div>
           {monsterInfo ? (
             <MonsterInfoModal
               info={monsterInfo}
