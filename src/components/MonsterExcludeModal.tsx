@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import type { MonsterEntry } from '../data/monsters'
@@ -8,6 +8,90 @@ import {
   toggleMonsterExcluded,
   type MonsterExcludeState,
 } from '../lib/monsterExcludeFilter'
+
+const STRIKE_TRANSITION = { duration: 0.32, ease: [0.22, 1, 0.36, 1] as const }
+
+type MonsterExcludeTileProps = {
+  entry: MonsterEntry
+  isExcluded: boolean
+  onToggle: () => void
+}
+
+function MonsterExcludeTile({ entry, isExcluded, onToggle }: MonsterExcludeTileProps) {
+  const [loaded, setLoaded] = useState(false)
+  const imgRef = useRef<HTMLImageElement>(null)
+
+  useEffect(() => {
+    setLoaded(false)
+    if (imgRef.current?.complete) setLoaded(true)
+  }, [entry.icon])
+
+  const imageOpacityClass = !loaded ? 'opacity-0' : isExcluded ? 'opacity-45 grayscale' : 'opacity-100'
+
+  return (
+    <li>
+      <button
+        type="button"
+        aria-pressed={isExcluded}
+        aria-label={`${isExcluded ? 'Include' : 'Exclude'} ${entry.name}`}
+        title={entry.name}
+        onClick={onToggle}
+        className={`group relative flex w-full cursor-pointer flex-col items-center gap-1.5 rounded-md border p-2 transition-colors sm:p-2.5 ${
+          isExcluded
+            ? 'border-wilds-gold/15 bg-wilds-950/40 hover:border-wilds-gold/30'
+            : 'border-wilds-gold/35 bg-wilds-900/80 hover:border-wilds-gold/55 hover:bg-wilds-850/90'
+        }`}
+      >
+        <span className="relative flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14">
+          {!loaded ? (
+            <span
+              aria-hidden="true"
+              className="skeleton absolute inset-1 rounded-md border border-wilds-gold/10"
+            />
+          ) : null}
+          <img
+            ref={imgRef}
+            src={entry.icon}
+            alt=""
+            onLoad={() => setLoaded(true)}
+            className={`h-full w-full object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)] transition-[opacity,filter] duration-300 ${imageOpacityClass}`}
+            loading="eager"
+            decoding="async"
+          />
+          <AnimatePresence>
+            {isExcluded ? (
+              <motion.span
+                key="strike"
+                aria-hidden="true"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
+              >
+                <motion.span
+                  initial={{ scaleX: 0, opacity: 0.6, rotate: -24 }}
+                  animate={{ scaleX: 1, opacity: 1, rotate: -24 }}
+                  exit={{ scaleX: 0, opacity: 0, rotate: -24 }}
+                  transition={STRIKE_TRANSITION}
+                  style={{ originX: 0.5, originY: 0.5 }}
+                  className="h-0.5 w-[115%] rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.65)]"
+                />
+              </motion.span>
+            ) : null}
+          </AnimatePresence>
+        </span>
+        <span
+          className={`line-clamp-2 w-full text-center text-[9px] font-bold uppercase leading-tight tracking-wide transition-colors duration-300 sm:text-[10px] ${
+            isExcluded ? 'text-wilds-muted/70' : 'text-wilds-parchment/90'
+          }`}
+        >
+          {entry.name}
+        </span>
+      </button>
+    </li>
+  )
+}
 
 type MonsterExcludeModalProps = {
   open: boolean
@@ -38,6 +122,15 @@ function MonsterExcludeModal({ open, onClose, species, excluded, onChange }: Mon
       document.body.style.overflow = prevOverflow
     }
   }, [open])
+
+  useEffect(() => {
+    if (!open) return
+
+    for (const entry of species) {
+      const img = new Image()
+      img.src = entry.icon
+    }
+  }, [open, species])
 
   if (typeof document === 'undefined') return null
 
@@ -106,52 +199,14 @@ function MonsterExcludeModal({ open, onClose, species, excluded, onChange }: Mon
 
             <div className="wilds-scrollbar min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5">
               <ul className="grid grid-cols-4 gap-2.5 sm:grid-cols-5 sm:gap-3 md:grid-cols-6">
-                {species.map((entry) => {
-                  const isExcluded = excluded.has(entry.slug)
-                  return (
-                    <li key={entry.slug}>
-                      <button
-                        type="button"
-                        aria-pressed={isExcluded}
-                        aria-label={`${isExcluded ? 'Include' : 'Exclude'} ${entry.name}`}
-                        title={entry.name}
-                        onClick={() => onChange(toggleMonsterExcluded(excluded, entry.slug))}
-                        className={`group relative flex w-full cursor-pointer flex-col items-center gap-1.5 rounded-md border p-2 transition sm:p-2.5 ${
-                          isExcluded
-                            ? 'border-wilds-gold/15 bg-wilds-950/40 hover:border-wilds-gold/30'
-                            : 'border-wilds-gold/35 bg-wilds-900/80 hover:border-wilds-gold/55 hover:bg-wilds-850/90'
-                        }`}
-                      >
-                        <span className="relative flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14">
-                          <img
-                            src={entry.icon}
-                            alt=""
-                            className={`h-full w-full object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)] ${
-                              isExcluded ? 'opacity-45 grayscale' : ''
-                            }`}
-                            loading="lazy"
-                            decoding="async"
-                          />
-                          {isExcluded ? (
-                            <span
-                              aria-hidden="true"
-                              className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
-                            >
-                              <span className="h-0.5 w-[110%] rotate-[-24deg] bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.55)]" />
-                            </span>
-                          ) : null}
-                        </span>
-                        <span
-                          className={`line-clamp-2 w-full text-center text-[9px] font-bold uppercase leading-tight tracking-wide sm:text-[10px] ${
-                            isExcluded ? 'text-wilds-muted/70' : 'text-wilds-parchment/90'
-                          }`}
-                        >
-                          {entry.name}
-                        </span>
-                      </button>
-                    </li>
-                  )
-                })}
+                {species.map((entry) => (
+                  <MonsterExcludeTile
+                    key={entry.slug}
+                    entry={entry}
+                    isExcluded={excluded.has(entry.slug)}
+                    onToggle={() => onChange(toggleMonsterExcluded(excluded, entry.slug))}
+                  />
+                ))}
               </ul>
             </div>
           </motion.div>
