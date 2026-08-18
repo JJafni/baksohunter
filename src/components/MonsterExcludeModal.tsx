@@ -89,7 +89,7 @@ function MonsterExcludeModal({ open, onClose, species, excluded, onChange }: Mon
                   <button
                     type="button"
                     onClick={() => onChange(clearMonsterExclusions())}
-                    className="rounded-md border border-wilds-gold/25 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.08em] text-wilds-muted transition hover:border-wilds-gold/40 hover:text-wilds-parchment sm:text-xs"
+                    className="rounded-md border border-wilds-gold/25 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.08em] text-wilds-muted transition hover:cursor-pointer hover:border-wilds-gold/40 hover:text-wilds-parchment sm:text-xs"
                   >
                     Include all
                   </button>
@@ -97,14 +97,14 @@ function MonsterExcludeModal({ open, onClose, species, excluded, onChange }: Mon
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-md border border-wilds-gold/25 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.1em] text-wilds-muted transition hover:border-wilds-gold/40 hover:text-wilds-parchment"
+                  className="rounded-md border border-wilds-gold/25 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.1em] text-wilds-muted transition hover:cursor-pointer hover:border-wilds-gold/40 hover:text-wilds-parchment"
                 >
                   Done
                 </button>
               </div>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5">
+            <div className="wilds-scrollbar min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5">
               <ul className="grid grid-cols-4 gap-2.5 sm:grid-cols-5 sm:gap-3 md:grid-cols-6">
                 {species.map((entry) => {
                   const isExcluded = excluded.has(entry.slug)
@@ -116,9 +116,9 @@ function MonsterExcludeModal({ open, onClose, species, excluded, onChange }: Mon
                         aria-label={`${isExcluded ? 'Include' : 'Exclude'} ${entry.name}`}
                         title={entry.name}
                         onClick={() => onChange(toggleMonsterExcluded(excluded, entry.slug))}
-                        className={`group relative flex w-full flex-col items-center gap-1.5 rounded-md border p-2 transition sm:p-2.5 ${
+                        className={`group relative flex w-full cursor-pointer flex-col items-center gap-1.5 rounded-md border p-2 transition sm:p-2.5 ${
                           isExcluded
-                            ? 'border-wilds-gold/15 bg-wilds-950/40 opacity-45 grayscale'
+                            ? 'border-wilds-gold/15 bg-wilds-950/40 hover:border-wilds-gold/30'
                             : 'border-wilds-gold/35 bg-wilds-900/80 hover:border-wilds-gold/55 hover:bg-wilds-850/90'
                         }`}
                       >
@@ -126,20 +126,26 @@ function MonsterExcludeModal({ open, onClose, species, excluded, onChange }: Mon
                           <img
                             src={entry.icon}
                             alt=""
-                            className="h-full w-full object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)]"
+                            className={`h-full w-full object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)] ${
+                              isExcluded ? 'opacity-45 grayscale' : ''
+                            }`}
                             loading="lazy"
                             decoding="async"
                           />
                           {isExcluded ? (
                             <span
                               aria-hidden="true"
-                              className="pointer-events-none absolute inset-0 flex items-center justify-center"
+                              className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
                             >
-                              <span className="h-px w-full rotate-[-24deg] bg-rose-400/90" />
+                              <span className="h-0.5 w-[110%] rotate-[-24deg] bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.55)]" />
                             </span>
                           ) : null}
                         </span>
-                        <span className="line-clamp-2 w-full text-center text-[9px] font-bold uppercase leading-tight tracking-wide text-wilds-parchment/90 sm:text-[10px]">
+                        <span
+                          className={`line-clamp-2 w-full text-center text-[9px] font-bold uppercase leading-tight tracking-wide sm:text-[10px] ${
+                            isExcluded ? 'text-wilds-muted/70' : 'text-wilds-parchment/90'
+                          }`}
+                        >
                           {entry.name}
                         </span>
                       </button>

@@ -115,6 +115,31 @@
     }
   }
 
+  /* Gold scrollbars — matches the loading bar (wilds-gold/10 track, wilds-gold/80 thumb). */
+  .wilds-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--color-wilds-gold) 80%, transparent)
+      color-mix(in srgb, var(--color-wilds-gold) 10%, transparent);
+  }
+
+  .wilds-scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .wilds-scrollbar::-webkit-scrollbar-track {
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--color-wilds-gold) 10%, transparent);
+  }
+
+  .wilds-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--color-wilds-gold) 80%, transparent);
+  }
+
+  .wilds-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--color-wilds-gold-light);
+  }
+
   /* Hunt spin button — sandblasted matte surface (dark red). */
   .wilds-spin-matte {
     position: relative;
