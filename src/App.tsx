@@ -58,7 +58,7 @@ function HuntLayout({
 
   return (
     <div className="grid h-full min-h-0 w-full grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:items-stretch lg:gap-0">
-      <section className="relative flex min-h-0 w-full justify-center lg:border-r lg:border-wilds-gold/15">
+      <section className="relative flex min-h-0 w-full justify-center lg:items-center lg:border-r lg:border-wilds-gold/15">
         <div className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
           <MonsterGalleryImage
             result={monsterHunt.result}
@@ -77,7 +77,7 @@ function HuntLayout({
         </div>
       </section>
 
-      <section className="relative flex min-h-0 w-full justify-center lg:overflow-hidden">
+      <section className="relative flex min-h-0 w-full justify-center lg:items-center lg:overflow-hidden">
         <div className="pointer-events-none absolute inset-0 hidden lg:block">
           <WeaponGalleryImage
             result={weaponHunt.result}

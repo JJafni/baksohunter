@@ -241,14 +241,19 @@ function CrateHunt({
 
   const filtersDisabled = phase === 'spinning'
 
-  const filterRow = filters ? (
-    <div className="mb-2 flex w-full items-end justify-center overflow-visible px-1 max-lg:min-h-[7.5rem] lg:min-h-[5.25rem]">
-      {filters({ disabled: filtersDisabled, layout: 'bar' })}
+  const filterRow = (
+    <div className="mb-2 flex w-full items-center justify-center overflow-visible px-1 max-lg:min-h-[7.5rem] lg:min-h-[5.25rem]">
+      {filters ? (
+        <div className="mx-auto w-fit max-w-full">{filters({ disabled: filtersDisabled, layout: 'bar' })}</div>
+      ) : null}
     </div>
-  ) : null
+  )
 
   const actions = (
-    <div className={`flex flex-col items-center ${actionsPadding}`} style={{ width: blockWidth }}>
+    <div
+      className={`mx-auto flex w-full flex-col items-center ${actionsPadding}`}
+      style={{ maxWidth: columnMaxWidth }}
+    >
       {filterRow}
       <StatefulButton
         layoutId={buttonLayoutId}
@@ -257,6 +262,7 @@ function CrateHunt({
         surface={buttonSurface}
         onClick={startHunt}
         disabled={phase === 'spinning' || !canSpin}
+        className="w-full"
       >
         {buttonLabel}
       </StatefulButton>
@@ -335,7 +341,7 @@ function CrateHunt({
     return (
       <div
         className={`relative mx-auto w-full shrink-0 ${overlayMode ? 'flex h-full flex-col' : ''}`}
-        style={{ maxWidth: overlayMode ? undefined : HUNT_COLUMN_MAX_WIDTH }}
+        style={{ maxWidth: columnMaxWidth }}
       >
         {questTypeBadge}
         <div
@@ -349,12 +355,12 @@ function CrateHunt({
         <motion.div
           layout
           transition={{ layout: CONTROLS_LAYOUT }}
-          className={`flex w-full flex-col items-center ${
+          className={`mx-auto flex w-full flex-col items-center ${
             overlayMode
-              ? `mx-auto h-full min-h-0 gap-3 py-2 ${phase === 'idle' ? 'justify-center' : showSpinnerUi ? '' : 'justify-end'}`
+              ? `h-full min-h-0 gap-3 py-2 ${phase === 'idle' ? 'justify-center' : showSpinnerUi ? 'justify-start' : 'justify-end'}`
               : 'gap-4 lg:gap-3'
           }`}
-          style={overlayMode ? { maxWidth: HUNT_COLUMN_MAX_WIDTH } : undefined}
+          style={{ maxWidth: columnMaxWidth }}
         >
           <SpinnerUiFade visible={showSpinnerUi}>
             {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
@@ -363,9 +369,10 @@ function CrateHunt({
           <motion.div
             layout
             transition={{ layout: CONTROLS_LAYOUT }}
-            className={`flex w-full flex-col items-center gap-3 ${
+            className={`mx-auto flex w-full flex-col items-center gap-3 ${
               overlayMode && phase !== 'idle' && showSpinnerUi ? 'mt-auto' : ''
             }`}
+            style={{ maxWidth: columnMaxWidth }}
           >
             {stackedRevealSlot}
             {actions}
