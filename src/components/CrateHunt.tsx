@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'motion/react'
 import type { QuestType } from '../data/questTypes'
+import type { HuntStar } from '../data/huntStars'
 import type { CrateEntry, Rarity } from '../data/types'
 import { getVisualRarity, RARITY_BACKGROUND_GLOW, type VisualRarity } from '../lib/rarityColors'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
@@ -24,6 +25,8 @@ export type CrateHuntContext = {
   result: CrateEntry | null
   /** Random capture / slay / hunt objective; null for weapon hunts. */
   questType: QuestType | null
+  /** Random investigation star rating; null for weapon hunts or when disabled. */
+  huntStar: HuntStar | null
   phase: Phase
   /** False after post-reveal fade; true while idle, spinning, or before fade completes. */
   spinnerUiVisible: boolean
@@ -38,6 +41,8 @@ type CrateHuntProps = {
   pickRandom: () => CrateEntry
   /** When set, a quest objective is chosen on each spin based on the result. */
   pickRandomQuestType?: (entry: CrateEntry) => QuestType
+  /** When set, a star rating is chosen on each spin based on the result. */
+  pickRandomHuntStar?: (entry: CrateEntry) => HuntStar
   /** When false, quest objectives are disabled and any active badge is cleared. */
   questTypeEnabled?: boolean
   /** Which side the reel column (title, spinner, button) sits on. */
@@ -91,6 +96,7 @@ function CrateHunt({
   pool,
   pickRandom,
   pickRandomQuestType,
+  pickRandomHuntStar,
   questTypeEnabled = true,
   reelSide,
   filters,
@@ -110,6 +116,7 @@ function CrateHunt({
   const [phase, setPhase] = useState<Phase>('idle')
   const [result, setResult] = useState<CrateEntry | null>(null)
   const [questType, setQuestType] = useState<QuestType | null>(null)
+  const [huntStar, setHuntStar] = useState<HuntStar | null>(null)
   const [sequence, setSequence] = useState<CrateEntry[]>([])
   const [spinKey, setSpinKey] = useState(0)
   const [isEntering, setIsEntering] = useState(false)
@@ -133,10 +140,12 @@ function CrateHunt({
     const target = pickRandom()
     const nextQuestType =
       questTypeEnabled && pickRandomQuestType ? pickRandomQuestType(target) : null
+    const nextHuntStar = pickRandomHuntStar ? pickRandomHuntStar(target) : null
     setPhase('spinning')
     setSpinKey((k) => k + 1)
     setResult(target)
     setQuestType(nextQuestType)
+    setHuntStar(nextHuntStar)
     setSequence(buildReelSequence(pool, target, REEL_LENGTH, CENTER_INDEX))
 
     if (phase === 'idle') {
@@ -146,7 +155,7 @@ function CrateHunt({
     await new Promise<void>((resolve) => {
       spinResolverRef.current = resolve
     })
-  }, [phase, pickRandom, pickRandomQuestType, questTypeEnabled, pool, clearSpinnerFadeTimer])
+  }, [phase, pickRandom, pickRandomQuestType, pickRandomHuntStar, questTypeEnabled, pool, clearSpinnerFadeTimer])
 
   useEffect(() => {
     if (!questTypeEnabled) setQuestType(null)
@@ -191,8 +200,8 @@ function CrateHunt({
   const showSpinnerUi = spinnerFadeEnabled ? spinnerUiVisible : true
 
   useEffect(() => {
-    onHuntChange?.({ result, questType, phase, spinnerUiVisible })
-  }, [result, questType, phase, spinnerUiVisible, onHuntChange])
+    onHuntChange?.({ result, questType, huntStar, phase, spinnerUiVisible })
+  }, [result, questType, huntStar, phase, spinnerUiVisible, onHuntChange])
 
   const visualRarity: VisualRarity = result ? getVisualRarity(result) : 'normal'
   const backgroundGlow = RARITY_BACKGROUND_GLOW
@@ -224,7 +233,7 @@ function CrateHunt({
     </p>
   )
 
-  const huntContextForRender: CrateHuntContext = { result, questType, phase, spinnerUiVisible }
+  const huntContextForRender: CrateHuntContext = { result, questType, huntStar, phase, spinnerUiVisible }
   const belowReelSlot = externalGallery ? null : belowReel?.(huntContextForRender) ?? null
   const columnMaxWidth = HUNT_COLUMN_MAX_WIDTH
 
@@ -265,6 +274,7 @@ function CrateHunt({
       align={useStackedLayout ? 'center' : reelSide === 'left' ? 'right' : 'left'}
       variant={useStackedLayout ? 'mobile' : 'desktop'}
       showMonsterInfo={showMonsterInfo}
+      huntStar={pickRandomHuntStar ? huntStar : null}
     />
   )
 

@@ -4,6 +4,7 @@ import { getMonsterInfo } from '../data/monsterInfo'
 import { AnimatePresence, motion } from 'motion/react'
 import { ELDER_DRAGON_SLUGS } from '../data/monsters'
 import { getMonsterTitleUpdateLabel } from '../data/monsterTitleUpdates'
+import { formatHuntStar, type HuntStar } from '../data/huntStars'
 import { getVisualRarity, RARITY_TEXT_CLASS } from '../lib/rarityColors'
 import MonsterInfoModal from './MonsterInfoModal'
 
@@ -17,6 +18,7 @@ type RevealPanelProps = {
   align?: 'left' | 'right' | 'center'
   variant?: 'desktop' | 'mobile'
   showMonsterInfo?: boolean
+  huntStar?: HuntStar | null
 }
 
 const RARITY_TEXT = RARITY_TEXT_CLASS
@@ -55,6 +57,7 @@ function RevealPanel({
   align = 'left',
   variant = 'desktop',
   showMonsterInfo = false,
+  huntStar = null,
 }: RevealPanelProps) {
   const [infoOpen, setInfoOpen] = useState(false)
   const isMobile = variant === 'mobile'
@@ -111,6 +114,13 @@ function RevealPanel({
         >
           {rarityLabelFor(entry, rarityLabels)}
         </p>
+        {huntStar ? (
+          <p
+            className={`${isMobile ? 'mt-1.5 text-base sm:text-lg' : 'mt-2 text-base sm:text-lg'} font-black tracking-[0.08em] text-wilds-gold-light`}
+          >
+            {formatHuntStar(huntStar)}
+          </p>
+        ) : null}
         {monsterInfo ? (
           <MonsterInfoModal
             info={monsterInfo}

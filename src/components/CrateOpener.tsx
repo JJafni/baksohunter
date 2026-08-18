@@ -5,6 +5,7 @@ import MonsterGalleryImage from './MonsterGalleryImage'
 import MonsterRarityFilter from './MonsterRarityFilter'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import { pickQuestTypeForMonster } from '../data/questTypes'
+import { pickStarForMonster } from '../data/huntStars'
 import { MONSTER_POOL } from '../data/monsters'
 import type { Rarity } from '../data/types'
 import { SPIN_LABELS } from './ui/stateful-button'
@@ -47,6 +48,7 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
       pool={filteredPool}
       pickRandom={pickRandom}
       pickRandomQuestType={pickQuestTypeForMonster}
+      pickRandomHuntStar={pickStarForMonster}
       questTypeEnabled={questTypeEnabled}
       reelSide="left"
       spinLabels={SPIN_LABELS}
