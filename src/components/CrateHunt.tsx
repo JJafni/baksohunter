@@ -147,8 +147,6 @@ function CrateHunt({
   const [spinnerUiVisible, setSpinnerUiVisible] = useState(true)
   const spinResolverRef = useRef<(() => void) | null>(null)
   const spinnerFadeTimerRef = useRef<number | null>(null)
-  const phaseRef = useRef(phase)
-  phaseRef.current = phase
 
   const clearSpinnerFadeTimer = useCallback(() => {
     if (spinnerFadeTimerRef.current !== null) {
@@ -235,19 +233,6 @@ function CrateHunt({
     const timer = window.setTimeout(() => setSpinnerHoldLayout(false), SPINNER_UI_FADE_MS)
     return () => window.clearTimeout(timer)
   }, [showSpinnerUi])
-
-  // Recover from mobile ↔ desktop switches mid-hunt (reel unmount, fade timers, stuck spin).
-  useEffect(() => {
-    clearSpinnerFadeTimer()
-    setSpinnerUiVisible(true)
-    setSpinnerHoldLayout(true)
-
-    if (phaseRef.current !== 'spinning') return
-
-    spinResolverRef.current?.()
-    spinResolverRef.current = null
-    setPhase('revealed')
-  }, [isMobile, clearSpinnerFadeTimer])
 
   useEffect(() => {
     onHuntChange?.({ result, questType, huntStar, phase, spinnerUiVisible })

@@ -283,10 +283,6 @@ function HuntStarFilter({
     }
   }, [open, isMobile])
 
-  useEffect(() => {
-    setOpen(false)
-  }, [isMobile])
-
   const label = formatStarFilterLabel(value)
   const isDefault = isDefaultStarFilter(value)
 

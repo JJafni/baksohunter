@@ -32,7 +32,6 @@ function Reel({ sequence, onDone, landed, rarity, orientation = 'vertical' }: Re
   const [spinning, setSpinning] = useState(false)
   const [viewportSize, setViewportSize] = useState(isHorizontal ? MOBILE_REEL_MAX_WIDTH : VIEWPORT_HEIGHT)
   const doneRef = useRef(onDone)
-  const hasSpunRef = useRef(false)
   doneRef.current = onDone
 
   useEffect(() => {
@@ -53,17 +52,7 @@ function Reel({ sequence, onDone, landed, rarity, orientation = 'vertical' }: Re
   }, [isHorizontal])
 
   useEffect(() => {
-    if (hasSpunRef.current) return
-
-    const size = isHorizontal
-      ? containerRef.current?.clientWidth || viewportSize
-      : VIEWPORT_HEIGHT
-
-    if (isHorizontal && size <= 0) return
-
-    hasSpunRef.current = true
-
-    const finalOffset = size / 2 - (CENTER_INDEX * SLOT + CARD_SIZE / 2)
+    const finalOffset = viewportSize / 2 - (CENTER_INDEX * SLOT + CARD_SIZE / 2)
     const raf = requestAnimationFrame(() => {
       setSpinning(true)
       setTranslate(finalOffset)
@@ -73,19 +62,9 @@ function Reel({ sequence, onDone, landed, rarity, orientation = 'vertical' }: Re
       cancelAnimationFrame(raf)
       window.clearTimeout(timer)
     }
-    // Intentionally once per mount — parent remounts via key for each spin.
+    // Runs once per mount; parent remounts this component (via key) for each new spin.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewportSize, isHorizontal])
-
-  useEffect(() => {
-    if (!landed || !isHorizontal || !hasSpunRef.current) return
-
-    const size = containerRef.current?.clientWidth ?? viewportSize
-    if (size <= 0) return
-
-    const finalOffset = size / 2 - (CENTER_INDEX * SLOT + CARD_SIZE / 2)
-    setTranslate(finalOffset)
-  }, [landed, isHorizontal, viewportSize])
 
   const trackStyle = isHorizontal
     ? {
