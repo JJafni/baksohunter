@@ -107,7 +107,7 @@ function RevealPanel({
 
     if (useInlineLayout) {
       return (
-        <div className="wilds-legibility-text flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-center">
+        <div className="wilds-legibility-text flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center">
           {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
           <h2
             className={`font-black uppercase leading-none tracking-tight text-wilds-parchment ${inlineNameSizeClassFor(entry)}`}
@@ -119,16 +119,24 @@ function RevealPanel({
               {titleUpdateLabel}
             </span>
           ) : null}
-          <p
-            className={`text-xs font-bold uppercase tracking-[0.18em] sm:text-sm ${RARITY_TEXT[visualRarity]}`}
-          >
-            {rarityLabel}
-          </p>
           {huntStar ? (
-            <p className="text-base font-black tracking-[0.08em] text-wilds-gold-light sm:text-lg">
-              {formatHuntStar(huntStar)}
+            <>
+              <p
+                className={`text-xs font-bold uppercase tracking-[0.18em] sm:text-sm ${RARITY_TEXT[visualRarity]}`}
+              >
+                {rarityLabel}
+              </p>
+              <p className="text-base font-black tracking-[0.08em] text-wilds-gold-light sm:text-lg">
+                {formatHuntStar(huntStar)}
+              </p>
+            </>
+          ) : (
+            <p
+              className={`text-xs font-bold uppercase tracking-[0.18em] sm:text-sm ${RARITY_TEXT[visualRarity]}`}
+            >
+              {rarityLabel}
             </p>
-          ) : null}
+          )}
           {monsterInfo ? (
             <MonsterInfoModal
               info={monsterInfo}
@@ -144,12 +152,12 @@ function RevealPanel({
     if (isMobile) {
       return (
         <div className="wilds-legibility-text flex flex-col items-center gap-1.5 text-center">
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-            {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
+          <div className={`flex flex-wrap items-center justify-center gap-x-2 gap-y-1 ${nameRowClass}`}>
+            {monsterInfo ? (
+              <MonsterInfoButton onClick={() => setInfoOpen(true)} />
+            ) : null}
             <h2
-              className={`font-black uppercase leading-none tracking-tight text-wilds-parchment ${
-                entry.name.length >= 10 ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
-              }`}
+              className={`font-black uppercase leading-none tracking-tight text-wilds-parchment ${nameSizeClassFor(entry)}`}
             >
               {entry.name}
             </h2>
@@ -159,7 +167,7 @@ function RevealPanel({
               </span>
             ) : null}
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">
+          <div className={`flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 ${nameRowClass}`}>
             <p
               className={`text-[10px] font-bold uppercase tracking-[0.14em] sm:text-xs ${RARITY_TEXT[visualRarity]}`}
             >
@@ -185,31 +193,33 @@ function RevealPanel({
 
     return (
       <div className="wilds-legibility-text">
-        <div className={`flex items-start gap-2 ${nameRowClass}`}>
+        <div className={`flex items-center gap-2 ${nameRowClass}`}>
           {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
-          <div className="flex items-start gap-2">
+          <div className="flex items-center gap-2">
             <h2
               className={`font-black uppercase leading-[0.95] tracking-tight text-wilds-parchment ${nameSizeClassFor(entry)}`}
             >
               {entry.name}
             </h2>
             {titleUpdateLabel ? (
-              <span className="shrink-0 pt-0.5 text-[10px] font-bold uppercase tracking-[0.28em] text-wilds-gold-light/90 sm:text-xs sm:pt-1">
+              <span className="shrink-0 text-[10px] font-bold uppercase tracking-[0.28em] text-wilds-gold-light/90 sm:text-xs">
                 {titleUpdateLabel}
               </span>
             ) : null}
           </div>
         </div>
-        <p
-          className={`mt-2.5 text-sm font-bold uppercase tracking-[0.2em] sm:text-base ${RARITY_TEXT[visualRarity]}`}
-        >
-          {rarityLabel}
-        </p>
-        {huntStar ? (
-          <p className="mt-2 text-base font-black tracking-[0.08em] text-wilds-gold-light sm:text-lg">
-            {formatHuntStar(huntStar)}
+        <div className={`mt-2 flex flex-wrap items-center gap-x-2 gap-y-0.5 ${nameRowClass}`}>
+          <p
+            className={`text-sm font-bold uppercase tracking-[0.2em] sm:text-base ${RARITY_TEXT[visualRarity]}`}
+          >
+            {rarityLabel}
           </p>
-        ) : null}
+          {huntStar ? (
+            <p className="text-base font-black tracking-[0.08em] text-wilds-gold-light sm:text-lg">
+              {formatHuntStar(huntStar)}
+            </p>
+          ) : null}
+        </div>
         {monsterInfo ? (
           <MonsterInfoModal
             info={monsterInfo}
