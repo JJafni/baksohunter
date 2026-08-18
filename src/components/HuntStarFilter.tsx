@@ -108,7 +108,7 @@ function HuntStarFilter({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.96 }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-full z-50 mb-1.5 w-[min(100vw-2rem,13.5rem)] origin-bottom rounded-lg border border-wilds-gold/30 bg-wilds-950/95 p-2.5 shadow-[0_-8px_32px_rgba(0,0,0,0.55)] backdrop-blur-sm sm:w-[13.5rem]"
+            className="absolute bottom-full z-50 mb-1.5 w-[min(100vw-2rem,15rem)] origin-bottom rounded-lg border border-wilds-gold/30 bg-wilds-950/95 p-2.5 shadow-[0_-8px_32px_rgba(0,0,0,0.55)] backdrop-blur-sm sm:w-[15rem]"
           >
             <div className="mb-2 flex gap-1.5">
               <button
@@ -140,7 +140,7 @@ function HuntStarFilter({
             <p className="mb-1.5 text-center text-[8px] font-bold uppercase tracking-[0.14em] text-wilds-muted sm:text-[9px]">
               Investigation Stars
             </p>
-            <div className="grid grid-cols-3 gap-1">
+            <div className="grid grid-cols-5 gap-1">
               {SELECTABLE_STARS.map((star) => {
                 const on = value.stars[star]
                 const isLow = star <= 4
@@ -151,7 +151,7 @@ function HuntStarFilter({
                     role="option"
                     aria-selected={on}
                     onClick={() => toggleStar(star)}
-                    className={`cursor-pointer rounded-md border py-1.5 text-[10px] font-black tracking-wide transition sm:text-xs ${
+                    className={`cursor-pointer rounded-md border py-1.5 text-[10px] font-black tracking-wide transition sm:text-[11px] ${
                       on
                         ? isLow
                           ? 'border-sky-400/50 bg-sky-400/10 text-sky-200'

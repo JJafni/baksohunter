@@ -1,7 +1,7 @@
 import type { CrateEntry } from '../data/types'
-import { getStarsForMonster, pickStarForMonster, type HuntStar } from '../data/huntStars'
+import { getStarsForMonster, type HuntStar } from '../data/huntStars'
 
-export type SelectableStar = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+export type SelectableStar = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
 
 export type HuntStarFilterState = {
   stars: Record<SelectableStar, boolean>
@@ -9,15 +9,15 @@ export type HuntStarFilterState = {
   highRank: boolean
 }
 
-export const SELECTABLE_STARS: SelectableStar[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+export const SELECTABLE_STARS: SelectableStar[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 export const DEFAULT_HUNT_STAR_FILTER: HuntStarFilterState = {
-  stars: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true },
+  stars: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true, 10: true },
   lowRank: true,
   highRank: true,
 }
 
-/** Stars allowed by the current rank + star toggles (10★ when 9★ is on and HR is on). */
+/** Stars allowed by rank toggles + explicitly selected star buttons only. */
 export function getEffectiveStarFilter(filter: HuntStarFilterState): HuntStar[] {
   const selected = SELECTABLE_STARS.filter((s) => filter.stars[s])
   const allowed = new Set<HuntStar>()
@@ -31,7 +31,6 @@ export function getEffectiveStarFilter(filter: HuntStarFilterState): HuntStar[] 
     for (const s of selected) {
       if (s >= 5) allowed.add(s)
     }
-    if (selected.includes(9)) allowed.add(10)
   }
 
   return [...allowed].sort((a, b) => a - b)
@@ -61,7 +60,9 @@ export function pickStarForMonsterWithFilter(
 ): HuntStar {
   const effective = getEffectiveStarFilter(filter)
   const matching = getStarsForMonster(entry).filter((s) => effective.includes(s))
-  if (matching.length === 0) return pickStarForMonster(entry)
+  if (matching.length === 0) {
+    throw new Error(`No stars match filter for ${entry.slug} (${entry.rarity})`)
+  }
   return matching[Math.floor(Math.random() * matching.length)]!
 }
 
