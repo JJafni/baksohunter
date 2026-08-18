@@ -70,8 +70,6 @@ const FOOTER_ROW_H = '2.75rem'
 /** Fixed mobile reveal row — keeps filters/button from jumping when the name appears. */
 const MOBILE_REVEAL_ROW_H = '4.75rem'
 /** Bottom filter row above spin buttons — both columns reserve this height. */
-const FILTER_ROW_MIN_H = '5.25rem'
-
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 const CONTROLS_LAYOUT = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
 
@@ -241,8 +239,7 @@ function CrateHunt({
 
   const filterRow = (
     <div
-      className="mb-2 flex w-full items-end justify-center overflow-visible px-1"
-      style={{ minHeight: FILTER_ROW_MIN_H }}
+      className="mb-2 flex w-full items-end justify-center overflow-visible px-1 max-lg:min-h-[7.5rem] lg:min-h-[5.25rem]"
     >
       {filters ? filters({ disabled: filtersDisabled, layout: 'bar' }) : null}
     </div>

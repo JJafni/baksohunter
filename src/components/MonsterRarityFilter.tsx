@@ -54,10 +54,14 @@ function MonsterRarityFilter({
           : 'wilds-legibility-text flex w-[5.75rem] shrink-0 flex-col items-stretch gap-2 sm:w-[6.25rem]'
       }
     >
-      <p className="text-center text-[9px] font-bold uppercase leading-tight tracking-[0.16em] text-wilds-parchment/90 sm:text-[10px]">
-        Pool Filters
-      </p>
-      <div className={isBar ? 'flex flex-wrap items-center justify-center gap-2' : 'flex flex-col gap-1.5'}>
+      <p className="filter-section-label">Pool Filters</p>
+      <div
+        className={
+          isBar
+            ? 'flex max-w-full flex-wrap items-center justify-center gap-2.5 lg:gap-2'
+            : 'flex flex-col gap-2 lg:gap-1.5'
+        }
+      >
         {FILTER_OPTIONS.map(({ key, label, activeClass }) => {
           const on = value[key]
           return (
@@ -67,7 +71,7 @@ function MonsterRarityFilter({
               disabled={disabled}
               aria-pressed={on}
               onClick={() => toggle(key)}
-              className={`cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
+              className={`filter-chip ${
                 on
                   ? activeClass
                   : 'border-wilds-gold/25 bg-wilds-950/75 text-wilds-parchment/85 hover:border-wilds-gold/40 hover:text-wilds-parchment'
@@ -92,7 +96,7 @@ function MonsterRarityFilter({
               disabled={disabled}
               aria-pressed={questTypeEnabled}
               onClick={() => onQuestTypeChange(!questTypeEnabled)}
-              className={`cursor-pointer rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase leading-tight tracking-[0.08em] transition sm:text-[10px] ${
+              className={`filter-chip ${
                 questTypeEnabled
                   ? 'border-wilds-gold/50 bg-wilds-gold/10 text-wilds-gold-light'
                   : 'border-wilds-gold/25 bg-wilds-950/75 text-wilds-parchment/85 hover:border-wilds-gold/40 hover:text-wilds-parchment'
