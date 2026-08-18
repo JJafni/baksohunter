@@ -9,8 +9,6 @@ import {
   type MonsterExcludeState,
 } from '../lib/monsterExcludeFilter'
 
-const STRIKE_TRANSITION = { duration: 0.32, ease: [0.22, 1, 0.36, 1] as const }
-
 type MonsterExcludeTileProps = {
   entry: MonsterEntry
   isExcluded: boolean
@@ -26,8 +24,6 @@ function MonsterExcludeTile({ entry, isExcluded, onToggle }: MonsterExcludeTileP
     if (imgRef.current?.complete) setLoaded(true)
   }, [entry.icon])
 
-  const imageOpacityClass = !loaded ? 'opacity-0' : isExcluded ? 'opacity-45 grayscale' : 'opacity-100'
-
   return (
     <li>
       <button
@@ -36,10 +32,10 @@ function MonsterExcludeTile({ entry, isExcluded, onToggle }: MonsterExcludeTileP
         aria-label={`${isExcluded ? 'Include' : 'Exclude'} ${entry.name}`}
         title={entry.name}
         onClick={onToggle}
-        className={`group relative flex w-full cursor-pointer flex-col items-center gap-1.5 rounded-md border p-2 transition-colors sm:p-2.5 ${
+        className={`group relative flex w-full cursor-pointer flex-col items-center gap-1.5 rounded-md border p-2 sm:p-2.5 ${
           isExcluded
-            ? 'border-wilds-gold/15 bg-wilds-950/40 hover:border-wilds-gold/30'
-            : 'border-wilds-gold/35 bg-wilds-900/80 hover:border-wilds-gold/55 hover:bg-wilds-850/90'
+            ? 'border-wilds-gold/15 bg-wilds-950/40 opacity-45 grayscale'
+            : 'border-wilds-gold/35 bg-wilds-900/80 transition-colors hover:border-wilds-gold/55 hover:bg-wilds-850/90'
         }`}
       >
         <span className="relative flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14">
@@ -54,38 +50,22 @@ function MonsterExcludeTile({ entry, isExcluded, onToggle }: MonsterExcludeTileP
             src={entry.icon}
             alt=""
             onLoad={() => setLoaded(true)}
-            className={`h-full w-full object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)] transition-[opacity,filter] duration-300 ${imageOpacityClass}`}
+            className={`h-full w-full object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)] transition-opacity duration-300 ${
+              loaded ? 'opacity-100' : 'opacity-0'
+            }`}
             loading="eager"
             decoding="async"
           />
-          <AnimatePresence>
-            {isExcluded ? (
-              <motion.span
-                key="strike"
-                aria-hidden="true"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
-              >
-                <motion.span
-                  initial={{ scaleX: 0, opacity: 0.6, rotate: -24 }}
-                  animate={{ scaleX: 1, opacity: 1, rotate: -24 }}
-                  exit={{ scaleX: 0, opacity: 0, rotate: -24 }}
-                  transition={STRIKE_TRANSITION}
-                  style={{ originX: 0.5, originY: 0.5 }}
-                  className="h-0.5 w-[115%] rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.65)]"
-                />
-              </motion.span>
-            ) : null}
-          </AnimatePresence>
+          {isExcluded ? (
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
+            >
+              <span className="h-px w-full rotate-[-24deg] bg-neutral-400/70" />
+            </span>
+          ) : null}
         </span>
-        <span
-          className={`line-clamp-2 w-full text-center text-[9px] font-bold uppercase leading-tight tracking-wide transition-colors duration-300 sm:text-[10px] ${
-            isExcluded ? 'text-wilds-muted/70' : 'text-wilds-parchment/90'
-          }`}
-        >
+        <span className="line-clamp-2 w-full text-center text-[9px] font-bold uppercase leading-tight tracking-wide text-wilds-parchment/90 sm:text-[10px]">
           {entry.name}
         </span>
       </button>
