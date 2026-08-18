@@ -16,7 +16,6 @@ import {
 import { buildReelSequence } from '../lib/reelSequence'
 import Reel from './Reel'
 import RevealPanel from './RevealPanel'
-import QuestTypeBadge from './QuestTypeBadge'
 import { StatefulButton } from './ui/stateful-button'
 
 type Phase = 'idle' | 'spinning' | 'revealed'
@@ -314,13 +313,10 @@ function CrateHunt({
       layout={revealLayout}
       showMonsterInfo={showMonsterInfo}
       huntStar={pickRandomHuntStar ? huntStar : null}
+      questType={questTypeEnabled && pickRandomQuestType ? questType : null}
+      questTypeVisible={phase === 'revealed'}
     />
   )
-
-  const questTypeBadge =
-    questTypeEnabled && pickRandomQuestType ? (
-      <QuestTypeBadge questType={questType} visible={phase === 'revealed'} revealKey={spinKey} />
-    ) : null
 
   const stackedRevealSlot = !useStackedLayout ? null : isMobile ? (
     <motion.div
@@ -376,7 +372,6 @@ function CrateHunt({
         className={`relative mx-auto w-full shrink-0 ${overlayMode ? 'flex h-full flex-col' : ''}`}
         style={{ maxWidth: columnMaxWidth }}
       >
-        {questTypeBadge}
         <div
           className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
           style={{
@@ -416,7 +411,6 @@ function CrateHunt({
 
   return (
     <div className="relative w-full max-w-full shrink-0">
-      {questTypeBadge}
       <div className="relative mx-auto w-fit max-w-full">
       <div
         className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
