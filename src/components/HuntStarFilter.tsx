@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
+import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import {
   DEFAULT_HUNT_STAR_FILTER,
   formatStarFilterLabel,
@@ -21,33 +22,15 @@ type HuntStarFilterProps = {
 const LOW_RANK_STARS = SELECTABLE_STARS.filter((s) => s <= 4)
 const HIGH_RANK_STARS = SELECTABLE_STARS.filter((s) => s >= 5)
 
-function StarToggle({
-  star,
-  on,
-  onToggle,
-}: {
-  star: SelectableStar
-  on: boolean
-  onToggle: () => void
-}) {
+function starToggleClass(star: SelectableStar, on: boolean): string {
   const isLow = star <= 4
-  return (
-    <button
-      type="button"
-      role="option"
-      aria-selected={on}
-      onClick={onToggle}
-      className={`cursor-pointer rounded-md border px-2 py-1 text-[10px] font-black tracking-wide transition sm:text-[11px] ${
-        on
-          ? isLow
-            ? 'border-sky-400/50 bg-sky-400/10 text-sky-200'
-            : 'border-amber-400/50 bg-amber-400/10 text-amber-200'
-          : 'border-wilds-gold/15 bg-wilds-950/50 text-wilds-parchment/50 hover:border-wilds-gold/30 hover:text-wilds-parchment/80'
-      }`}
-    >
-      {star}★
-    </button>
-  )
+  return `cursor-pointer rounded-md border py-1.5 text-[10px] font-black tracking-wide transition sm:text-[11px] ${
+    on
+      ? isLow
+        ? 'border-sky-400/50 bg-sky-400/10 text-sky-200'
+        : 'border-amber-400/50 bg-amber-400/10 text-amber-200'
+      : 'border-wilds-gold/15 bg-wilds-950/50 text-wilds-parchment/50 hover:border-wilds-gold/30 hover:text-wilds-parchment/80'
+  }`
 }
 
 function HuntStarFilter({
@@ -57,10 +40,12 @@ function HuntStarFilter({
   variant = 'bar',
   embedded = false,
 }: HuntStarFilterProps) {
+  const isMobile = useIsMobileLayout()
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const menuId = useId()
   const isBar = variant === 'bar'
+  const opensUpward = !isMobile
 
   useEffect(() => {
     if (!open) return
@@ -89,9 +74,23 @@ function HuntStarFilter({
   const label = formatStarFilterLabel(value)
   const isDefault = isDefaultStarFilter(value)
 
-  const menuAlignClass = embedded
-    ? 'right-0 origin-bottom-right'
-    : 'left-1/2 -translate-x-1/2 origin-bottom'
+  const menuPositionClass = opensUpward
+    ? embedded
+      ? 'bottom-full right-0 mb-1.5 origin-bottom-right'
+      : 'bottom-full left-1/2 mb-1.5 -translate-x-1/2 origin-bottom'
+    : embedded
+      ? 'top-full right-0 mt-1.5 origin-top-right'
+      : 'top-full left-1/2 mt-1.5 -translate-x-1/2 origin-top'
+
+  const menuShadowClass = opensUpward
+    ? 'shadow-[0_-8px_32px_rgba(0,0,0,0.55)]'
+    : 'shadow-[0_8px_32px_rgba(0,0,0,0.55)]'
+
+  const menuWidthClass = isMobile ? 'w-[8.75rem]' : 'w-[15rem]'
+
+  const menuMotion = opensUpward
+    ? { initial: { opacity: 0, y: 8, scale: 0.97 }, animate: { opacity: 1, y: 0, scale: 1 } }
+    : { initial: { opacity: 0, y: -8, scale: 0.97 }, animate: { opacity: 1, y: 0, scale: 1 } }
 
   return (
     <div
@@ -140,18 +139,18 @@ function HuntStarFilter({
             id={menuId}
             role="listbox"
             aria-label="Star difficulty filter"
-            initial={{ opacity: 0, y: 8, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.97 }}
+            initial={menuMotion.initial}
+            animate={menuMotion.animate}
+            exit={menuMotion.initial}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className={`absolute bottom-full z-50 mb-1.5 w-[8.75rem] rounded-lg border border-wilds-gold/30 bg-wilds-950/95 p-2 shadow-[0_-8px_32px_rgba(0,0,0,0.55)] backdrop-blur-sm ${menuAlignClass}`}
+            className={`absolute z-50 rounded-lg border border-wilds-gold/30 bg-wilds-950/95 p-2.5 backdrop-blur-sm ${menuPositionClass} ${menuShadowClass} ${menuWidthClass}`}
           >
-            <div className="flex flex-col gap-1">
+            <div className={isMobile ? 'flex flex-col gap-1' : 'mb-2 flex gap-1.5'}>
               <button
                 type="button"
                 aria-pressed={value.lowRank}
                 onClick={() => onChange({ ...value, lowRank: !value.lowRank })}
-                className={`cursor-pointer rounded-md border px-2 py-1 text-[9px] font-bold uppercase tracking-[0.06em] transition sm:text-[10px] ${
+                className={`${isMobile ? '' : 'flex-1'} cursor-pointer rounded-md border px-2 py-1 text-[9px] font-bold uppercase tracking-[0.06em] transition sm:text-[10px] ${
                   value.lowRank
                     ? 'border-sky-400/60 bg-sky-400/10 text-sky-300'
                     : 'border-wilds-gold/20 bg-wilds-950/60 text-wilds-parchment/70 hover:border-wilds-gold/35'
@@ -163,7 +162,7 @@ function HuntStarFilter({
                 type="button"
                 aria-pressed={value.highRank}
                 onClick={() => onChange({ ...value, highRank: !value.highRank })}
-                className={`cursor-pointer rounded-md border px-2 py-1 text-[9px] font-bold uppercase tracking-[0.06em] transition sm:text-[10px] ${
+                className={`${isMobile ? '' : 'flex-1'} cursor-pointer rounded-md border px-2 py-1 text-[9px] font-bold uppercase tracking-[0.06em] transition sm:text-[10px] ${
                   value.highRank
                     ? 'border-amber-400/60 bg-amber-400/10 text-amber-300'
                     : 'border-wilds-gold/20 bg-wilds-950/60 text-wilds-parchment/70 hover:border-wilds-gold/35'
@@ -173,31 +172,61 @@ function HuntStarFilter({
               </button>
             </div>
 
-            <p className="mb-1 mt-2 text-center text-[8px] font-bold uppercase tracking-[0.14em] text-wilds-muted sm:text-[9px]">
-              Stars
+            <p
+              className={`text-center text-[8px] font-bold uppercase tracking-[0.14em] text-wilds-muted sm:text-[9px] ${
+                isMobile ? 'mb-1 mt-2' : 'mb-1.5'
+              }`}
+            >
+              {isMobile ? 'Stars' : 'Investigation Stars'}
             </p>
-            <div className="grid grid-cols-2 gap-1">
-              <div className="flex flex-col gap-1">
-                {LOW_RANK_STARS.map((star) => (
-                  <StarToggle
+
+            {isMobile ? (
+              <div className="grid grid-cols-2 gap-1">
+                <div className="flex flex-col gap-1">
+                  {LOW_RANK_STARS.map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      role="option"
+                      aria-selected={value.stars[star]}
+                      onClick={() => toggleStar(star)}
+                      className={`px-2 ${starToggleClass(star, value.stars[star])}`}
+                    >
+                      {star}★
+                    </button>
+                  ))}
+                </div>
+                <div className="flex flex-col gap-1">
+                  {HIGH_RANK_STARS.map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      role="option"
+                      aria-selected={value.stars[star]}
+                      onClick={() => toggleStar(star)}
+                      className={`px-2 ${starToggleClass(star, value.stars[star])}`}
+                    >
+                      {star}★
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-5 gap-1">
+                {SELECTABLE_STARS.map((star) => (
+                  <button
                     key={star}
-                    star={star}
-                    on={value.stars[star]}
-                    onToggle={() => toggleStar(star)}
-                  />
+                    type="button"
+                    role="option"
+                    aria-selected={value.stars[star]}
+                    onClick={() => toggleStar(star)}
+                    className={starToggleClass(star, value.stars[star])}
+                  >
+                    {star}★
+                  </button>
                 ))}
               </div>
-              <div className="flex flex-col gap-1">
-                {HIGH_RANK_STARS.map((star) => (
-                  <StarToggle
-                    key={star}
-                    star={star}
-                    on={value.stars[star]}
-                    onToggle={() => toggleStar(star)}
-                  />
-                ))}
-              </div>
-            </div>
+            )}
 
             {!isDefault ? (
               <button
