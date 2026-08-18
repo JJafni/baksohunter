@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'motion/react'
 import type { QuestType } from '../data/questTypes'
 import type { HuntStar } from '../data/huntStars'
@@ -73,7 +73,6 @@ const MOBILE_REVEAL_ROW_H = '4.25rem'
 /** Bottom filter row above spin buttons — both columns reserve this height. */
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 const SPINNER_UI_FADE_MS = SPINNER_UI_FADE.duration * 1000
-const CONTROLS_LAYOUT = { duration: OPEN_MS / 1000, ease: [0.22, 1, 0.36, 1] as const }
 const OPEN_TRANSITION = { duration: OPEN_MS / 1000, ease: [0.22, 1, 0.36, 1] as const }
 
 function SpinnerUiFade({ visible, children }: { visible: boolean; children: ReactNode }) {
@@ -283,6 +282,28 @@ function CrateHunt({
   )
 
   const syncControlsMotion = overlayMode && useStackedLayout
+  const overlayColumnRef = useRef<HTMLDivElement>(null)
+  const overlayControlsRef = useRef<HTMLDivElement>(null)
+  const [overlayIdleOffset, setOverlayIdleOffset] = useState(0)
+
+  useLayoutEffect(() => {
+    if (!syncControlsMotion || phase !== 'idle') return
+
+    const measure = () => {
+      const column = overlayColumnRef.current
+      const controls = overlayControlsRef.current
+      if (!column || !controls) return
+      const offset = Math.max(0, (column.clientHeight - controls.offsetHeight) / 2)
+      setOverlayIdleOffset(offset)
+    }
+
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [syncControlsMotion, phase, filters, poolCountLabel, questTypeEnabled])
+
+  const overlayControlsY =
+    syncControlsMotion && phase === 'idle' ? -overlayIdleOffset : 0
 
   const actions = (
     <div
@@ -383,12 +404,10 @@ function CrateHunt({
           }}
         />
 
-        <motion.div
-          transition={{ layout: CONTROLS_LAYOUT }}
+        <div
+          ref={overlayColumnRef}
           className={`mx-auto flex w-full flex-col items-center ${
-            overlayMode
-              ? `h-full min-h-0 gap-3 py-2 ${phase === 'idle' ? 'justify-center' : spinnerHoldLayout ? 'justify-start' : 'justify-end'}`
-              : 'gap-4 lg:gap-3'
+            overlayMode ? 'h-full min-h-0 gap-3 py-2' : 'gap-4 lg:gap-3'
           }`}
           style={{ maxWidth: columnMaxWidth }}
         >
@@ -398,18 +417,19 @@ function CrateHunt({
             </SpinnerUiFade>
           </SpinnerLayoutSlot>
           {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
+          {syncControlsMotion ? <div className="min-h-0 flex-1 pointer-events-none" aria-hidden="true" /> : null}
           <motion.div
-            layout={syncControlsMotion ? 'position' : false}
-            transition={{ layout: CONTROLS_LAYOUT }}
-            className={`mx-auto flex w-full shrink-0 flex-col items-center gap-3 ${
-              overlayMode && phase !== 'idle' && spinnerHoldLayout ? 'mt-auto' : ''
-            }`}
+            ref={overlayControlsRef}
+            initial={false}
+            animate={{ y: overlayControlsY }}
+            transition={OPEN_TRANSITION}
+            className="relative z-10 mx-auto flex w-full shrink-0 flex-col items-center gap-3"
             style={{ maxWidth: columnMaxWidth }}
           >
             {stackedRevealSlot}
             {actions}
           </motion.div>
-        </motion.div>
+        </div>
       </div>
     )
   }
