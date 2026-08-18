@@ -241,7 +241,7 @@ function CrateHunt({
 
   const filterRow = (
     <div
-      className="mb-2 flex w-full items-end justify-center px-1"
+      className="mb-2 flex w-full items-end justify-center overflow-visible px-1"
       style={{ minHeight: FILTER_ROW_MIN_H }}
     >
       {filters ? filters({ disabled: filtersDisabled, layout: 'bar' }) : null}
