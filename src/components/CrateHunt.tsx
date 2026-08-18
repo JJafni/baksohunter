@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'motion/react'
 import type { QuestType } from '../data/questTypes'
 import type { HuntStar } from '../data/huntStars'
@@ -281,38 +281,14 @@ function CrateHunt({
     </div>
   )
 
-  const syncControlsMotion = overlayMode && useStackedLayout
-  const overlayColumnRef = useRef<HTMLDivElement>(null)
-  const overlayControlsRef = useRef<HTMLDivElement>(null)
-  const [overlayIdleOffset, setOverlayIdleOffset] = useState(0)
-
-  useLayoutEffect(() => {
-    if (!syncControlsMotion || phase !== 'idle') return
-
-    const measure = () => {
-      const column = overlayColumnRef.current
-      const controls = overlayControlsRef.current
-      if (!column || !controls) return
-      const offset = Math.max(0, (column.clientHeight - controls.offsetHeight) / 2)
-      setOverlayIdleOffset(offset)
-    }
-
-    measure()
-    window.addEventListener('resize', measure)
-    return () => window.removeEventListener('resize', measure)
-  }, [syncControlsMotion, phase, filters, poolCountLabel, questTypeEnabled])
-
-  const overlayControlsY =
-    syncControlsMotion && phase === 'idle' ? -overlayIdleOffset : 0
-
   const actions = (
     <div
-      className={`mx-auto flex w-full shrink-0 flex-col items-center ${actionsPadding}`}
+      className={`mx-auto flex w-full flex-col items-center ${actionsPadding}`}
       style={{ maxWidth: columnMaxWidth }}
     >
       {filterRow}
       <StatefulButton
-        layoutId={useStackedLayout ? undefined : buttonLayoutId}
+        layoutId={buttonLayoutId}
         loadingLabels={spinLabels}
         icon={buttonIcon}
         surface={buttonSurface}
@@ -352,13 +328,12 @@ function CrateHunt({
       {phase !== 'idle' ? namePanel : null}
     </motion.div>
   ) : phase !== 'idle' ? (
-    <motion.div
-      layout
+    <div
       className="w-full transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
       style={{ display: 'grid', gridTemplateRows: phase === 'revealed' ? 'auto' : '0fr' }}
     >
       <div className="min-h-0 overflow-hidden">{namePanel}</div>
-    </motion.div>
+    </div>
   ) : null
 
   const reelSlot =
@@ -391,6 +366,16 @@ function CrateHunt({
     )
 
   if (useStackedLayout) {
+    const overlayControls = (
+      <div
+        className="mx-auto flex w-full flex-col items-center gap-3"
+        style={{ maxWidth: columnMaxWidth }}
+      >
+        {stackedRevealSlot}
+        {actions}
+      </div>
+    )
+
     return (
       <div
         className={`relative mx-auto w-full shrink-0 ${overlayMode ? 'flex h-full flex-col' : ''}`}
@@ -404,32 +389,43 @@ function CrateHunt({
           }}
         />
 
-        <div
-          ref={overlayColumnRef}
-          className={`mx-auto flex w-full flex-col items-center ${
-            overlayMode ? 'h-full min-h-0 gap-3 py-2' : 'gap-4 lg:gap-3'
-          }`}
-          style={{ maxWidth: columnMaxWidth }}
-        >
-          <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
-            <SpinnerUiFade visible={showSpinnerUi}>
-              {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
-            </SpinnerUiFade>
-          </SpinnerLayoutSlot>
-          {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
-          {syncControlsMotion ? <div className="min-h-0 flex-1 pointer-events-none" aria-hidden="true" /> : null}
-          <motion.div
-            ref={overlayControlsRef}
-            initial={false}
-            animate={{ y: overlayControlsY }}
-            transition={OPEN_TRANSITION}
-            className="relative z-10 mx-auto flex w-full shrink-0 flex-col items-center gap-3"
+        {overlayMode ? (
+          <div
+            className="mx-auto grid h-full min-h-0 w-full gap-3 py-2 transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+            style={{
+              maxWidth: columnMaxWidth,
+              gridTemplateRows: phase === 'idle' ? '1fr auto 1fr' : 'minmax(0, 1fr) auto',
+            }}
+          >
+            {phase === 'idle' ? (
+              <div aria-hidden="true" />
+            ) : (
+              <div className="flex min-h-0 flex-col items-center overflow-hidden">
+                <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
+                  <SpinnerUiFade visible={showSpinnerUi}>
+                    {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
+                  </SpinnerUiFade>
+                </SpinnerLayoutSlot>
+                {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
+              </div>
+            )}
+            {overlayControls}
+            {phase === 'idle' ? <div aria-hidden="true" /> : null}
+          </div>
+        ) : (
+          <div
+            className="mx-auto flex w-full flex-col items-center gap-4 lg:gap-3"
             style={{ maxWidth: columnMaxWidth }}
           >
-            {stackedRevealSlot}
-            {actions}
-          </motion.div>
-        </div>
+            <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
+              <SpinnerUiFade visible={showSpinnerUi}>
+                {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
+              </SpinnerUiFade>
+            </SpinnerLayoutSlot>
+            {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
+            {overlayControls}
+          </div>
+        )}
       </div>
     )
   }
