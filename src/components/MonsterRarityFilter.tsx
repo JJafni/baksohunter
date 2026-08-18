@@ -50,7 +50,7 @@ function MonsterRarityFilter({
     <div
       className={
         isBar
-          ? 'wilds-legibility-text mx-auto flex w-fit max-w-full flex-col items-center gap-2'
+          ? 'wilds-legibility-text flex w-full flex-col items-center gap-2 lg:mx-auto lg:w-fit lg:max-w-full'
           : 'wilds-legibility-text flex w-[5.75rem] shrink-0 flex-col items-stretch gap-2 sm:w-[6.25rem]'
       }
     >
@@ -58,7 +58,7 @@ function MonsterRarityFilter({
       <div
         className={
           isBar
-            ? 'mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-2.5 lg:gap-2'
+            ? 'flex w-full flex-wrap items-center justify-center gap-2.5 lg:mx-auto lg:w-fit lg:max-w-full lg:gap-2'
             : 'flex flex-col gap-2 lg:gap-1.5'
         }
       >

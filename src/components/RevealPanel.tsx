@@ -63,7 +63,7 @@ function RevealPanel({
 }: RevealPanelProps) {
   const [infoOpen, setInfoOpen] = useState(false)
   const isMobile = variant === 'mobile'
-  const useInlineLayout = layout === 'inline'
+  const useInlineLayout = layout === 'inline' && !isMobile
   const monsterInfo = result && showMonsterInfo ? getMonsterInfo(result.slug) : undefined
 
   useEffect(() => {
@@ -94,9 +94,6 @@ function RevealPanel({
 
   const inlineNameSizeClassFor = (entry: CrateEntry) => {
     const isLongName = entry.name.length >= 10
-    if (isMobile) {
-      return isLongName ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
-    }
     return isLongName ? 'text-4xl sm:text-5xl lg:text-6xl' : 'text-5xl sm:text-6xl lg:text-7xl'
   }
 
@@ -141,48 +138,6 @@ function RevealPanel({
       )
     }
 
-    if (isMobile) {
-      return (
-        <div className="wilds-legibility-text flex flex-col items-center gap-1.5 text-center">
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-            {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
-            <h2
-              className={`font-black uppercase leading-none tracking-tight text-wilds-parchment ${
-                entry.name.length >= 10 ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
-              }`}
-            >
-              {entry.name}
-            </h2>
-            {titleUpdateLabel ? (
-              <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.24em] text-wilds-gold-light/90 sm:text-[10px]">
-                {titleUpdateLabel}
-              </span>
-            ) : null}
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">
-            <p
-              className={`text-[10px] font-bold uppercase tracking-[0.14em] sm:text-xs ${RARITY_TEXT[visualRarity]}`}
-            >
-              {rarityLabel}
-            </p>
-            {huntStar ? (
-              <p className="text-sm font-black tracking-[0.08em] text-wilds-gold-light sm:text-base">
-                {formatHuntStar(huntStar)}
-              </p>
-            ) : null}
-          </div>
-          {monsterInfo ? (
-            <MonsterInfoModal
-              info={monsterInfo}
-              icon={entry.icon}
-              open={infoOpen}
-              onClose={() => setInfoOpen(false)}
-            />
-          ) : null}
-        </div>
-      )
-    }
-
     return (
       <div className="wilds-legibility-text">
         <div className={`flex items-start gap-2 ${nameRowClass}`}>
@@ -201,12 +156,14 @@ function RevealPanel({
           </div>
         </div>
         <p
-          className={`mt-2.5 text-sm font-bold uppercase tracking-[0.2em] sm:text-base ${RARITY_TEXT[visualRarity]}`}
+          className={`${isMobile ? 'mt-2 text-sm sm:text-base' : 'mt-2.5 text-sm sm:text-base'} font-bold uppercase tracking-[0.2em] ${RARITY_TEXT[visualRarity]}`}
         >
           {rarityLabel}
         </p>
         {huntStar ? (
-          <p className="mt-2 text-base font-black tracking-[0.08em] text-wilds-gold-light sm:text-lg">
+          <p
+            className={`${isMobile ? 'mt-1.5 text-base sm:text-lg' : 'mt-2 text-base sm:text-lg'} font-black tracking-[0.08em] text-wilds-gold-light`}
+          >
             {formatHuntStar(huntStar)}
           </p>
         ) : null}
@@ -239,7 +196,7 @@ function RevealPanel({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={REVEAL_MOTION}
-              className={`w-full ${alignClass}`}
+              className={`w-full ${alignClass} flex flex-col`}
             >
               {revealContent(result)}
             </motion.div>
