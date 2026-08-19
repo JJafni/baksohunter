@@ -32,6 +32,30 @@ type CoopWeaponPanelProps = {
   onCoopModeChange?: (coopMode: boolean) => void
 }
 
+/** Min weapon-panel width before 2-player co-op sits side-by-side (~280px per cell). */
+const COOP_TWO_PLAYER_SPLIT_MIN_WIDTH = 560
+
+function useCoopPanelSplit(minWidth = COOP_TWO_PLAYER_SPLIT_MIN_WIDTH) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [canSplit, setCanSplit] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const update = () => {
+      setCanSplit(el.clientWidth >= minWidth)
+    }
+
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [minWidth])
+
+  return { ref, canSplit }
+}
+
 function coopGridClass(count: number, splitTwoPlayers: boolean) {
   const base = 'grid h-full w-full gap-0 [&>*]:min-h-0'
   switch (count) {
@@ -108,7 +132,7 @@ function PlayerCountControls({
 
 function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProps) {
   const isMobile = useIsMobileLayout()
-  const splitTwoPlayers = !isMobile
+  const { ref: panelRef, canSplit: splitTwoPlayers } = useCoopPanelSplit()
   const [players, setPlayers] = useState<PlayerSlot[]>([{ id: 1 }])
   const nextIdRef = useRef(2)
   const [drawingPlayerId, setDrawingPlayerId] = useState<number | null>(null)
@@ -304,7 +328,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   }
 
   return (
-    <div className="relative h-full min-h-0 w-full flex-1 self-stretch">
+    <div ref={panelRef} className="relative h-full min-h-0 w-full flex-1 self-stretch">
       <div
         key={`coop-grid-${players.length}-${splitTwoPlayers ? 'split' : 'stack'}`}
         className={`absolute inset-0 ${coopGridClass(players.length, splitTwoPlayers)}`}
