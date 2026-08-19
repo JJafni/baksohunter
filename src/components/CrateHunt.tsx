@@ -440,7 +440,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 
     return (
       <div
-        className={`relative mx-auto w-full shrink-0 ${overlayMode ? 'flex h-full flex-col' : ''}`}
+        className={`relative mx-auto w-full shrink-0 ${overlayMode ? 'flex h-full min-h-0 w-full flex-col' : ''}`}
         style={{ maxWidth: columnMaxWidth }}
       >
         <div

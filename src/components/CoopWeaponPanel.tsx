@@ -128,6 +128,21 @@ function PlayerCountControls({
   )
 }
 
+const PLAYER_TOOLBAR_SHELL_CLASS =
+  'flex shrink-0 justify-center border-b border-wilds-gold/10 px-2 py-1.5 sm:py-2'
+
+/** Invisible desktop spacer so monster/weapon action rows share the same top inset. */
+export function PlayerCountToolbarSpacer() {
+  return (
+    <div
+      className={`${PLAYER_TOOLBAR_SHELL_CLASS} pointer-events-none invisible hidden lg:flex`}
+      aria-hidden="true"
+    >
+      <PlayerCountControls playerCount={1} onChange={() => {}} />
+    </div>
+  )
+}
+
 function CoopPanelShell({
   playerCount,
   onPlayerCountChange,
@@ -139,10 +154,12 @@ function CoopPanelShell({
 }) {
   return (
     <div className="flex h-full min-h-0 w-full flex-col">
-      <div className="flex shrink-0 justify-center border-b border-wilds-gold/10 bg-wilds-950/70 px-2 py-1.5 backdrop-blur-sm sm:py-2">
+      <div
+        className={`${PLAYER_TOOLBAR_SHELL_CLASS} bg-wilds-950/70 backdrop-blur-sm`}
+      >
         <PlayerCountControls playerCount={playerCount} onChange={onPlayerCountChange} />
       </div>
-      <div className="relative min-h-0 flex-1">{children}</div>
+      <div className="relative flex min-h-0 flex-1 flex-col">{children}</div>
     </div>
   )
 }
@@ -242,7 +259,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   if (!coopMode) {
     return (
       <CoopPanelShell playerCount={players.length} onPlayerCountChange={handlePlayerCountChange}>
-        <div className="flex h-full min-h-0 w-full flex-col items-center">
+        <div className="flex h-full min-h-0 w-full flex-1 flex-col items-center">
           <WeaponCrateOpener
             key={`solo-${soloPlayerId ?? 0}`}
             initialContext={soloInitialContext}

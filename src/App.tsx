@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import AppSkeleton from './components/AppSkeleton'
 import CrateOpener from './components/CrateOpener'
 import type { CrateHuntContext } from './components/CrateHunt'
-import CoopWeaponPanel from './components/CoopWeaponPanel'
+import CoopWeaponPanel, { PlayerCountToolbarSpacer } from './components/CoopWeaponPanel'
 import GalleryBackdropOverlay from './components/GalleryBackdropOverlay'
 import HeaderNav from './components/HeaderNav'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
@@ -43,7 +43,7 @@ function HuntLayout({
 
   return (
     <div className="grid h-full min-h-0 w-full grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:items-stretch lg:gap-0">
-      <section className="relative flex min-h-0 w-full justify-center lg:items-center lg:border-r lg:border-wilds-gold/15">
+      <section className="relative flex min-h-0 w-full justify-center lg:items-stretch lg:border-r lg:border-wilds-gold/15">
         <div className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
           <MonsterGalleryImage
             result={monsterHunt.result}
@@ -57,8 +57,11 @@ function HuntLayout({
           />
         </div>
 
-        <div className="relative z-10 flex h-full min-h-0 w-full flex-col items-center overflow-visible lg:px-8 lg:py-5">
-          <CrateOpener onHuntChange={onMonsterHuntChange} />
+        <div className="relative z-10 flex h-full min-h-0 w-full flex-col items-center overflow-visible lg:px-8">
+          <PlayerCountToolbarSpacer />
+          <div className="flex h-full min-h-0 w-full flex-1 flex-col items-center">
+            <CrateOpener onHuntChange={onMonsterHuntChange} />
+          </div>
         </div>
       </section>
 
