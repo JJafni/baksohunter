@@ -21,8 +21,10 @@ export const WEAPON_GALLERY_URLS: Record<string, string> = {
   'hunting-horn':
     'https://sm.ign.com/t/ign_nordic/photo/default/hunting-horn-2-1738170846441_wd2a.1400.png',
   hammer: 'https://sm.ign.com/t/ign_nordic/photo/default/hammer-2-1738170846441_dwxp.1400.png',
+  // Official Capcom hunter showcase (bundled locally — CDN blocks hotlinking).
+  // Source: https://www.monsterhunter.com/wilds/assets/img/hunting/weapon/slider/04_b.png
   'dual-blades':
-    'https://sm.ign.com/t/ign_nordic/photo/default/04-b-1738170846442_rxc4.1400.png',
+    'https://www.monsterhunter.com/wilds/assets/img/hunting/weapon/slider/04_b.png',
   'sword-and-shield':
     'https://sm.ign.com/t/ign_nordic/photo/default/03-a-1738170846442_ymed.1400.png',
 }
