@@ -163,16 +163,24 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const isMobile = useIsMobileLayout()
   const useStackedLayout = isMobile || reelOrientation === 'horizontal'
   const spinnerFadeEnabled = !isMobile
-  const restoredRevealRef = useRef(initialContext?.phase === 'revealed')
+  const isRestoredReveal = initialContext?.phase === 'revealed'
+  const restoredRevealRef = useRef(isRestoredReveal)
+  /** Restored hunts show the result statically — skip mounting Reel until the next draw. */
+  const skipReelMountRef = useRef(isRestoredReveal)
   const [phase, setPhase] = useState<Phase>(() => initialContext?.phase ?? 'idle')
   const [result, setResult] = useState<CrateEntry | null>(() => initialContext?.result ?? null)
   const [questType, setQuestType] = useState<QuestType | null>(() => initialContext?.questType ?? null)
   const [huntStar, setHuntStar] = useState<HuntStar | null>(() => initialContext?.huntStar ?? null)
-  const [sequence, setSequence] = useState<CrateEntry[]>([])
+  const [sequence, setSequence] = useState<CrateEntry[]>(() => {
+    if (initialContext?.phase === 'revealed' && initialContext.result) {
+      return buildReelSequence(pool, initialContext.result, REEL_LENGTH, CENTER_INDEX)
+    }
+    return []
+  })
   const [spinKey, setSpinKey] = useState(() => (initialContext?.phase === 'revealed' ? 1 : 0))
   const [isEntering, setIsEntering] = useState(false)
   const [spinnerUiVisible, setSpinnerUiVisible] = useState(
-    () => initialContext?.spinnerUiVisible ?? true,
+    () => (isRestoredReveal ? false : (initialContext?.spinnerUiVisible ?? true)),
   )
   const spinResolverRef = useRef<(() => void) | null>(null)
   const spinnerFadeTimerRef = useRef<number | null>(null)
@@ -187,6 +195,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const startHunt = useCallback(async () => {
     if (phase === 'spinning' || pool.length === 0) return
 
+    skipReelMountRef.current = false
     clearSpinnerFadeTimer()
     setSpinnerUiVisible(true)
 
@@ -243,7 +252,14 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 
     if (restoredRevealRef.current) {
       restoredRevealRef.current = false
-      return
+      if (!spinnerFadeEnabled || !spinnerUiVisible) return
+
+      spinnerFadeTimerRef.current = window.setTimeout(() => {
+        setSpinnerUiVisible(false)
+        spinnerFadeTimerRef.current = null
+      }, REVEAL_UI_FADE_DELAY_MS)
+
+      return clearSpinnerFadeTimer
     }
 
     setSpinnerUiVisible(true)
@@ -382,7 +398,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   ) : null
 
   const reelSlot =
-    phase === 'idle' ? null : (
+    phase === 'idle' || sequence.length === 0 || skipReelMountRef.current ? null : (
       <motion.div
         initial={{ opacity: 0, scale: 0.88 }}
         animate={{ opacity: 1, scale: 1 }}

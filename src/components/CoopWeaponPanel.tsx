@@ -145,7 +145,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
         questType: null,
         huntStar: null,
         phase: 'revealed',
-        spinnerUiVisible: soloDraw.spinnerUiVisible,
+        spinnerUiVisible: false,
       }
     : null
 
@@ -165,7 +165,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
         questType: null,
         huntStar: null,
         phase: 'revealed',
-        spinnerUiVisible: soloDraw.spinnerUiVisible,
+        spinnerUiVisible: false,
       })
       return
     }
@@ -225,7 +225,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
       <div className="relative h-full min-h-0 w-full">
         <div className="flex h-full min-h-0 w-full flex-col items-center">
           <WeaponCrateOpener
-            key={`solo-${soloPlayerId ?? 0}-${soloDraw?.result.slug ?? 'idle'}`}
+            key={`solo-${soloPlayerId ?? 0}`}
             initialContext={soloInitialContext}
             onHuntChange={handleSoloHuntChange}
           />
