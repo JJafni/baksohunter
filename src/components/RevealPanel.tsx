@@ -147,10 +147,22 @@ function RevealPanel({
 
   const nameRow = (entry: CrateEntry, titleUpdateLabel: string | null, nameClass: string) => {
     const displayName = nameOverride ?? entry.name
+    const showWeaponIcon = useInlineLayout && !showMonsterInfo
 
     return (
-    <div className={`inline-flex max-w-full items-center gap-2 ${nameRowClass}`}>
+    <div className={`inline-flex max-w-full items-center gap-2 sm:gap-3 ${nameRowClass}`}>
       {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
+      {showWeaponIcon ? (
+        <img
+          src={entry.icon}
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+          className={`shrink-0 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)] ${
+            isMobile ? 'size-10 sm:size-12' : 'size-12 sm:size-14 lg:size-16'
+          }`}
+        />
+      ) : null}
       <h2
         className={`font-black uppercase leading-[0.95] tracking-tight text-wilds-parchment ${nameClass}`}
       >
