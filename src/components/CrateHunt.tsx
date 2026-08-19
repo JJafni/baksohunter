@@ -79,6 +79,10 @@ type CrateHuntProps = {
   nameOverride?: string | null
   /** Restore a previous hunt session (e.g. solo after co-op). */
   initialContext?: CrateHuntContext | null
+  /** Center the overlay spinner in the column (weapon desktop). */
+  overlaySpinnerCentered?: boolean
+  /** Fade the reveal name in only after the post-reveal spinner fade (weapon desktop). */
+  revealNameAfterSpinnerFade?: boolean
   onHuntChange?: (ctx: CrateHuntContext) => void
 }
 
@@ -156,6 +160,8 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     hidePrimaryButton = false,
     nameOverride = null,
     initialContext = null,
+    overlaySpinnerCentered = false,
+    revealNameAfterSpinnerFade = false,
     onHuntChange,
   },
   ref,
@@ -274,6 +280,8 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   }, [phase, spinKey, clearSpinnerFadeTimer, spinnerFadeEnabled])
 
   const showSpinnerUi = spinnerFadeEnabled ? spinnerUiVisible : true
+  const showOverlayRevealName =
+    phase === 'revealed' && (!revealNameAfterSpinnerFade || !showSpinnerUi)
   const [spinnerHoldLayout, setSpinnerHoldLayout] = useState(true)
 
   useEffect(() => {
@@ -366,7 +374,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const namePanel = (
     <RevealPanel
       result={result}
-      visible={phase === 'revealed'}
+      visible={showOverlayRevealName}
       revealKey={spinKey}
       rarityLabels={rarityLabels}
       align={useStackedLayout ? 'center' : reelSide === 'left' ? 'right' : 'left'}
@@ -390,12 +398,27 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       {phase !== 'idle' ? namePanel : null}
     </motion.div>
   ) : phase !== 'idle' ? (
-    <div
-      className="w-full transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
-      style={{ display: 'grid', gridTemplateRows: phase === 'revealed' ? 'auto' : '0fr' }}
-    >
-      <div className="min-h-0 overflow-hidden">{namePanel}</div>
-    </div>
+    revealNameAfterSpinnerFade ? (
+      <motion.div
+        className="w-full overflow-hidden"
+        initial={false}
+        animate={{ opacity: showOverlayRevealName ? 1 : 0 }}
+        transition={SPINNER_UI_FADE}
+        style={{
+          display: 'grid',
+          gridTemplateRows: showOverlayRevealName ? '1fr' : '0fr',
+        }}
+      >
+        <div className="min-h-0 overflow-hidden">{phase === 'revealed' ? namePanel : null}</div>
+      </motion.div>
+    ) : (
+      <div
+        className="w-full transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+        style={{ display: 'grid', gridTemplateRows: phase === 'revealed' ? 'auto' : '0fr' }}
+      >
+        <div className="min-h-0 overflow-hidden">{namePanel}</div>
+      </div>
+    )
   ) : null
 
   const reelSlot =
@@ -462,7 +485,11 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
             {phase === 'idle' ? (
               <div aria-hidden="true" />
             ) : (
-              <div className="flex min-h-0 flex-col items-center overflow-hidden">
+              <div
+                className={`flex min-h-0 flex-1 flex-col items-center overflow-hidden ${
+                  overlaySpinnerCentered ? 'justify-center' : ''
+                }`}
+              >
                 <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
                   <SpinnerUiFade visible={showSpinnerUi}>
                     {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
