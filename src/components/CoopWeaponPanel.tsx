@@ -32,35 +32,11 @@ type CoopWeaponPanelProps = {
   onCoopModeChange?: (coopMode: boolean) => void
 }
 
-/** Min panel width before co-op sections sit side-by-side (each cell ~360px+). */
-const COOP_SPLIT_MIN_WIDTH = 720
-
-function useCoopPanelSplit(minWidth = COOP_SPLIT_MIN_WIDTH) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [canSplit, setCanSplit] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-
-    const update = () => {
-      setCanSplit(el.clientWidth >= minWidth)
-    }
-
-    update()
-    const observer = new ResizeObserver(update)
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [minWidth])
-
-  return { ref, canSplit }
-}
-
-function coopGridClass(count: number, canSplit: boolean) {
+function coopGridClass(count: number, splitTwoPlayers: boolean) {
   const base = 'grid h-full w-full gap-0 [&>*]:min-h-0'
   switch (count) {
     case 2:
-      return canSplit
+      return splitTwoPlayers
         ? `${base} grid-cols-2 grid-rows-1`
         : `${base} grid-cols-1 grid-rows-2`
     case 3:
@@ -70,9 +46,9 @@ function coopGridClass(count: number, canSplit: boolean) {
   }
 }
 
-function sectionBorderClass(index: number, count: number, canSplit: boolean): string {
+function sectionBorderClass(index: number, count: number, splitTwoPlayers: boolean): string {
   if (count === 2) {
-    if (!canSplit) {
+    if (!splitTwoPlayers) {
       return index === 0 ? `border-b ${SECTION_BORDER}` : ''
     }
     return index === 0 ? `border-r ${SECTION_BORDER}` : ''
@@ -132,8 +108,7 @@ function PlayerCountControls({
 
 function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProps) {
   const isMobile = useIsMobileLayout()
-  const { ref: panelRef, canSplit: panelCanSplit } = useCoopPanelSplit()
-  const canSplit = !isMobile && panelCanSplit
+  const splitTwoPlayers = !isMobile
   const [players, setPlayers] = useState<PlayerSlot[]>([{ id: 1 }])
   const nextIdRef = useRef(2)
   const [drawingPlayerId, setDrawingPlayerId] = useState<number | null>(null)
@@ -329,8 +304,8 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   }
 
   return (
-    <div ref={panelRef} className="relative h-full min-h-0 w-full flex-1 self-stretch">
-      <div className={`absolute inset-0 ${coopGridClass(players.length, canSplit)}`}>
+    <div className="relative h-full min-h-0 w-full flex-1 self-stretch">
+      <div className={`absolute inset-0 ${coopGridClass(players.length, splitTwoPlayers)}`}>
         {players.map((player, index) => {
           const isDrawing = player.id === drawingPlayerId
           const spinnerVisible = isDrawing && spinContext.phase !== 'idle'
@@ -342,7 +317,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
               playerId={player.id}
               isDrawing={isDrawing}
               draw={draws[player.id] ?? null}
-              borderClass={sectionBorderClass(index, players.length, canSplit)}
+              borderClass={sectionBorderClass(index, players.length, splitTwoPlayers)}
               drawDisabled={drawBusy}
               onDraw={() => handlePlayerDraw(index)}
               spinner={
