@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import type { CrateHuntContext } from './CrateHunt'
 import CoopPlayerSection, { type PlayerDraw } from './CoopPlayerSection'
 import WeaponCrateOpener from './WeaponCrateOpener'
@@ -102,17 +102,17 @@ function PlayerCountControls({
   onChange: (count: number) => void
 }) {
   return (
-    <div className="flex shrink-0 items-center justify-center gap-3">
+    <div className="flex shrink-0 items-center justify-center gap-2 sm:gap-3">
       <button
         type="button"
         aria-label="Remove player"
         disabled={playerCount <= 1}
         onClick={() => onChange(playerCount - 1)}
-        className="inline-flex size-8 items-center justify-center rounded-md border border-wilds-gold/25 bg-wilds-900/70 text-sm font-bold text-wilds-parchment transition hover:border-wilds-gold/45 hover:bg-wilds-850 disabled:cursor-not-allowed disabled:opacity-35"
+        className="inline-flex size-7 items-center justify-center rounded-md border border-wilds-gold/25 bg-wilds-900/70 text-sm font-bold text-wilds-parchment transition hover:border-wilds-gold/45 hover:bg-wilds-850 disabled:cursor-not-allowed disabled:opacity-35 sm:size-8"
       >
         −
       </button>
-      <span className="min-w-[7rem] text-center text-[11px] font-bold uppercase tracking-[0.18em] text-wilds-muted">
+      <span className="min-w-[5.5rem] text-center text-[10px] font-bold uppercase tracking-[0.16em] text-wilds-muted sm:min-w-[7rem] sm:text-[11px] sm:tracking-[0.18em]">
         {playerCount} {playerCount === 1 ? 'Player' : 'Players'}
       </span>
       <button
@@ -120,10 +120,29 @@ function PlayerCountControls({
         aria-label="Add player"
         disabled={playerCount >= MAX_PLAYERS}
         onClick={() => onChange(playerCount + 1)}
-        className="inline-flex size-8 items-center justify-center rounded-md border border-wilds-gold/25 bg-wilds-900/70 text-sm font-bold text-wilds-parchment transition hover:border-wilds-gold/45 hover:bg-wilds-850 disabled:cursor-not-allowed disabled:opacity-35"
+        className="inline-flex size-7 items-center justify-center rounded-md border border-wilds-gold/25 bg-wilds-900/70 text-sm font-bold text-wilds-parchment transition hover:border-wilds-gold/45 hover:bg-wilds-850 disabled:cursor-not-allowed disabled:opacity-35 sm:size-8"
       >
         +
       </button>
+    </div>
+  )
+}
+
+function CoopPanelShell({
+  playerCount,
+  onPlayerCountChange,
+  children,
+}: {
+  playerCount: number
+  onPlayerCountChange: (count: number) => void
+  children: ReactNode
+}) {
+  return (
+    <div className="flex h-full min-h-0 w-full flex-col">
+      <div className="flex shrink-0 justify-center border-b border-wilds-gold/10 bg-wilds-950/70 px-2 py-1.5 backdrop-blur-sm sm:py-2">
+        <PlayerCountControls playerCount={playerCount} onChange={onPlayerCountChange} />
+      </div>
+      <div className="relative min-h-0 flex-1">{children}</div>
     </div>
   )
 }
@@ -222,7 +241,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
 
   if (!coopMode) {
     return (
-      <div className="relative h-full min-h-0 w-full">
+      <CoopPanelShell playerCount={players.length} onPlayerCountChange={handlePlayerCountChange}>
         <div className="flex h-full min-h-0 w-full flex-col items-center">
           <WeaponCrateOpener
             key={`solo-${soloPlayerId ?? 0}`}
@@ -230,38 +249,29 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
             onHuntChange={handleSoloHuntChange}
           />
         </div>
-        <div className="pointer-events-none absolute inset-x-0 top-2 z-30 flex justify-center lg:top-3">
-          <div className="pointer-events-auto rounded-lg bg-wilds-950/80 px-2 py-1 backdrop-blur-sm">
-            <PlayerCountControls playerCount={players.length} onChange={handlePlayerCountChange} />
-          </div>
-        </div>
-      </div>
+      </CoopPanelShell>
     )
   }
 
   return (
-    <div ref={panelRef} className="relative h-full min-h-0 w-full flex-1 self-stretch">
-      <div className={`absolute inset-0 ${coopGridClass(players.length, splitTwoPlayers)}`}>
-        {players.map((player, index) => (
-          <CoopPlayerSection
-            key={player.id}
-            playerIndex={index}
-            playerId={player.id}
-            draw={draws[player.id] ?? null}
-            borderClass={sectionBorderClass(index, players.length, splitTwoPlayers)}
-            overlayMode={overlayMode}
-            isMobile={isMobile}
-            onDrawChange={(draw) => handleDrawChange(player.id, draw)}
-          />
-        ))}
-      </div>
-
-      <div className="pointer-events-none absolute inset-x-0 top-2 z-30 flex justify-center lg:top-3">
-        <div className="pointer-events-auto rounded-lg bg-wilds-950/80 px-2 py-1 backdrop-blur-sm">
-          <PlayerCountControls playerCount={players.length} onChange={handlePlayerCountChange} />
+    <CoopPanelShell playerCount={players.length} onPlayerCountChange={handlePlayerCountChange}>
+      <div ref={panelRef} className="relative h-full min-h-0 w-full flex-1 self-stretch">
+        <div className={`absolute inset-0 ${coopGridClass(players.length, splitTwoPlayers)}`}>
+          {players.map((player, index) => (
+            <CoopPlayerSection
+              key={player.id}
+              playerIndex={index}
+              playerId={player.id}
+              draw={draws[player.id] ?? null}
+              borderClass={sectionBorderClass(index, players.length, splitTwoPlayers)}
+              overlayMode={overlayMode}
+              isMobile={isMobile}
+              onDrawChange={(draw) => handleDrawChange(player.id, draw)}
+            />
+          ))}
         </div>
       </div>
-    </div>
+    </CoopPanelShell>
   )
 }
 
