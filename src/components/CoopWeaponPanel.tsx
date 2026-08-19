@@ -36,11 +36,12 @@ function coopGridClass(count: number) {
   const base = 'grid h-full w-full grid-cols-1 gap-0 [&>*]:min-h-0'
   switch (count) {
     case 2:
-      return `${base} lg:grid-cols-2 lg:grid-rows-1`
+      // Stack vertically in narrow weapon columns; side-by-side when panel is wide enough
+      return `${base} grid-rows-2 @md:grid-rows-1 @md:grid-cols-2`
     case 3:
-      return `${base} lg:grid-cols-2 lg:grid-rows-2 [&>*:last-child]:lg:col-span-2`
+      return `${base} @md:grid-cols-2 @md:grid-rows-2 [&>*:last-child]:@md:col-span-2`
     default:
-      return `${base} lg:grid-cols-2 lg:grid-rows-2`
+      return `${base} @md:grid-cols-2 @md:grid-rows-2`
   }
 }
 
@@ -49,19 +50,19 @@ function sectionBorderClass(index: number, count: number): string {
 
   if (count === 2) {
     return index === 0
-      ? `border-b ${SECTION_BORDER} lg:border-b-0 lg:border-r`
+      ? `border-b ${SECTION_BORDER} @md:border-b-0 @md:border-r`
       : ''
   }
 
   if (count === 3) {
-    if (index === 0) return `border-b border-r ${SECTION_BORDER} lg:border-b`
-    if (index === 1) return `border-b ${SECTION_BORDER} lg:border-b`
-    return `border-t ${SECTION_BORDER} lg:border-t-0`
+    if (index === 0) return `border-b border-r ${SECTION_BORDER} @md:border-b`
+    if (index === 1) return `border-b ${SECTION_BORDER} @md:border-b`
+    return `border-t ${SECTION_BORDER} @md:border-t-0`
   }
 
   if (count === 4) {
-    if (index === 0) return `border-b border-r ${SECTION_BORDER} lg:border-b`
-    if (index === 1) return `border-b ${SECTION_BORDER} lg:border-b`
+    if (index === 0) return `border-b border-r ${SECTION_BORDER} @md:border-b`
+    if (index === 1) return `border-b ${SECTION_BORDER} @md:border-b`
     if (index === 2) return `border-r ${SECTION_BORDER}`
     return ''
   }
@@ -115,10 +116,13 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   const crateRef = useRef<CrateHuntHandle>(null)
   const pendingSpinRef = useRef(false)
   const spinCompleteRef = useRef<(() => void) | null>(null)
+  const drawingPlayerIdRef = useRef<number | null>(null)
+  const [drawLocked, setDrawLocked] = useState(false)
 
   const coopMode = players.length > 1
   const overlayMode = !isMobile
   const spinning = spinContext.phase === 'spinning'
+  const drawBusy = drawLocked || drawingPlayerId !== null || spinning
 
   useEffect(() => {
     onCoopModeChange?.(coopMode)
@@ -141,8 +145,11 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
       return current.slice(0, count)
     })
     setDraws({})
+    drawingPlayerIdRef.current = null
+    setDrawLocked(false)
     setDrawingPlayerId(null)
     setSpinContext(IDLE_HUNT)
+    pendingSpinRef.current = false
   }, [])
 
   const handleSpinChange = useCallback(
@@ -178,9 +185,21 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   useEffect(() => {
     if (drawingPlayerId !== null && spinContext.phase === 'revealed' && !spinContext.spinnerUiVisible) {
       setSpinContext(IDLE_HUNT)
+      drawingPlayerIdRef.current = null
+      setDrawLocked(false)
       setDrawingPlayerId(null)
+      pendingSpinRef.current = false
     }
   }, [spinContext.phase, spinContext.spinnerUiVisible, drawingPlayerId])
+
+  const resetDrawSession = useCallback(() => {
+    pendingSpinRef.current = false
+    drawingPlayerIdRef.current = null
+    setDrawLocked(false)
+    setDrawingPlayerId(null)
+    spinCompleteRef.current?.()
+    spinCompleteRef.current = null
+  }, [])
 
   useLayoutEffect(() => {
     if (!pendingSpinRef.current || drawingPlayerId === null) return
@@ -194,9 +213,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
       }
 
       if (cancelled || !crateRef.current) {
-        pendingSpinRef.current = false
-        spinCompleteRef.current?.()
-        spinCompleteRef.current = null
+        resetDrawSession()
         return
       }
 
@@ -214,22 +231,32 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
     return () => {
       cancelled = true
     }
-  }, [drawingPlayerId])
+  }, [drawingPlayerId, resetDrawSession])
 
   const handlePlayerDraw = useCallback(
     (playerIndex: number) => {
-      if (spinning || pendingSpinRef.current) return Promise.resolve()
+      if (
+        drawingPlayerIdRef.current !== null ||
+        pendingSpinRef.current ||
+        drawLocked ||
+        spinning
+      ) {
+        return Promise.resolve()
+      }
+
       const playerId = players[playerIndex]?.id
       if (playerId === undefined) return Promise.resolve()
 
       pendingSpinRef.current = true
+      drawingPlayerIdRef.current = playerId
+      setDrawLocked(true)
       setDrawingPlayerId(playerId)
 
       return new Promise<void>((resolve) => {
         spinCompleteRef.current = resolve
       })
     },
-    [players, spinning],
+    [players, drawLocked, spinning],
   )
 
   const sharedSpinner = (
@@ -276,7 +303,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   }
 
   return (
-    <div className="relative h-full min-h-0 w-full flex-1 self-stretch">
+    <div className="@container relative h-full min-h-0 w-full flex-1 self-stretch">
       <div className={`absolute inset-0 ${coopGridClass(players.length)}`}>
         {players.map((player, index) => {
           const isDrawing = player.id === drawingPlayerId
@@ -290,7 +317,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
               isDrawing={isDrawing}
               draw={draws[player.id] ?? null}
               borderClass={sectionBorderClass(index, players.length)}
-              drawDisabled={spinning}
+              drawDisabled={drawBusy}
               onDraw={() => handlePlayerDraw(index)}
               spinner={
                 isDrawing ? (
@@ -316,7 +343,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
           <PlayerCountControls
             playerCount={players.length}
             onChange={handlePlayerCountChange}
-            disabled={spinning}
+            disabled={drawBusy}
           />
         </div>
       </div>
