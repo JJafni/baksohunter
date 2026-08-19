@@ -58,63 +58,55 @@ function CoopPlayerSection({
   const imageUrl = useMonsterWeapons ? (draw?.weaponRender?.url ?? null) : null
 
   return (
-    <div
-      className={`flex h-full min-h-0 flex-col overflow-hidden rounded-lg border bg-wilds-950/50 transition-colors ${
-        isActive ? 'border-wilds-gold/45 ring-1 ring-wilds-gold/20' : 'border-wilds-gold/12'
-      }`}
-    >
-      <div className="shrink-0 px-2.5 pb-1 pt-2">
-        <span
-          className={`text-[10px] font-bold uppercase tracking-[0.14em] sm:text-xs ${
-            isActive ? 'text-wilds-gold-light' : 'text-wilds-muted'
-          }`}
-        >
-          Player {playerIndex + 1}
-        </span>
+    <div ref={containerRef} className="relative h-full min-h-0 overflow-hidden">
+      <span
+        className={`wilds-legibility-text pointer-events-none absolute left-0 top-0 z-20 px-2 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] sm:px-2.5 sm:py-2 sm:text-xs ${
+          isActive ? 'text-wilds-gold-light' : 'text-wilds-muted/80'
+        }`}
+      >
+        Player {playerIndex + 1}
+      </span>
+
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <WeaponGalleryImage
+          result={draw?.result ?? null}
+          visible={hasDraw}
+          emphasized={galleryEmphasized}
+          variant="backdrop"
+          imageUrl={imageUrl}
+          fillSection
+          wikiSource={useMonsterWeapons && !!draw?.weaponRender}
+        />
+        <GalleryBackdropOverlay revealed={hasDraw} emphasized={galleryEmphasized} />
       </div>
 
-      <div ref={containerRef} className="relative min-h-0 flex-1 overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <WeaponGalleryImage
-            result={draw?.result ?? null}
-            visible={hasDraw}
-            emphasized={galleryEmphasized}
-            variant="backdrop"
-            imageUrl={imageUrl}
-            fillSection
-            wikiSource={useMonsterWeapons && !!draw?.weaponRender}
-          />
-          <GalleryBackdropOverlay revealed={hasDraw} emphasized={galleryEmphasized} />
-        </div>
-
-        <div className="relative z-10 flex h-full min-h-0 items-center justify-center">
-          {spinner ? (
-            <div
-              className="shrink-0"
-              style={{
-                width: HUNT_COLUMN_MAX_WIDTH,
-                transform: `scale(${scale})`,
-                transformOrigin: 'center center',
-              }}
-            >
-              {spinner}
-            </div>
-          ) : hasDraw ? (
-            <div className="wilds-legibility-text pointer-events-none px-3 text-center">
-              <p className="text-lg font-black uppercase leading-tight tracking-tight text-wilds-parchment sm:text-xl lg:text-2xl">
-                {draw.displayName}
-              </p>
-            </div>
-          ) : isActive ? (
-            <p className="px-3 text-center text-[10px] uppercase tracking-[0.16em] text-wilds-muted/70">
-              Your turn
+      <div className="relative z-10 flex h-full min-h-0 items-center justify-center">
+        {spinner ? (
+          <div
+            className="shrink-0"
+            style={{
+              width: HUNT_COLUMN_MAX_WIDTH,
+              transform: `scale(${scale})`,
+              transformOrigin: 'center center',
+            }}
+          >
+            {spinner}
+          </div>
+        ) : hasDraw ? (
+          <div className="wilds-legibility-text pointer-events-none px-3 text-center">
+            <p className="text-lg font-black uppercase leading-tight tracking-tight text-wilds-parchment sm:text-xl lg:text-2xl">
+              {draw.displayName}
             </p>
-          ) : (
-            <p className="px-3 text-center text-[10px] uppercase tracking-[0.16em] text-wilds-muted/40">
-              Waiting
-            </p>
-          )}
-        </div>
+          </div>
+        ) : isActive ? (
+          <p className="px-3 text-center text-[10px] uppercase tracking-[0.16em] text-wilds-muted/70">
+            Your turn
+          </p>
+        ) : (
+          <p className="px-3 text-center text-[10px] uppercase tracking-[0.16em] text-wilds-muted/40">
+            Waiting
+          </p>
+        )}
       </div>
     </div>
   )

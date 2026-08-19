@@ -36,11 +36,11 @@ type CoopWeaponPanelProps = {
 function coopGridClass(count: number) {
   switch (count) {
     case 2:
-      return 'grid h-full min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-2 lg:grid-rows-1'
+      return 'grid h-full min-h-0 flex-1 grid-cols-1 gap-0 lg:grid-cols-2 lg:grid-rows-1'
     case 3:
-      return 'grid h-full min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-2 lg:grid-rows-2 [&>*:last-child]:lg:col-span-2 [&>*:last-child]:lg:mx-auto [&>*:last-child]:lg:h-full [&>*:last-child]:lg:w-full [&>*:last-child]:lg:max-w-[calc(50%-0.375rem)]'
+      return 'grid h-full min-h-0 flex-1 grid-cols-1 gap-0 lg:grid-cols-2 lg:grid-rows-2 [&>*:last-child]:lg:col-span-2'
     default:
-      return 'grid h-full min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-2 lg:grid-rows-2'
+      return 'grid h-full min-h-0 flex-1 grid-cols-1 gap-0 lg:grid-cols-2 lg:grid-rows-2'
   }
 }
 
@@ -234,11 +234,13 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col self-stretch">
-      <PlayerCountControls
-        playerCount={players.length}
-        onChange={handlePlayerCountChange}
-        disabled={spinning}
-      />
+      <div className="shrink-0 px-4 pt-1 lg:px-6">
+        <PlayerCountControls
+          playerCount={players.length}
+          onChange={handlePlayerCountChange}
+          disabled={spinning}
+        />
+      </div>
 
       <div className={coopGridClass(players.length)}>
         {players.map((player, index) => {
@@ -264,7 +266,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
         })}
       </div>
 
-      <div className={`mt-3 grid w-full shrink-0 gap-2 ${drawButtonGridClass}`}>
+      <div className={`mt-3 grid w-full shrink-0 gap-2 px-4 lg:px-6 ${drawButtonGridClass}`}>
         {players.map((player, index) => {
           const isActive = index === activePlayerIndex
           const disabled = spinning || !isActive
@@ -286,7 +288,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
         })}
       </div>
 
-      <p className="mt-2 shrink-0 text-center text-[10px] uppercase tracking-[0.16em] text-wilds-muted">
+      <p className="mt-2 shrink-0 px-4 pb-2 text-center text-[10px] uppercase tracking-[0.16em] text-wilds-muted lg:px-6">
         {spinning ? (
           <>Player {activePlayerIndex + 1}&apos;s turn — drawing…</>
         ) : (
