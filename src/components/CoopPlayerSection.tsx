@@ -59,6 +59,9 @@ function CoopPlayerSection({
   const crateRef = useRef<CrateHuntHandle>(null)
   const [scale, setScale] = useState(1)
   const [phase, setPhase] = useState<CrateHuntContext['phase']>(() => (draw ? 'revealed' : 'idle'))
+  const [spinnerUiVisible, setSpinnerUiVisible] = useState(
+    () => draw?.spinnerUiVisible ?? true,
+  )
 
   const restoredContext: CrateHuntContext | null = draw
     ? {
@@ -73,6 +76,7 @@ function CoopPlayerSection({
   useEffect(() => {
     if (!draw) {
       setPhase('idle')
+      setSpinnerUiVisible(true)
     }
   }, [draw])
 
@@ -99,6 +103,7 @@ function CoopPlayerSection({
   const handleHuntChange = useCallback(
     (ctx: CrateHuntContext) => {
       setPhase(ctx.phase)
+      setSpinnerUiVisible(ctx.spinnerUiVisible)
 
       if (ctx.phase === 'revealed' && ctx.result) {
         onDrawChange({
@@ -117,7 +122,8 @@ function CoopPlayerSection({
 
   const useCenterReveal = overlayMode && !isMobile
   const hasDraw = draw !== null
-  const galleryEmphasized = hasDraw && draw.spinnerUiVisible
+  const galleryVisible = hasDraw && phase === 'revealed'
+  const galleryEmphasized = galleryVisible && spinnerUiVisible
   const spinning = phase === 'spinning'
   const showCrateHunt = phase !== 'idle'
   const isActive = spinning || phase === 'revealed'
@@ -137,11 +143,11 @@ function CoopPlayerSection({
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <WeaponGalleryImage
             result={draw.result}
-            visible
+            visible={galleryVisible}
             emphasized={galleryEmphasized}
             variant="backdrop"
           />
-          <GalleryBackdropOverlay revealed emphasized={galleryEmphasized} />
+          <GalleryBackdropOverlay revealed={galleryVisible} emphasized={galleryEmphasized} />
         </div>
       ) : null}
 
