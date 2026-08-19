@@ -305,7 +305,10 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
 
   return (
     <div className="relative h-full min-h-0 w-full flex-1 self-stretch">
-      <div className={`absolute inset-0 ${coopGridClass(players.length, splitTwoPlayers)}`}>
+      <div
+        key={`coop-grid-${players.length}-${splitTwoPlayers ? 'split' : 'stack'}`}
+        className={`absolute inset-0 ${coopGridClass(players.length, splitTwoPlayers)}`}
+      >
         {players.map((player, index) => {
           const isDrawing = player.id === drawingPlayerId
           const spinnerVisible = isDrawing && spinContext.phase !== 'idle'

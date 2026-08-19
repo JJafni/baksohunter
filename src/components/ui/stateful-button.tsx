@@ -6,6 +6,8 @@ interface StatefulButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
   className?: string
   children: React.ReactNode
   layoutId?: string
+  /** When false, skips shared layout animations (e.g. grid reflow). */
+  layout?: boolean
   /** When set, a random label is shown while loading. Omit for a static label. */
   loadingLabels?: string[]
   icon?: 'sword' | 'shield'
@@ -17,6 +19,7 @@ export function StatefulButton({
   className,
   children,
   layoutId = 'crate-hunt-button',
+  layout,
   loadingLabels,
   icon = 'sword',
   surface = 'matte',
@@ -75,6 +78,8 @@ export function StatefulButton({
   const label = isLoading && useSpinLabels ? loadingLabel : children
 
   const isShiny = surface === 'shiny'
+  const motionLayoutProps =
+    layout === false ? ({ layout: false } as const) : layoutId ? ({ layoutId } as const) : {}
 
   const labelContent = (
     <>
@@ -102,7 +107,7 @@ export function StatefulButton({
 
   return (
     <motion.button
-      layoutId={layoutId}
+      {...motionLayoutProps}
       ref={scope}
       aria-busy={isLoading}
       disabled={isButtonDisabled}
