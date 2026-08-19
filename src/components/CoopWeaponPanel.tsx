@@ -32,37 +32,68 @@ type CoopWeaponPanelProps = {
   onCoopModeChange?: (coopMode: boolean) => void
 }
 
-function coopGridClass(count: number) {
-  const base = 'grid h-full w-full grid-cols-1 gap-0 [&>*]:min-h-0'
+/** Min panel width before co-op sections sit side-by-side (each cell ~360px+). */
+const COOP_SPLIT_MIN_WIDTH = 720
+
+function useCoopPanelSplit(minWidth = COOP_SPLIT_MIN_WIDTH) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [canSplit, setCanSplit] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const update = () => {
+      setCanSplit(el.clientWidth >= minWidth)
+    }
+
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [minWidth])
+
+  return { ref, canSplit }
+}
+
+function coopGridClass(count: number, canSplit: boolean) {
+  const base = 'grid h-full w-full gap-0 [&>*]:min-h-0'
+  if (!canSplit) {
+    return `${base} grid-cols-1`
+  }
   switch (count) {
     case 2:
-      // Stack vertically in narrow weapon columns; side-by-side when panel is wide enough
-      return `${base} grid-rows-2 @md:grid-rows-1 @md:grid-cols-2`
+      return `${base} grid-cols-2 grid-rows-1`
     case 3:
-      return `${base} @md:grid-cols-2 @md:grid-rows-2 [&>*:last-child]:@md:col-span-2`
+      return `${base} grid-cols-2 grid-rows-2 [&>*:last-child]:col-span-2`
     default:
-      return `${base} @md:grid-cols-2 @md:grid-rows-2`
+      return `${base} grid-cols-2 grid-rows-2`
   }
 }
 
-function sectionBorderClass(index: number, count: number): string {
+function sectionBorderClass(index: number, count: number, canSplit: boolean): string {
   const isLast = index === count - 1
 
   if (count === 2) {
-    return index === 0
-      ? `border-b ${SECTION_BORDER} @md:border-b-0 @md:border-r`
-      : ''
+    if (!canSplit) {
+      return index === 0 ? `border-b ${SECTION_BORDER}` : ''
+    }
+    return index === 0 ? `border-r ${SECTION_BORDER}` : ''
+  }
+
+  if (!canSplit) {
+    return isLast ? '' : `border-b ${SECTION_BORDER}`
   }
 
   if (count === 3) {
-    if (index === 0) return `border-b border-r ${SECTION_BORDER} @md:border-b`
-    if (index === 1) return `border-b ${SECTION_BORDER} @md:border-b`
-    return `border-t ${SECTION_BORDER} @md:border-t-0`
+    if (index === 0) return `border-b border-r ${SECTION_BORDER}`
+    if (index === 1) return `border-b ${SECTION_BORDER}`
+    return ''
   }
 
   if (count === 4) {
-    if (index === 0) return `border-b border-r ${SECTION_BORDER} @md:border-b`
-    if (index === 1) return `border-b ${SECTION_BORDER} @md:border-b`
+    if (index === 0) return `border-b border-r ${SECTION_BORDER}`
+    if (index === 1) return `border-b ${SECTION_BORDER}`
     if (index === 2) return `border-r ${SECTION_BORDER}`
     return ''
   }
@@ -108,6 +139,8 @@ function PlayerCountControls({
 
 function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProps) {
   const isMobile = useIsMobileLayout()
+  const { ref: panelRef, canSplit: panelCanSplit } = useCoopPanelSplit()
+  const canSplit = !isMobile && panelCanSplit
   const [players, setPlayers] = useState<PlayerSlot[]>([{ id: 1 }])
   const nextIdRef = useRef(2)
   const [drawingPlayerId, setDrawingPlayerId] = useState<number | null>(null)
@@ -303,8 +336,8 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   }
 
   return (
-    <div className="@container relative h-full min-h-0 w-full flex-1 self-stretch">
-      <div className={`absolute inset-0 ${coopGridClass(players.length)}`}>
+    <div ref={panelRef} className="relative h-full min-h-0 w-full flex-1 self-stretch">
+      <div className={`absolute inset-0 ${coopGridClass(players.length, canSplit)}`}>
         {players.map((player, index) => {
           const isDrawing = player.id === drawingPlayerId
           const spinnerVisible = isDrawing && spinContext.phase !== 'idle'
@@ -316,7 +349,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
               playerId={player.id}
               isDrawing={isDrawing}
               draw={draws[player.id] ?? null}
-              borderClass={sectionBorderClass(index, players.length)}
+              borderClass={sectionBorderClass(index, players.length, canSplit)}
               drawDisabled={drawBusy}
               onDraw={() => handlePlayerDraw(index)}
               spinner={
