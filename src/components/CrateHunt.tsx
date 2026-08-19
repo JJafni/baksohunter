@@ -77,6 +77,8 @@ type CrateHuntProps = {
   hidePrimaryButton?: boolean
   /** Override the revealed entry name (e.g. specific monster weapon). */
   nameOverride?: string | null
+  /** Restore a previous hunt session (e.g. solo after co-op). */
+  initialContext?: CrateHuntContext | null
   onHuntChange?: (ctx: CrateHuntContext) => void
 }
 
@@ -153,6 +155,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     companionButton,
     hidePrimaryButton = false,
     nameOverride = null,
+    initialContext = null,
     onHuntChange,
   },
   ref,
@@ -160,14 +163,17 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const isMobile = useIsMobileLayout()
   const useStackedLayout = isMobile || reelOrientation === 'horizontal'
   const spinnerFadeEnabled = !isMobile
-  const [phase, setPhase] = useState<Phase>('idle')
-  const [result, setResult] = useState<CrateEntry | null>(null)
-  const [questType, setQuestType] = useState<QuestType | null>(null)
-  const [huntStar, setHuntStar] = useState<HuntStar | null>(null)
+  const restoredRevealRef = useRef(initialContext?.phase === 'revealed')
+  const [phase, setPhase] = useState<Phase>(() => initialContext?.phase ?? 'idle')
+  const [result, setResult] = useState<CrateEntry | null>(() => initialContext?.result ?? null)
+  const [questType, setQuestType] = useState<QuestType | null>(() => initialContext?.questType ?? null)
+  const [huntStar, setHuntStar] = useState<HuntStar | null>(() => initialContext?.huntStar ?? null)
   const [sequence, setSequence] = useState<CrateEntry[]>([])
-  const [spinKey, setSpinKey] = useState(0)
+  const [spinKey, setSpinKey] = useState(() => (initialContext?.phase === 'revealed' ? 1 : 0))
   const [isEntering, setIsEntering] = useState(false)
-  const [spinnerUiVisible, setSpinnerUiVisible] = useState(true)
+  const [spinnerUiVisible, setSpinnerUiVisible] = useState(
+    () => initialContext?.spinnerUiVisible ?? true,
+  )
   const spinResolverRef = useRef<(() => void) | null>(null)
   const spinnerFadeTimerRef = useRef<number | null>(null)
 
@@ -232,6 +238,11 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 
     if (phase !== 'revealed') {
       clearSpinnerFadeTimer()
+      return
+    }
+
+    if (restoredRevealRef.current) {
+      restoredRevealRef.current = false
       return
     }
 

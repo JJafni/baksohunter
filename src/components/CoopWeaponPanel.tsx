@@ -137,15 +137,58 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
 
   const coopMode = players.length > 1
   const overlayMode = !isMobile
+  const soloPlayerId = players[0]?.id
+  const soloDraw = soloPlayerId != null ? (draws[soloPlayerId] ?? null) : null
+  const soloInitialContext: CrateHuntContext | null = soloDraw
+    ? {
+        result: soloDraw.result,
+        questType: null,
+        huntStar: null,
+        phase: 'revealed',
+        spinnerUiVisible: soloDraw.spinnerUiVisible,
+      }
+    : null
 
   useEffect(() => {
     onCoopModeChange?.(coopMode)
   }, [coopMode, onCoopModeChange])
 
   useEffect(() => {
-    if (!coopMode) return
+    if (coopMode) {
+      onHuntChange?.(IDLE_HUNT)
+      return
+    }
+
+    if (soloDraw) {
+      onHuntChange?.({
+        result: soloDraw.result,
+        questType: null,
+        huntStar: null,
+        phase: 'revealed',
+        spinnerUiVisible: soloDraw.spinnerUiVisible,
+      })
+      return
+    }
+
     onHuntChange?.(IDLE_HUNT)
-  }, [coopMode, onHuntChange])
+  }, [coopMode, soloDraw, soloPlayerId, onHuntChange])
+
+  const handleSoloHuntChange = useCallback(
+    (ctx: CrateHuntContext) => {
+      onHuntChange?.(ctx)
+
+      if (soloPlayerId == null || ctx.phase !== 'revealed' || !ctx.result) return
+
+      setDraws((prev) => ({
+        ...prev,
+        [soloPlayerId]: {
+          result: ctx.result!,
+          spinnerUiVisible: ctx.spinnerUiVisible,
+        },
+      }))
+    },
+    [onHuntChange, soloPlayerId],
+  )
 
   const handlePlayerCountChange = useCallback((count: number) => {
     setPlayers((current) => {
@@ -181,7 +224,11 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
     return (
       <div className="relative h-full min-h-0 w-full">
         <div className="flex h-full min-h-0 w-full flex-col items-center">
-          <WeaponCrateOpener onHuntChange={onHuntChange} />
+          <WeaponCrateOpener
+            key={`solo-${soloPlayerId ?? 0}-${soloDraw?.result.slug ?? 'idle'}`}
+            initialContext={soloInitialContext}
+            onHuntChange={handleSoloHuntChange}
+          />
         </div>
         <div className="pointer-events-none absolute inset-x-0 top-2 z-30 flex justify-center lg:top-3">
           <div className="pointer-events-auto rounded-lg bg-wilds-950/80 px-2 py-1 backdrop-blur-sm">

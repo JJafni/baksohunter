@@ -12,10 +12,11 @@ const RARITY_LABELS: Record<Rarity, string> = {
 }
 
 type WeaponCrateOpenerProps = {
+  initialContext?: CrateHuntContext | null
   onHuntChange?: (ctx: CrateHuntContext) => void
 }
 
-function WeaponCrateOpener({ onHuntChange }: WeaponCrateOpenerProps) {
+function WeaponCrateOpener({ initialContext = null, onHuntChange }: WeaponCrateOpenerProps) {
   const isMobile = useIsMobileLayout()
   const overlayMode = !isMobile && Boolean(onHuntChange)
 
@@ -34,6 +35,7 @@ function WeaponCrateOpener({ onHuntChange }: WeaponCrateOpenerProps) {
       externalGallery={overlayMode}
       overlayMode={overlayMode}
       revealLayout="inline"
+      initialContext={initialContext}
       onHuntChange={onHuntChange}
       belowReel={
         isMobile
