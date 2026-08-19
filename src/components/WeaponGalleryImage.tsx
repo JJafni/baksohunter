@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import type { CrateEntry } from '../data/types'
 import { useGalleryDisplayResult } from '../hooks/useGalleryDisplayResult'
-import { getWeaponGalleryImageUrl, WEAPON_GALLERY_SOURCE_URL } from '../lib/weaponGalleryImages'
+import { getWeaponGalleryImageUrl, hasBundledWeaponGallery, WEAPON_GALLERY_SOURCE_URL } from '../lib/weaponGalleryImages'
 import { WIKI_WEAPON_RENDER_SOURCE_URL } from '../lib/weaponRenderImages'
-import { hasLocalWeaponGallery } from '../lib/localGalleryAssets'
 
 const GALLERY_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 
@@ -91,7 +90,7 @@ function WeaponGalleryImage({
   const galleryUrl = imageUrlOverride ?? getWeaponGalleryImageUrl(displayedResult.slug)
   const showHd = Boolean(galleryUrl) && !useIconFallback
   const imageUrl = showHd ? galleryUrl! : displayedResult.icon
-  const isLocalGallery = hasLocalWeaponGallery(displayedResult.slug) && !imageUrlOverride
+  const isLocalGallery = hasBundledWeaponGallery(displayedResult.slug) && !imageUrlOverride
   const inlineImageClass = fillSection
     ? 'relative z-10 mx-auto max-h-[min(52vh,440px)] w-full scale-110 object-contain'
     : showHd
