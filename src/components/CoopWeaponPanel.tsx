@@ -36,22 +36,32 @@ type CoopWeaponPanelProps = {
 const COOP_TWO_PLAYER_SPLIT_MIN_WIDTH = 560
 
 function useCoopPanelSplit(minWidth = COOP_TWO_PLAYER_SPLIT_MIN_WIDTH) {
-  const ref = useRef<HTMLDivElement>(null)
   const [canSplit, setCanSplit] = useState(false)
+  const observerRef = useRef<ResizeObserver | null>(null)
 
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
+  const ref = useCallback(
+    (node: HTMLDivElement | null) => {
+      observerRef.current?.disconnect()
+      observerRef.current = null
 
-    const update = () => {
-      setCanSplit(el.clientWidth >= minWidth)
-    }
+      if (!node) {
+        setCanSplit(false)
+        return
+      }
 
-    update()
-    const observer = new ResizeObserver(update)
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [minWidth])
+      const update = () => {
+        setCanSplit(node.clientWidth >= minWidth)
+      }
+
+      update()
+      const observer = new ResizeObserver(update)
+      observer.observe(node)
+      observerRef.current = observer
+    },
+    [minWidth],
+  )
+
+  useEffect(() => () => observerRef.current?.disconnect(), [])
 
   return { ref, canSplit }
 }
