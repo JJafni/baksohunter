@@ -62,11 +62,7 @@ function HuntLayout({
         </div>
       </section>
 
-      <section
-        className={`relative flex min-h-0 w-full lg:overflow-hidden ${
-          weaponCoopMode ? 'h-full lg:items-stretch' : 'justify-center lg:items-center'
-        }`}
-      >
+      <section className="relative flex h-full min-h-0 w-full lg:items-stretch lg:overflow-hidden">
         {!weaponCoopMode ? (
           <div className="pointer-events-none absolute inset-0 hidden lg:block">
             <WeaponGalleryImage
@@ -84,7 +80,7 @@ function HuntLayout({
 
         <div
           className={`relative z-10 flex h-full min-h-0 w-full flex-col ${
-            weaponCoopMode ? 'self-stretch lg:p-0' : 'items-center lg:px-8 lg:py-5'
+            weaponCoopMode ? 'self-stretch lg:p-0' : 'items-center self-stretch lg:px-8 lg:py-5'
           }`}
         >
           <CoopWeaponPanel

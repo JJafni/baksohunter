@@ -224,9 +224,15 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
 
   if (!coopMode) {
     return (
-      <div className="flex w-full flex-col items-center">
-        <PlayerCountControls playerCount={players.length} onChange={handlePlayerCountChange} />
-        <WeaponCrateOpener onHuntChange={onHuntChange} />
+      <div className="relative h-full min-h-0 w-full">
+        <div className="flex h-full min-h-0 w-full flex-col items-center">
+          <WeaponCrateOpener onHuntChange={onHuntChange} />
+        </div>
+        <div className="pointer-events-none absolute inset-x-0 top-2 z-30 flex justify-center lg:top-3">
+          <div className="pointer-events-auto rounded-lg bg-wilds-950/80 px-2 py-1 backdrop-blur-sm">
+            <PlayerCountControls playerCount={players.length} onChange={handlePlayerCountChange} />
+          </div>
+        </div>
       </div>
     )
   }

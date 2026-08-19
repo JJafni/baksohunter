@@ -428,7 +428,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
             className="mx-auto grid h-full min-h-0 w-full gap-3 py-2 transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
             style={{
               maxWidth: columnMaxWidth,
-              gridTemplateRows: phase === 'idle' ? '1fr auto 1fr' : 'minmax(0, 1fr) auto',
+              gridTemplateRows: 'minmax(0, 1fr) auto',
             }}
           >
             {phase === 'idle' ? (
@@ -444,7 +444,6 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
               </div>
             )}
             {overlayControls}
-            {phase === 'idle' ? <div aria-hidden="true" /> : null}
           </div>
         ) : (
           <div
