@@ -170,6 +170,8 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const useStackedLayout = isMobile || reelOrientation === 'horizontal'
   const spinnerFadeEnabled = !isMobile
   const useCenterOverlayReveal = overlayMode && overlaySpinnerCentered && revealNameAfterSpinnerFade
+  /** Co-op uses an external DRAW button — drop empty overlay action chrome. */
+  const useCompactOverlayChrome = hidePrimaryButton && useCenterOverlayReveal
   const isRestoredReveal = initialContext?.phase === 'revealed'
   const restoredRevealRef = useRef(isRestoredReveal)
   /** Restored hunts show the result statically — skip mounting Reel until the next draw. */
@@ -341,13 +343,11 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 
   const filtersDisabled = phase === 'spinning'
 
-  const filterRow = (
+  const filterRow = filters ? (
     <div className="mb-2 flex w-full items-center justify-center overflow-visible px-1 max-lg:min-h-[7.5rem] lg:min-h-[5.25rem]">
-      {filters ? (
-        <div className="mx-auto w-fit max-w-full">{filters({ disabled: filtersDisabled, layout: 'bar' })}</div>
-      ) : null}
+      <div className="mx-auto w-fit max-w-full">{filters({ disabled: filtersDisabled, layout: 'bar' })}</div>
     </div>
-  )
+  ) : null
 
   const actions = (
     <div
@@ -482,10 +482,10 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 
         {overlayMode ? (
           <div
-            className="mx-auto grid h-full min-h-0 w-full gap-3 py-2 transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+            className={`mx-auto grid h-full min-h-0 w-full gap-3 ${useCompactOverlayChrome ? 'py-0' : 'py-2'} transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]`}
             style={{
               maxWidth: columnMaxWidth,
-              gridTemplateRows: 'minmax(0, 1fr) auto',
+              gridTemplateRows: useCompactOverlayChrome ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) auto',
             }}
           >
             {phase === 'idle' ? (
@@ -522,7 +522,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
                 {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
               </div>
             )}
-            {overlayControls}
+            {useCompactOverlayChrome ? null : overlayControls}
           </div>
         ) : (
           <div
