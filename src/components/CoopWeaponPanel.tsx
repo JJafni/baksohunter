@@ -74,7 +74,7 @@ function coopGridClass(count: number, splitTwoPlayers: boolean) {
         ? `${base} grid-cols-2 grid-rows-1`
         : `${base} grid-cols-1 grid-rows-2`
     case 3:
-      return `${base} grid-cols-2 grid-rows-2 [&>*:last-child]:col-span-2 [&>*:last-child]:mx-auto [&>*:last-child]:h-full [&>*:last-child]:w-full [&>*:last-child]:max-w-[calc(50%-0.375rem)]`
+      return `${base} grid-cols-2 grid-rows-2 [&>*:last-child]:col-span-2`
     default:
       return `${base} grid-cols-2 grid-rows-2`
   }
