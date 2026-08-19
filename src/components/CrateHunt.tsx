@@ -280,9 +280,14 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   }, [phase, spinKey, clearSpinnerFadeTimer, spinnerFadeEnabled])
 
   const showSpinnerUi = spinnerFadeEnabled ? spinnerUiVisible : true
+  const [spinnerHoldLayout, setSpinnerHoldLayout] = useState(
+    () => !(isRestoredReveal && revealNameAfterSpinnerFade),
+  )
   const showOverlayRevealName =
-    phase === 'revealed' && (!revealNameAfterSpinnerFade || !showSpinnerUi)
-  const [spinnerHoldLayout, setSpinnerHoldLayout] = useState(true)
+    phase === 'revealed' &&
+    (!revealNameAfterSpinnerFade ||
+      skipReelMountRef.current ||
+      (!showSpinnerUi && !spinnerHoldLayout))
 
   useEffect(() => {
     if (showSpinnerUi) {
