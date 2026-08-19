@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { CrateHuntContext } from './CrateHunt'
 import CrateHunt, { type CrateHuntHandle } from './CrateHunt'
 import CoopPlayerSection, { type PlayerDraw } from './CoopPlayerSection'
@@ -113,6 +113,8 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   const [draws, setDraws] = useState<Record<number, PlayerDraw>>({})
   const [spinContext, setSpinContext] = useState<CrateHuntContext>(IDLE_HUNT)
   const crateRef = useRef<CrateHuntHandle>(null)
+  const pendingSpinRef = useRef(false)
+  const spinCompleteRef = useRef<(() => void) | null>(null)
 
   const coopMode = players.length > 1
   const overlayMode = !isMobile
@@ -180,13 +182,52 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
     }
   }, [spinContext.phase, spinContext.spinnerUiVisible, drawingPlayerId])
 
+  useLayoutEffect(() => {
+    if (!pendingSpinRef.current || drawingPlayerId === null) return
+
+    let cancelled = false
+
+    const run = async () => {
+      for (let attempt = 0; attempt < 10 && !cancelled; attempt++) {
+        if (crateRef.current) break
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+      }
+
+      if (cancelled || !crateRef.current) {
+        pendingSpinRef.current = false
+        spinCompleteRef.current?.()
+        spinCompleteRef.current = null
+        return
+      }
+
+      pendingSpinRef.current = false
+
+      try {
+        await crateRef.current.startSpin()
+      } finally {
+        spinCompleteRef.current?.()
+        spinCompleteRef.current = null
+      }
+    }
+
+    void run()
+    return () => {
+      cancelled = true
+    }
+  }, [drawingPlayerId])
+
   const handlePlayerDraw = useCallback(
-    async (playerIndex: number) => {
-      if (spinning) return
+    (playerIndex: number) => {
+      if (spinning || pendingSpinRef.current) return Promise.resolve()
       const playerId = players[playerIndex]?.id
-      if (playerId === undefined) return
+      if (playerId === undefined) return Promise.resolve()
+
+      pendingSpinRef.current = true
       setDrawingPlayerId(playerId)
-      await crateRef.current?.startSpin()
+
+      return new Promise<void>((resolve) => {
+        spinCompleteRef.current = resolve
+      })
     },
     [players, spinning],
   )
@@ -254,7 +295,11 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
               spinner={
                 isDrawing ? (
                   <div
-                    className={spinnerVisible ? '' : 'h-0 overflow-hidden opacity-0'}
+                    className={
+                      spinnerVisible
+                        ? ''
+                        : 'pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0'
+                    }
                     aria-hidden={!spinnerVisible}
                   >
                     {sharedSpinner}
