@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react'
 import { motion } from 'motion/react'
 import type { QuestType } from '../data/questTypes'
 import type { HuntStar } from '../data/huntStars'
@@ -65,7 +73,15 @@ type CrateHuntProps = {
   revealLayout?: 'stacked' | 'inline'
   /** Optional button beside the primary action (1/4 width). */
   companionButton?: (ctx: { disabled: boolean }) => ReactNode
+  /** Hide the built-in DRAW button (co-op uses external player buttons). */
+  hidePrimaryButton?: boolean
+  /** Override the revealed entry name (e.g. specific monster weapon). */
+  nameOverride?: string | null
   onHuntChange?: (ctx: CrateHuntContext) => void
+}
+
+export type CrateHuntHandle = {
+  startSpin: () => Promise<void>
 }
 
 /** Shared row heights so monster and weapon columns line up horizontally. */
@@ -112,30 +128,35 @@ function SpinnerLayoutSlot({
   )
 }
 
-function CrateHunt({
-  poolCountLabel,
-  buttonLayoutId,
-  buttonLabels,
-  rarityLabels,
-  pool,
-  pickRandom,
-  pickRandomQuestType,
-  pickRandomHuntStar,
-  questTypeEnabled = true,
-  reelSide,
-  filters,
-  spinLabels,
-  buttonIcon = 'sword',
-  buttonSurface = 'matte',
-  reelOrientation = 'horizontal',
-  belowReel,
-  externalGallery = false,
-  showMonsterInfo = false,
-  overlayMode = false,
-  revealLayout = 'stacked',
-  companionButton,
-  onHuntChange,
-}: CrateHuntProps) {
+const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt(
+  {
+    poolCountLabel,
+    buttonLayoutId,
+    buttonLabels,
+    rarityLabels,
+    pool,
+    pickRandom,
+    pickRandomQuestType,
+    pickRandomHuntStar,
+    questTypeEnabled = true,
+    reelSide,
+    filters,
+    spinLabels,
+    buttonIcon = 'sword',
+    buttonSurface = 'matte',
+    reelOrientation = 'horizontal',
+    belowReel,
+    externalGallery = false,
+    showMonsterInfo = false,
+    overlayMode = false,
+    revealLayout = 'stacked',
+    companionButton,
+    hidePrimaryButton = false,
+    nameOverride = null,
+    onHuntChange,
+  },
+  ref,
+) {
   const isMobile = useIsMobileLayout()
   const useStackedLayout = isMobile || reelOrientation === 'horizontal'
   const spinnerFadeEnabled = !isMobile
@@ -182,6 +203,8 @@ function CrateHunt({
       spinResolverRef.current = resolve
     })
   }, [phase, pickRandom, pickRandomQuestType, pickRandomHuntStar, questTypeEnabled, pool, clearSpinnerFadeTimer])
+
+  useImperativeHandle(ref, () => ({ startSpin: startHunt }), [startHunt])
 
   useEffect(() => {
     if (!questTypeEnabled) setQuestType(null)
@@ -294,17 +317,19 @@ function CrateHunt({
         {companionButton ? (
           <div className="w-1/4 min-w-0 shrink-0">{companionButton({ disabled: filtersDisabled })}</div>
         ) : null}
-        <StatefulButton
-          layoutId={buttonLayoutId}
-          loadingLabels={spinLabels}
-          icon={buttonIcon}
-          surface={buttonSurface}
-          onClick={startHunt}
-          disabled={phase === 'spinning' || !canSpin}
-          className={companionButton ? 'min-w-0 flex-[3]' : 'w-full'}
-        >
-          {buttonLabel}
-        </StatefulButton>
+        {hidePrimaryButton ? null : (
+          <StatefulButton
+            layoutId={buttonLayoutId}
+            loadingLabels={spinLabels}
+            icon={buttonIcon}
+            surface={buttonSurface}
+            onClick={startHunt}
+            disabled={phase === 'spinning' || !canSpin}
+            className={companionButton ? 'min-w-0 flex-[3]' : 'w-full'}
+          >
+            {buttonLabel}
+          </StatefulButton>
+        )}
       </div>
       {poolLine}
     </div>
@@ -323,6 +348,7 @@ function CrateHunt({
       huntStar={pickRandomHuntStar ? huntStar : null}
       questType={questTypeEnabled && pickRandomQuestType ? questType : null}
       questTypeVisible={phase === 'revealed'}
+      nameOverride={nameOverride}
     />
   )
 
@@ -469,6 +495,6 @@ function CrateHunt({
       </div>
     </div>
   )
-}
+})
 
 export default CrateHunt

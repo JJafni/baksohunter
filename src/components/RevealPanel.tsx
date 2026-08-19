@@ -25,6 +25,8 @@ type RevealPanelProps = {
   huntStar?: HuntStar | null
   questType?: QuestType | null
   questTypeVisible?: boolean
+  /** When set, replaces the entry name on reveal (e.g. specific monster weapon). */
+  nameOverride?: string | null
 }
 
 const RARITY_TEXT = RARITY_TEXT_CLASS
@@ -67,6 +69,7 @@ function RevealPanel({
   huntStar = null,
   questType = null,
   questTypeVisible = false,
+  nameOverride = null,
 }: RevealPanelProps) {
   const [infoOpen, setInfoOpen] = useState(false)
   const isMobile = variant === 'mobile'
@@ -92,7 +95,8 @@ function RevealPanel({
         : 'justify-start'
 
   const nameSizeClassFor = (entry: CrateEntry) => {
-    const isLongName = entry.name.length >= 8
+    const label = nameOverride ?? entry.name
+    const isLongName = label.length >= 8
     if (isMobile) {
       return isLongName ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'
     }
@@ -100,7 +104,8 @@ function RevealPanel({
   }
 
   const inlineNameSizeClassFor = (entry: CrateEntry) => {
-    const isLongName = entry.name.length >= 10
+    const label = nameOverride ?? entry.name
+    const isLongName = label.length >= 10
     if (isMobile) {
       return isLongName ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
     }
@@ -138,13 +143,16 @@ function RevealPanel({
     </motion.div>
   )
 
-  const nameRow = (entry: CrateEntry, titleUpdateLabel: string | null, nameClass: string) => (
+  const nameRow = (entry: CrateEntry, titleUpdateLabel: string | null, nameClass: string) => {
+    const displayName = nameOverride ?? entry.name
+
+    return (
     <div className={`inline-flex max-w-full items-center gap-2 ${nameRowClass}`}>
       {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
       <h2
         className={`font-black uppercase leading-[0.95] tracking-tight text-wilds-parchment ${nameClass}`}
       >
-        {entry.name}
+        {displayName}
       </h2>
       {titleUpdateLabel ? (
         <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.24em] text-wilds-gold-light/90 sm:text-[10px]">
@@ -152,7 +160,8 @@ function RevealPanel({
         </span>
       ) : null}
     </div>
-  )
+    )
+  }
 
   const revealContent = (entry: CrateEntry) => {
     const titleUpdateLabel = showMonsterInfo ? getMonsterTitleUpdateLabel(entry.slug) : null

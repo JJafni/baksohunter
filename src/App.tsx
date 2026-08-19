@@ -5,7 +5,7 @@ import CrateOpener from './components/CrateOpener'
 import type { CrateHuntContext } from './components/CrateHunt'
 import HeaderNav from './components/HeaderNav'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
-import WeaponCrateOpener from './components/WeaponCrateOpener'
+import CoopWeaponPanel from './components/CoopWeaponPanel'
 import WeaponGalleryImage from './components/WeaponGalleryImage'
 import { useAppReady } from './hooks/useAppReady'
 import { WILDS_BACKDROP_OVERLAY } from './lib/wildsTheme'
@@ -46,11 +46,15 @@ function HuntLayout({
   onMonsterHuntChange,
   weaponHunt,
   onWeaponHuntChange,
+  weaponCoopMode,
+  onWeaponCoopModeChange,
 }: {
   monsterHunt: CrateHuntContext
   onMonsterHuntChange: (ctx: CrateHuntContext) => void
   weaponHunt: CrateHuntContext
   onWeaponHuntChange: (ctx: CrateHuntContext) => void
+  weaponCoopMode: boolean
+  onWeaponCoopModeChange: (coopMode: boolean) => void
 }) {
   const monsterGalleryEmphasized =
     monsterHunt.phase === 'revealed' && monsterHunt.spinnerUiVisible
@@ -79,20 +83,27 @@ function HuntLayout({
 
       <section className="relative flex min-h-0 w-full justify-center lg:items-center lg:overflow-hidden">
         <div className="pointer-events-none absolute inset-0 hidden lg:block">
-          <WeaponGalleryImage
-            result={weaponHunt.result}
-            visible={weaponHunt.phase === 'revealed'}
-            emphasized={weaponGalleryEmphasized}
-            variant="backdrop"
-          />
-          <GalleryBackdropOverlay
-            revealed={weaponHunt.phase === 'revealed'}
-            emphasized={weaponGalleryEmphasized}
-          />
+          {!weaponCoopMode ? (
+            <>
+              <WeaponGalleryImage
+                result={weaponHunt.result}
+                visible={weaponHunt.phase === 'revealed'}
+                emphasized={weaponGalleryEmphasized}
+                variant="backdrop"
+              />
+              <GalleryBackdropOverlay
+                revealed={weaponHunt.phase === 'revealed'}
+                emphasized={weaponGalleryEmphasized}
+              />
+            </>
+          ) : null}
         </div>
 
         <div className="relative z-10 flex h-full min-h-0 w-full flex-col items-center lg:px-8 lg:py-5">
-          <WeaponCrateOpener onHuntChange={onWeaponHuntChange} />
+          <CoopWeaponPanel
+            onHuntChange={onWeaponHuntChange}
+            onCoopModeChange={onWeaponCoopModeChange}
+          />
         </div>
       </section>
     </div>
@@ -114,6 +125,7 @@ function AppContent() {
     phase: 'idle',
     spinnerUiVisible: true,
   })
+  const [weaponCoopMode, setWeaponCoopMode] = useState(false)
 
   return (
     <>
@@ -135,6 +147,8 @@ function AppContent() {
           onMonsterHuntChange={setMonsterHunt}
           weaponHunt={weaponHunt}
           onWeaponHuntChange={setWeaponHunt}
+          weaponCoopMode={weaponCoopMode}
+          onWeaponCoopModeChange={setWeaponCoopMode}
         />
       </main>
 
