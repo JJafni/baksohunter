@@ -99,12 +99,13 @@ function CoopPlayerSection({
     await crateRef.current?.startSpin()
   }, [phase])
 
+  const useCenterReveal = overlayMode && !isMobile
   const hasDraw = draw !== null
   const galleryEmphasized = hasDraw && draw.spinnerUiVisible
   const spinning = phase === 'spinning'
-  const showSpinner =
-    phase === 'spinning' || (phase === 'revealed' && (draw?.spinnerUiVisible ?? true))
-  const isActive = spinning || (phase === 'revealed' && showSpinner)
+  const showCrateHunt = phase !== 'idle'
+  const showFallbackName = hasDraw && phase === 'idle'
+  const isActive = spinning || phase === 'revealed'
   const labelColorClass = isActive
     ? (PLAYER_LABEL_COLORS_ACTIVE[playerIndex] ?? PLAYER_LABEL_COLORS_ACTIVE[0])
     : (PLAYER_LABEL_COLORS[playerIndex] ?? PLAYER_LABEL_COLORS[0])
@@ -133,15 +134,16 @@ function CoopPlayerSection({
         <div className="flex min-h-0 flex-1 items-center justify-center">
           <div
             className={
-              showSpinner
+              showCrateHunt
                 ? 'shrink-0'
                 : 'pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0'
             }
-            aria-hidden={!showSpinner}
+            aria-hidden={!showCrateHunt}
             style={
-              showSpinner
+              showCrateHunt
                 ? {
                     width: HUNT_COLUMN_MAX_WIDTH,
+                    height: SPINNER_NATURAL_HEIGHT,
                     transform: `scale(${scale})`,
                     transformOrigin: 'center center',
                   }
@@ -162,6 +164,8 @@ function CoopPlayerSection({
               buttonSurface="shiny"
               externalGallery={overlayMode}
               overlayMode={overlayMode}
+              overlaySpinnerCentered={useCenterReveal}
+              revealNameAfterSpinnerFade={useCenterReveal}
               revealLayout="inline"
               hidePrimaryButton
               onHuntChange={handleHuntChange}
@@ -178,7 +182,7 @@ function CoopPlayerSection({
               }
             />
           </div>
-          {!showSpinner && hasDraw ? (
+          {showFallbackName ? (
             <div className="wilds-legibility-text pointer-events-none px-3 text-center">
               <p className="text-base font-black uppercase leading-tight tracking-tight text-wilds-parchment sm:text-lg lg:text-xl">
                 {draw.result.name}
