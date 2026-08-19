@@ -169,6 +169,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const isMobile = useIsMobileLayout()
   const useStackedLayout = isMobile || reelOrientation === 'horizontal'
   const spinnerFadeEnabled = !isMobile
+  const useCenterOverlayReveal = overlayMode && overlaySpinnerCentered && revealNameAfterSpinnerFade
   const isRestoredReveal = initialContext?.phase === 'revealed'
   const restoredRevealRef = useRef(isRestoredReveal)
   /** Restored hunts show the result statically — skip mounting Reel until the next draw. */
@@ -287,7 +288,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     phase === 'revealed' &&
     (!revealNameAfterSpinnerFade ||
       skipReelMountRef.current ||
-      (!showSpinnerUi && !spinnerHoldLayout))
+      (useCenterOverlayReveal ? !showSpinnerUi : !showSpinnerUi && !spinnerHoldLayout))
 
   useEffect(() => {
     if (showSpinnerUi) {
@@ -402,7 +403,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     >
       {phase !== 'idle' ? namePanel : null}
     </motion.div>
-  ) : phase !== 'idle' ? (
+  ) : phase !== 'idle' && !useCenterOverlayReveal ? (
     revealNameAfterSpinnerFade ? (
       <motion.div
         className="w-full overflow-hidden"
@@ -489,6 +490,24 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
           >
             {phase === 'idle' ? (
               <div aria-hidden="true" />
+            ) : useCenterOverlayReveal ? (
+              <div className="relative min-h-0 flex-1 w-full">
+                <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+                  <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
+                    <SpinnerUiFade visible={showSpinnerUi}>
+                      {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
+                    </SpinnerUiFade>
+                  </SpinnerLayoutSlot>
+                </div>
+                <motion.div
+                  className="pointer-events-none absolute inset-0 flex items-center justify-center px-4"
+                  initial={false}
+                  animate={{ opacity: showOverlayRevealName ? 1 : 0 }}
+                  transition={SPINNER_UI_FADE}
+                >
+                  {phase === 'revealed' ? namePanel : null}
+                </motion.div>
+              </div>
             ) : (
               <div
                 className={`flex min-h-0 flex-1 flex-col items-center overflow-hidden ${
