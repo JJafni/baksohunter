@@ -32,8 +32,8 @@ type CoopWeaponPanelProps = {
   onCoopModeChange?: (coopMode: boolean) => void
 }
 
-/** Min weapon-panel width before 2-player co-op sits side-by-side (~400px per cell). */
-const COOP_TWO_PLAYER_SPLIT_MIN_WIDTH = 800
+/** Min weapon-panel width before 2-player co-op sits side-by-side (~450px per cell). */
+const COOP_TWO_PLAYER_SPLIT_MIN_WIDTH = 900
 
 function useCoopPanelSplit(minWidth = COOP_TWO_PLAYER_SPLIT_MIN_WIDTH) {
   const [canSplit, setCanSplit] = useState(false)
