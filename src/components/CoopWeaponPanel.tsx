@@ -109,11 +109,10 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   const isMobile = useIsMobileLayout()
   const [players, setPlayers] = useState<PlayerSlot[]>([{ id: 1 }])
   const nextIdRef = useRef(2)
-  const [activePlayerIndex, setActivePlayerIndex] = useState(0)
+  const [drawingPlayerId, setDrawingPlayerId] = useState<number | null>(null)
   const [draws, setDraws] = useState<Record<number, PlayerDraw>>({})
   const [spinContext, setSpinContext] = useState<CrateHuntContext>(IDLE_HUNT)
   const crateRef = useRef<CrateHuntHandle>(null)
-  const prevPhaseRef = useRef<CrateHuntContext['phase']>('idle')
 
   const coopMode = players.length > 1
   const overlayMode = !isMobile
@@ -140,7 +139,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
       return current.slice(0, count)
     })
     setDraws({})
-    setActivePlayerIndex(0)
+    setDrawingPlayerId(null)
     setSpinContext(IDLE_HUNT)
   }, [])
 
@@ -148,50 +147,48 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
     (ctx: CrateHuntContext) => {
       setSpinContext(ctx)
 
-      if (ctx.phase === 'revealed' && ctx.result) {
-        const activeId = players[activePlayerIndex]?.id
-        if (activeId !== undefined) {
-          setDraws((prev) => ({
-            ...prev,
-            [activeId]: {
-              result: ctx.result!,
-              spinnerUiVisible: ctx.spinnerUiVisible,
-            },
-          }))
-        }
+      if (ctx.phase === 'revealed' && ctx.result && drawingPlayerId !== null) {
+        setDraws((prev) => ({
+          ...prev,
+          [drawingPlayerId]: {
+            result: ctx.result!,
+            spinnerUiVisible: ctx.spinnerUiVisible,
+          },
+        }))
       }
     },
-    [activePlayerIndex, players],
+    [drawingPlayerId],
   )
 
   useEffect(() => {
-    const activeId = players[activePlayerIndex]?.id
-    if (activeId === undefined) return
+    if (drawingPlayerId === null) return
 
     setDraws((prev) => {
-      const existing = prev[activeId]
+      const existing = prev[drawingPlayerId]
       if (!existing) return prev
       return {
         ...prev,
-        [activeId]: { ...existing, spinnerUiVisible: spinContext.spinnerUiVisible },
+        [drawingPlayerId]: { ...existing, spinnerUiVisible: spinContext.spinnerUiVisible },
       }
     })
-  }, [spinContext.spinnerUiVisible, activePlayerIndex, players])
+  }, [spinContext.spinnerUiVisible, drawingPlayerId])
 
   useEffect(() => {
-    if (prevPhaseRef.current === 'spinning' && spinContext.phase === 'revealed') {
-      setActivePlayerIndex((index) => (index + 1) % players.length)
+    if (drawingPlayerId !== null && spinContext.phase === 'revealed' && !spinContext.spinnerUiVisible) {
       setSpinContext(IDLE_HUNT)
+      setDrawingPlayerId(null)
     }
-    prevPhaseRef.current = spinContext.phase
-  }, [spinContext.phase, players.length])
+  }, [spinContext.phase, spinContext.spinnerUiVisible, drawingPlayerId])
 
   const handlePlayerDraw = useCallback(
     async (playerIndex: number) => {
-      if (playerIndex !== activePlayerIndex || spinning) return
+      if (spinning) return
+      const playerId = players[playerIndex]?.id
+      if (playerId === undefined) return
+      setDrawingPlayerId(playerId)
       await crateRef.current?.startSpin()
     },
-    [activePlayerIndex, spinning],
+    [players, spinning],
   )
 
   const sharedSpinner = (
@@ -215,7 +212,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
       belowReel={
         isMobile
           ? ({ result, phase }) => (
-              <WeaponGalleryImage result={result} visible={phase === 'revealed'} emphasized={false} fillSection />
+              <WeaponGalleryImage result={result} visible={phase === 'revealed'} emphasized={false} />
             )
           : undefined
       }
@@ -241,22 +238,21 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
     <div className="relative h-full min-h-0 w-full flex-1 self-stretch">
       <div className={`absolute inset-0 ${coopGridClass(players.length)}`}>
         {players.map((player, index) => {
-          const isActive = index === activePlayerIndex
-          const spinnerVisible = spinContext.phase !== 'idle'
-          const disabled = spinning || !isActive
+          const isDrawing = player.id === drawingPlayerId
+          const spinnerVisible = isDrawing && spinContext.phase !== 'idle'
 
           return (
             <CoopPlayerSection
               key={player.id}
               playerIndex={index}
               playerId={player.id}
-              isActive={isActive}
+              isDrawing={isDrawing}
               draw={draws[player.id] ?? null}
               borderClass={sectionBorderClass(index, players.length)}
-              drawDisabled={disabled}
+              drawDisabled={spinning}
               onDraw={() => handlePlayerDraw(index)}
               spinner={
-                isActive ? (
+                isDrawing ? (
                   <div
                     className={spinnerVisible ? '' : 'h-0 overflow-hidden opacity-0'}
                     aria-hidden={!spinnerVisible}

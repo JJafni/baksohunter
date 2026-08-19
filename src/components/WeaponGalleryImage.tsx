@@ -46,7 +46,7 @@ function WeaponGalleryImage({
     const showHd = Boolean(galleryUrl) && !useIconFallback
     const imageUrl = displayedResult && showHd ? galleryUrl! : displayedResult?.icon
     const backdropImageClass = fillSection
-      ? 'h-full w-full scale-[1.55] object-contain object-center'
+      ? 'h-full w-full scale-110 object-contain object-center'
       : 'h-full w-full scale-105 object-contain object-center'
 
     return (

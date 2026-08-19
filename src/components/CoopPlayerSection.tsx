@@ -16,19 +16,19 @@ export type PlayerDraw = {
 type CoopPlayerSectionProps = {
   playerIndex: number
   playerId: number
-  isActive: boolean
+  isDrawing: boolean
   draw: PlayerDraw | null
   borderClass?: string
   drawDisabled: boolean
   onDraw: () => void | Promise<void>
-  /** Shared spinner — only passed for the active player's cell. */
+  /** Shared spinner — only passed for the drawing player's cell. */
   spinner?: ReactNode
 }
 
 function CoopPlayerSection({
   playerIndex,
   playerId,
-  isActive,
+  isDrawing,
   draw,
   borderClass = '',
   drawDisabled,
@@ -65,7 +65,7 @@ function CoopPlayerSection({
     <div className={`relative flex h-full min-h-0 flex-col overflow-hidden ${borderClass}`}>
       <span
         className={`wilds-legibility-text pointer-events-none absolute left-0 top-0 z-20 px-2 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] sm:px-2.5 sm:py-2 sm:text-xs ${
-          isActive ? 'text-wilds-gold-light' : 'text-wilds-muted/80'
+          isDrawing ? 'text-wilds-gold-light' : 'text-wilds-muted/80'
         }`}
       >
         Player {playerIndex + 1}
@@ -78,7 +78,6 @@ function CoopPlayerSection({
             visible
             emphasized={galleryEmphasized}
             variant="backdrop"
-            fillSection
           />
           <GalleryBackdropOverlay revealed emphasized={galleryEmphasized} />
         </div>
@@ -107,11 +106,6 @@ function CoopPlayerSection({
         </div>
 
         <div className="relative z-20 shrink-0 px-2 pb-2 pt-1 sm:px-3 sm:pb-3">
-          {isActive && !drawDisabled ? (
-            <p className="mb-1 text-center text-[9px] uppercase tracking-[0.14em] text-wilds-gold-light/80">
-              Your turn
-            </p>
-          ) : null}
           <StatefulButton
             layoutId={`coop-player-${playerId}-draw`}
             loadingLabels={['Drawing']}
@@ -119,7 +113,7 @@ function CoopPlayerSection({
             surface="shiny"
             disabled={drawDisabled}
             onClick={onDraw}
-            className={`w-full ${isActive && !drawDisabled ? 'ring-1 ring-wilds-gold/50' : ''}`}
+            className={`w-full ${isDrawing && !drawDisabled ? 'ring-1 ring-wilds-gold/50' : ''}`}
           >
             P{playerIndex + 1} DRAW
           </StatefulButton>
