@@ -4,7 +4,6 @@ import CrateHunt, { type CrateHuntHandle } from './CrateHunt'
 import CoopPlayerSection, { type PlayerDraw } from './CoopPlayerSection'
 import WeaponCrateOpener from './WeaponCrateOpener'
 import WeaponGalleryImage from './WeaponGalleryImage'
-import { StatefulButton } from './ui/stateful-button'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import { WEAPON_POOL, pickRandomWeapon } from '../data/weapons'
 import { pickRandomWeaponRender } from '../lib/weaponRenderImages'
@@ -34,13 +33,14 @@ type CoopWeaponPanelProps = {
 }
 
 function coopGridClass(count: number) {
+  const base = 'grid h-full w-full grid-cols-1 gap-0 [&>*]:min-h-0'
   switch (count) {
     case 2:
-      return 'grid h-full min-h-0 flex-1 grid-cols-1 gap-0 lg:grid-cols-2 lg:grid-rows-1'
+      return `${base} lg:grid-cols-2 lg:grid-rows-1`
     case 3:
-      return 'grid h-full min-h-0 flex-1 grid-cols-1 gap-0 lg:grid-cols-2 lg:grid-rows-2 [&>*:last-child]:lg:col-span-2'
+      return `${base} lg:grid-cols-2 lg:grid-rows-2 [&>*:last-child]:lg:col-span-2`
     default:
-      return 'grid h-full min-h-0 flex-1 grid-cols-1 gap-0 lg:grid-cols-2 lg:grid-rows-2'
+      return `${base} lg:grid-cols-2 lg:grid-rows-2`
   }
 }
 
@@ -54,7 +54,7 @@ function PlayerCountControls({
   disabled?: boolean
 }) {
   return (
-    <div className="flex shrink-0 items-center justify-center gap-3 pb-3">
+    <div className="flex shrink-0 items-center justify-center gap-3">
       <button
         type="button"
         aria-label="Remove player"
@@ -229,34 +229,30 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
     )
   }
 
-  const drawButtonGridClass =
-    players.length <= 2 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-4'
-
   return (
-    <div className="flex h-full min-h-0 w-full flex-col self-stretch">
-      <div className="shrink-0 px-4 pt-1 lg:px-6">
-        <PlayerCountControls
-          playerCount={players.length}
-          onChange={handlePlayerCountChange}
-          disabled={spinning}
-        />
-      </div>
-
-      <div className={coopGridClass(players.length)}>
+    <div className="relative h-full min-h-0 w-full flex-1 self-stretch">
+      <div className={`absolute inset-0 ${coopGridClass(players.length)}`}>
         {players.map((player, index) => {
           const isActive = index === activePlayerIndex
           const spinnerVisible = spinContext.phase !== 'idle'
+          const disabled = spinning || !isActive
 
           return (
             <CoopPlayerSection
               key={player.id}
               playerIndex={index}
+              playerId={player.id}
               isActive={isActive}
               draw={draws[player.id] ?? null}
               useMonsterWeapons={useMonsterWeapons}
+              drawDisabled={disabled}
+              onDraw={() => handlePlayerDraw(index)}
               spinner={
                 isActive ? (
-                  <div className={spinnerVisible ? '' : 'h-0 overflow-hidden opacity-0'} aria-hidden={!spinnerVisible}>
+                  <div
+                    className={spinnerVisible ? '' : 'h-0 overflow-hidden opacity-0'}
+                    aria-hidden={!spinnerVisible}
+                  >
                     {sharedSpinner}
                   </div>
                 ) : undefined
@@ -266,35 +262,15 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
         })}
       </div>
 
-      <div className={`mt-3 grid w-full shrink-0 gap-2 px-4 lg:px-6 ${drawButtonGridClass}`}>
-        {players.map((player, index) => {
-          const isActive = index === activePlayerIndex
-          const disabled = spinning || !isActive
-
-          return (
-            <StatefulButton
-              key={player.id}
-              layoutId={`coop-player-${player.id}-draw`}
-              loadingLabels={['Drawing']}
-              icon="shield"
-              surface="shiny"
-              disabled={disabled}
-              onClick={() => handlePlayerDraw(index)}
-              className={`w-full ${isActive && !spinning ? 'ring-1 ring-wilds-gold/50' : ''}`}
-            >
-              P{index + 1} DRAW
-            </StatefulButton>
-          )
-        })}
+      <div className="pointer-events-none absolute inset-x-0 top-2 z-30 flex justify-center lg:top-3">
+        <div className="pointer-events-auto rounded-lg bg-wilds-950/80 px-2 py-1 backdrop-blur-sm">
+          <PlayerCountControls
+            playerCount={players.length}
+            onChange={handlePlayerCountChange}
+            disabled={spinning}
+          />
+        </div>
       </div>
-
-      <p className="mt-2 shrink-0 px-4 pb-2 text-center text-[10px] uppercase tracking-[0.16em] text-wilds-muted lg:px-6">
-        {spinning ? (
-          <>Player {activePlayerIndex + 1}&apos;s turn — drawing…</>
-        ) : (
-          <span className="text-wilds-gold-light/80">Player {activePlayerIndex + 1}&apos;s turn</span>
-        )}
-      </p>
     </div>
   )
 }

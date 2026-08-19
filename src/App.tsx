@@ -63,8 +63,8 @@ function HuntLayout({
       </section>
 
       <section
-        className={`relative flex min-h-0 w-full justify-center lg:overflow-hidden ${
-          weaponCoopMode ? 'lg:items-stretch' : 'lg:items-center'
+        className={`relative flex min-h-0 w-full lg:overflow-hidden ${
+          weaponCoopMode ? 'h-full lg:items-stretch' : 'justify-center lg:items-center'
         }`}
       >
         {!weaponCoopMode ? (

@@ -2,10 +2,11 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { CrateEntry } from '../data/types'
 import GalleryBackdropOverlay from './GalleryBackdropOverlay'
 import WeaponGalleryImage from './WeaponGalleryImage'
+import { StatefulButton } from './ui/stateful-button'
 import { HUNT_COLUMN_MAX_WIDTH } from '../lib/crateConfig'
 
 /** Approximate stacked overlay height used for scale-to-fit in grid cells. */
-const SPINNER_NATURAL_HEIGHT = 680
+const SPINNER_NATURAL_HEIGHT = 620
 
 export type PlayerDraw = {
   result: CrateEntry
@@ -16,25 +17,31 @@ export type PlayerDraw = {
 
 type CoopPlayerSectionProps = {
   playerIndex: number
+  playerId: number
   isActive: boolean
   draw: PlayerDraw | null
   useMonsterWeapons: boolean
+  drawDisabled: boolean
+  onDraw: () => void | Promise<void>
   /** Shared spinner — only passed for the active player's cell. */
   spinner?: ReactNode
 }
 
 function CoopPlayerSection({
   playerIndex,
+  playerId,
   isActive,
   draw,
   useMonsterWeapons,
+  drawDisabled,
+  onDraw,
   spinner,
 }: CoopPlayerSectionProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(1)
 
   useEffect(() => {
-    const el = containerRef.current
+    const el = contentRef.current
     if (!el) return
 
     const updateScale = () => {
@@ -58,7 +65,7 @@ function CoopPlayerSection({
   const imageUrl = useMonsterWeapons ? (draw?.weaponRender?.url ?? null) : null
 
   return (
-    <div ref={containerRef} className="relative h-full min-h-0 overflow-hidden">
+    <div className="relative flex h-full min-h-0 flex-col overflow-hidden">
       <span
         className={`wilds-legibility-text pointer-events-none absolute left-0 top-0 z-20 px-2 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] sm:px-2.5 sm:py-2 sm:text-xs ${
           isActive ? 'text-wilds-gold-light' : 'text-wilds-muted/80'
@@ -67,46 +74,61 @@ function CoopPlayerSection({
         Player {playerIndex + 1}
       </span>
 
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <WeaponGalleryImage
-          result={draw?.result ?? null}
-          visible={hasDraw}
-          emphasized={galleryEmphasized}
-          variant="backdrop"
-          imageUrl={imageUrl}
-          fillSection
-          wikiSource={useMonsterWeapons && !!draw?.weaponRender}
-        />
-        <GalleryBackdropOverlay revealed={hasDraw} emphasized={galleryEmphasized} />
-      </div>
+      {hasDraw ? (
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <WeaponGalleryImage
+            result={draw.result}
+            visible
+            emphasized={galleryEmphasized}
+            variant="backdrop"
+            imageUrl={imageUrl}
+            fillSection
+            wikiSource={useMonsterWeapons && !!draw.weaponRender}
+          />
+          <GalleryBackdropOverlay revealed emphasized={galleryEmphasized} />
+        </div>
+      ) : null}
 
-      <div className="relative z-10 flex h-full min-h-0 items-center justify-center">
-        {spinner ? (
-          <div
-            className="shrink-0"
-            style={{
-              width: HUNT_COLUMN_MAX_WIDTH,
-              transform: `scale(${scale})`,
-              transformOrigin: 'center center',
-            }}
-          >
-            {spinner}
-          </div>
-        ) : hasDraw ? (
-          <div className="wilds-legibility-text pointer-events-none px-3 text-center">
-            <p className="text-lg font-black uppercase leading-tight tracking-tight text-wilds-parchment sm:text-xl lg:text-2xl">
-              {draw.displayName}
+      <div ref={contentRef} className="relative z-10 flex min-h-0 flex-1 flex-col">
+        <div className="flex min-h-0 flex-1 items-center justify-center">
+          {spinner ? (
+            <div
+              className="shrink-0"
+              style={{
+                width: HUNT_COLUMN_MAX_WIDTH,
+                transform: `scale(${scale})`,
+                transformOrigin: 'center center',
+              }}
+            >
+              {spinner}
+            </div>
+          ) : hasDraw ? (
+            <div className="wilds-legibility-text pointer-events-none px-3 text-center">
+              <p className="text-base font-black uppercase leading-tight tracking-tight text-wilds-parchment sm:text-lg lg:text-xl">
+                {draw.displayName}
+              </p>
+            </div>
+          ) : null}
+        </div>
+
+        <div className="relative z-20 shrink-0 px-2 pb-2 pt-1 sm:px-3 sm:pb-3">
+          {isActive && !drawDisabled ? (
+            <p className="mb-1 text-center text-[9px] uppercase tracking-[0.14em] text-wilds-gold-light/80">
+              Your turn
             </p>
-          </div>
-        ) : isActive ? (
-          <p className="px-3 text-center text-[10px] uppercase tracking-[0.16em] text-wilds-muted/70">
-            Your turn
-          </p>
-        ) : (
-          <p className="px-3 text-center text-[10px] uppercase tracking-[0.16em] text-wilds-muted/40">
-            Waiting
-          </p>
-        )}
+          ) : null}
+          <StatefulButton
+            layoutId={`coop-player-${playerId}-draw`}
+            loadingLabels={['Drawing']}
+            icon="shield"
+            surface="shiny"
+            disabled={drawDisabled}
+            onClick={onDraw}
+            className={`w-full ${isActive && !drawDisabled ? 'ring-1 ring-wilds-gold/50' : ''}`}
+          >
+            P{playerIndex + 1} DRAW
+          </StatefulButton>
+        </div>
       </div>
     </div>
   )
