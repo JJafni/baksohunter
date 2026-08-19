@@ -131,11 +131,17 @@ function CoopPlayerSection({
       ) : null}
 
       <div ref={contentRef} className="relative z-10 flex min-h-0 flex-1 flex-col">
-        <div className="flex min-h-0 flex-1 items-center justify-center">
+        <div
+          className={`flex min-h-0 flex-1 ${
+            useCenterReveal ? 'flex-col' : 'items-center justify-center'
+          }`}
+        >
           <div
             className={
               showCrateHunt
-                ? 'shrink-0'
+                ? useCenterReveal
+                  ? 'h-full min-h-0 w-full'
+                  : 'shrink-0'
                 : 'pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0'
             }
             aria-hidden={!showCrateHunt}
@@ -143,7 +149,7 @@ function CoopPlayerSection({
               showCrateHunt
                 ? {
                     width: HUNT_COLUMN_MAX_WIDTH,
-                    height: SPINNER_NATURAL_HEIGHT,
+                    height: useCenterReveal ? '100%' : SPINNER_NATURAL_HEIGHT,
                     transform: `scale(${scale})`,
                     transformOrigin: 'center center',
                   }
