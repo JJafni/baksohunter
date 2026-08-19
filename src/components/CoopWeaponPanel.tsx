@@ -59,7 +59,14 @@ function useCoopPanelSplit(minWidth = COOP_SPLIT_MIN_WIDTH) {
 function coopGridClass(count: number, canSplit: boolean) {
   const base = 'grid h-full w-full gap-0 [&>*]:min-h-0'
   if (!canSplit) {
-    return `${base} grid-cols-1`
+    switch (count) {
+      case 2:
+        return `${base} grid-cols-1 grid-rows-2`
+      case 3:
+        return `${base} grid-cols-1 grid-rows-3`
+      default:
+        return `${base} grid-cols-1 grid-rows-4`
+    }
   }
   switch (count) {
     case 2:
