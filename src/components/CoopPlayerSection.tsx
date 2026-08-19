@@ -17,6 +17,20 @@ const RARITY_LABELS: Record<Rarity, string> = {
   'arch-tempered': 'Weapon Type',
 }
 
+const PLAYER_LABEL_COLORS = [
+  'text-red-400',
+  'text-blue-400',
+  'text-yellow-400',
+  'text-green-400',
+] as const
+
+const PLAYER_LABEL_COLORS_ACTIVE = [
+  'text-red-300',
+  'text-blue-300',
+  'text-yellow-300',
+  'text-green-300',
+] as const
+
 export type PlayerDraw = {
   result: CrateEntry
   spinnerUiVisible: boolean
@@ -91,13 +105,14 @@ function CoopPlayerSection({
   const showSpinner =
     phase === 'spinning' || (phase === 'revealed' && (draw?.spinnerUiVisible ?? true))
   const isActive = spinning || (phase === 'revealed' && showSpinner)
+  const labelColorClass = isActive
+    ? (PLAYER_LABEL_COLORS_ACTIVE[playerIndex] ?? PLAYER_LABEL_COLORS_ACTIVE[0])
+    : (PLAYER_LABEL_COLORS[playerIndex] ?? PLAYER_LABEL_COLORS[0])
 
   return (
     <div className={`relative flex h-full min-h-0 flex-col overflow-hidden ${borderClass}`}>
       <span
-        className={`wilds-legibility-text pointer-events-none absolute left-0 top-0 z-20 px-2 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] sm:px-2.5 sm:py-2 sm:text-xs ${
-          isActive ? 'text-wilds-gold-light' : 'text-wilds-muted/80'
-        }`}
+        className={`wilds-legibility-text pointer-events-none absolute left-0 top-0 z-20 px-2 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] sm:px-2.5 sm:py-2 sm:text-xs ${labelColorClass}`}
       >
         Player {playerIndex + 1}
       </span>
