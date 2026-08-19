@@ -311,6 +311,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 
   const poolLine = (
     <p
+      aria-hidden={!poolCountLabel}
       className={`mt-3 flex items-center justify-center whitespace-nowrap text-center uppercase tracking-[0.18em] text-wilds-muted ${
         useStackedLayout ? 'px-2 text-[10px]' : 'text-[10px] sm:text-xs'
       }`}
@@ -358,7 +359,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
           </StatefulButton>
         )}
       </div>
-      {poolCountLabel ? poolLine : null}
+      {poolLine}
     </div>
   )
 
