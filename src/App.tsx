@@ -79,8 +79,8 @@ function HuntLayout({
         ) : null}
 
         <div
-          className={`relative z-10 flex h-full min-h-0 w-full flex-col ${
-            weaponCoopMode ? 'self-stretch lg:p-0' : 'items-center self-stretch lg:px-8 lg:py-5'
+          className={`relative z-10 flex h-full min-h-0 w-full flex-col self-stretch lg:p-0 ${
+            weaponCoopMode ? '' : 'items-center'
           }`}
         >
           <CoopWeaponPanel

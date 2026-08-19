@@ -452,16 +452,12 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 
         {overlayMode ? (
           <div
-            className="mx-auto grid h-full min-h-0 w-full gap-3 py-2 transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
-            style={{
-              maxWidth: columnMaxWidth,
-              gridTemplateRows: 'minmax(0, 1fr) auto',
-            }}
+            className="mx-auto flex h-full min-h-0 w-full flex-col gap-3 py-2"
+            style={{ maxWidth: columnMaxWidth }}
           >
-            {phase === 'idle' ? (
-              <div aria-hidden="true" />
-            ) : (
-              <div className="flex min-h-0 flex-col items-center overflow-hidden">
+            {phase === 'idle' ? <div className="min-h-0 flex-1" aria-hidden="true" /> : null}
+            {phase !== 'idle' && (phase === 'spinning' || showSpinnerUi) ? (
+              <div className="flex min-h-0 flex-1 flex-col items-center overflow-hidden">
                 <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
                   <SpinnerUiFade visible={showSpinnerUi}>
                     {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
@@ -469,8 +465,12 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
                 </SpinnerLayoutSlot>
                 {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
               </div>
-            )}
-            {overlayControls}
+            ) : null}
+            {phase === 'revealed' && !showSpinnerUi ? stackedRevealSlot : null}
+            <div className="mt-auto w-full shrink-0">
+              {phase === 'revealed' && !showSpinnerUi ? null : stackedRevealSlot}
+              {actions}
+            </div>
           </div>
         ) : (
           <div
