@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CrateHuntContext } from './CrateHunt'
 import CrateHunt, { type CrateHuntHandle } from './CrateHunt'
+import CoopPlayerSection, { type PlayerDraw } from './CoopPlayerSection'
 import WeaponCrateOpener from './WeaponCrateOpener'
 import WeaponGalleryImage from './WeaponGalleryImage'
 import { StatefulButton } from './ui/stateful-button'
@@ -17,11 +18,30 @@ const RARITY_LABELS: Record<Rarity, string> = {
   'arch-tempered': 'Weapon Type',
 }
 
+const IDLE_HUNT: CrateHuntContext = {
+  result: null,
+  questType: null,
+  huntStar: null,
+  phase: 'idle',
+  spinnerUiVisible: true,
+}
+
+type PlayerSlot = { id: number }
+
 type CoopWeaponPanelProps = {
   onHuntChange?: (ctx: CrateHuntContext) => void
   onCoopModeChange?: (coopMode: boolean) => void
-  /** Reports the current wiki render URL (null = use standard weapon image). */
-  onGalleryChange?: (imageUrl: string | null) => void
+}
+
+function coopGridClass(count: number) {
+  switch (count) {
+    case 2:
+      return 'grid h-full min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-2 lg:grid-rows-1'
+    case 3:
+      return 'grid h-full min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-2 lg:grid-rows-2 [&>*:last-child]:lg:col-span-2 [&>*:last-child]:lg:mx-auto [&>*:last-child]:lg:h-full [&>*:last-child]:lg:w-full [&>*:last-child]:lg:max-w-[calc(50%-0.375rem)]'
+    default:
+      return 'grid h-full min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-2 lg:grid-rows-2'
+  }
 }
 
 function PlayerCountControls({
@@ -34,7 +54,7 @@ function PlayerCountControls({
   disabled?: boolean
 }) {
   return (
-    <div className="mb-4 flex w-full max-w-[620px] items-center justify-center gap-3">
+    <div className="flex shrink-0 items-center justify-center gap-3 pb-3">
       <button
         type="button"
         aria-label="Remove player"
@@ -60,157 +80,199 @@ function PlayerCountControls({
   )
 }
 
-function CoopWeaponPanel({ onHuntChange, onCoopModeChange, onGalleryChange }: CoopWeaponPanelProps) {
+function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProps) {
   const isMobile = useIsMobileLayout()
-  const [playerCount, setPlayerCount] = useState(1)
+  const [players, setPlayers] = useState<PlayerSlot[]>([{ id: 1 }])
+  const nextIdRef = useRef(2)
   const [activePlayerIndex, setActivePlayerIndex] = useState(0)
-  const [huntContext, setHuntContext] = useState<CrateHuntContext>({
-    result: null,
-    questType: null,
-    huntStar: null,
-    phase: 'idle',
-    spinnerUiVisible: true,
-  })
-  const [weaponRender, setWeaponRender] = useState<{ name: string; url: string } | null>(null)
+  const [draws, setDraws] = useState<Record<number, PlayerDraw>>({})
+  const [spinContext, setSpinContext] = useState<CrateHuntContext>(IDLE_HUNT)
+  const [activeRender, setActiveRender] = useState<{ name: string; url: string } | null>(null)
   const crateRef = useRef<CrateHuntHandle>(null)
   const prevPhaseRef = useRef<CrateHuntContext['phase']>('idle')
 
-  const coopMode = playerCount > 1
-  const useMonsterWeapons = playerCount >= 3
+  const coopMode = players.length > 1
+  const useMonsterWeapons = players.length >= 3
   const overlayMode = !isMobile
-  const spinning = huntContext.phase === 'spinning'
-  const galleryImageUrl = useMonsterWeapons ? (weaponRender?.url ?? null) : null
-  const revealName = useMonsterWeapons ? (weaponRender?.name ?? null) : null
+  const spinning = spinContext.phase === 'spinning'
+  const revealName = useMonsterWeapons ? activeRender?.name : null
 
   useEffect(() => {
     onCoopModeChange?.(coopMode)
   }, [coopMode, onCoopModeChange])
 
   useEffect(() => {
-    onGalleryChange?.(galleryImageUrl ?? null)
-  }, [galleryImageUrl, onGalleryChange])
+    if (!coopMode) return
+    onHuntChange?.(IDLE_HUNT)
+  }, [coopMode, onHuntChange])
 
-  const handlePlayerCountChange = useCallback(
-    (count: number) => {
-      setPlayerCount(count)
-      setActivePlayerIndex(0)
-      setWeaponRender(null)
-      if (count < 3) {
-        onGalleryChange?.(null)
+  const handlePlayerCountChange = useCallback((count: number) => {
+    setPlayers((current) => {
+      if (count > current.length) {
+        const added: PlayerSlot[] = []
+        for (let i = current.length; i < count; i++) {
+          added.push({ id: nextIdRef.current++ })
+        }
+        return [...current, ...added]
       }
-    },
-    [onGalleryChange],
-  )
+      return current.slice(0, count)
+    })
+    setDraws({})
+    setActivePlayerIndex(0)
+    setSpinContext(IDLE_HUNT)
+    setActiveRender(null)
+  }, [])
 
-  const handleHuntChange = useCallback(
+  const handleSpinChange = useCallback(
     (ctx: CrateHuntContext) => {
-      setHuntContext(ctx)
+      setSpinContext(ctx)
 
-      if (ctx.phase === 'revealed' && ctx.result && useMonsterWeapons) {
-        const render = pickRandomWeaponRender(ctx.result.slug)
-        const url = render?.url ?? null
-        setWeaponRender(render ? { name: render.name, url: render.url } : null)
-        onGalleryChange?.(url)
-      } else if (ctx.phase === 'idle' || ctx.phase === 'spinning') {
-        if (useMonsterWeapons) {
-          onGalleryChange?.(null)
+      if (ctx.phase === 'revealed' && ctx.result) {
+        const render = useMonsterWeapons ? pickRandomWeaponRender(ctx.result.slug) : null
+        setActiveRender(render ? { name: render.name, url: render.url } : null)
+
+        const activeId = players[activePlayerIndex]?.id
+        if (activeId !== undefined) {
+          setDraws((prev) => ({
+            ...prev,
+            [activeId]: {
+              result: ctx.result!,
+              weaponRender: render ? { name: render.name, url: render.url } : null,
+              displayName: render?.name ?? ctx.result!.name,
+              spinnerUiVisible: ctx.spinnerUiVisible,
+            },
+          }))
         }
       }
-
-      // Always propagate to App so the App-level backdrop & phase state work
-      onHuntChange?.(ctx)
     },
-    [onHuntChange, onGalleryChange, useMonsterWeapons],
+    [activePlayerIndex, players, useMonsterWeapons],
   )
 
+  // Keep spinnerUiVisible in sync for saved draws
   useEffect(() => {
-    if (prevPhaseRef.current === 'spinning' && huntContext.phase === 'revealed') {
-      setActivePlayerIndex((index) => (index + 1) % playerCount)
-    }
-    prevPhaseRef.current = huntContext.phase
-  }, [huntContext.phase, playerCount])
+    const activeId = players[activePlayerIndex]?.id
+    if (activeId === undefined) return
+
+    setDraws((prev) => {
+      const existing = prev[activeId]
+      if (!existing) return prev
+      return {
+        ...prev,
+        [activeId]: { ...existing, spinnerUiVisible: spinContext.spinnerUiVisible },
+      }
+    })
+  }, [spinContext.spinnerUiVisible, activePlayerIndex, players])
 
   useEffect(() => {
-    setActivePlayerIndex(0)
-    setWeaponRender(null)
-  }, [playerCount])
+    if (prevPhaseRef.current === 'spinning' && spinContext.phase === 'revealed') {
+      setActivePlayerIndex((index) => (index + 1) % players.length)
+      setSpinContext(IDLE_HUNT)
+      setActiveRender(null)
+    }
+    prevPhaseRef.current = spinContext.phase
+  }, [spinContext.phase, players.length])
 
   const handlePlayerDraw = useCallback(
     async (playerIndex: number) => {
       if (playerIndex !== activePlayerIndex || spinning) return
-      setWeaponRender(null)
-      onGalleryChange?.(null)
+      setActiveRender(null)
       await crateRef.current?.startSpin()
     },
-    [activePlayerIndex, spinning, onGalleryChange],
+    [activePlayerIndex, spinning],
+  )
+
+  const sharedSpinner = (
+    <CrateHunt
+      ref={crateRef}
+      poolCountLabel="Weapon Types in the pool"
+      buttonLayoutId="coop-weapon-crate-button"
+      buttonLabels={{ open: 'DRAW', again: 'DRAW' }}
+      rarityLabels={RARITY_LABELS}
+      pool={WEAPON_POOL}
+      pickRandom={pickRandomWeapon}
+      reelSide="right"
+      spinLabels={['Drawing']}
+      buttonIcon="shield"
+      buttonSurface="shiny"
+      externalGallery={overlayMode}
+      overlayMode={overlayMode}
+      revealLayout="inline"
+      hidePrimaryButton
+      nameOverride={revealName}
+      onHuntChange={handleSpinChange}
+      belowReel={
+        isMobile
+          ? ({ result, phase }) => (
+              <WeaponGalleryImage
+                result={result}
+                visible={phase === 'revealed'}
+                emphasized={false}
+                imageUrl={useMonsterWeapons ? activeRender?.url : null}
+                fillSection
+                wikiSource={useMonsterWeapons && activeRender !== null}
+              />
+            )
+          : undefined
+      }
+    />
   )
 
   if (!coopMode) {
     return (
       <div className="flex w-full flex-col items-center">
-        <PlayerCountControls playerCount={playerCount} onChange={handlePlayerCountChange} />
-        <WeaponCrateOpener onHuntChange={handleHuntChange} />
+        <PlayerCountControls
+          playerCount={players.length}
+          onChange={handlePlayerCountChange}
+        />
+        <WeaponCrateOpener onHuntChange={onHuntChange} />
       </div>
     )
   }
 
+  const drawButtonGridClass =
+    players.length <= 2 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-4'
+
   return (
-    <div className="flex h-full min-h-0 w-full flex-col items-center">
+    <div className="flex h-full min-h-0 w-full flex-col self-stretch">
       <PlayerCountControls
-        playerCount={playerCount}
+        playerCount={players.length}
         onChange={handlePlayerCountChange}
         disabled={spinning}
       />
 
-      <div className="flex min-h-0 w-full flex-1 flex-col items-center justify-center">
-        <CrateHunt
-          ref={crateRef}
-          poolCountLabel="Weapon Types in the pool"
-          buttonLayoutId="coop-weapon-crate-button"
-          buttonLabels={{ open: 'DRAW', again: 'DRAW' }}
-          rarityLabels={RARITY_LABELS}
-          pool={WEAPON_POOL}
-          pickRandom={pickRandomWeapon}
-          reelSide="right"
-          spinLabels={['Drawing']}
-          buttonIcon="shield"
-          buttonSurface="shiny"
-          externalGallery={overlayMode}
-          overlayMode={overlayMode}
-          revealLayout="inline"
-          hidePrimaryButton
-          nameOverride={revealName}
-          onHuntChange={handleHuntChange}
-          belowReel={
-            isMobile
-              ? ({ result, phase }) => (
-                  <WeaponGalleryImage
-                    result={result}
-                    visible={phase === 'revealed'}
-                    emphasized={false}
-                    imageUrl={galleryImageUrl}
-                    fillSection
-                    wikiSource={useMonsterWeapons && galleryImageUrl !== null}
-                  />
-                )
-              : undefined
-          }
-        />
+      <div className={coopGridClass(players.length)}>
+        {players.map((player, index) => {
+          const isActive = index === activePlayerIndex
+          const spinnerVisible = spinContext.phase !== 'idle'
+
+          return (
+            <CoopPlayerSection
+              key={player.id}
+              playerIndex={index}
+              isActive={isActive}
+              draw={draws[player.id] ?? null}
+              useMonsterWeapons={useMonsterWeapons}
+              spinner={
+                isActive ? (
+                  <div className={spinnerVisible ? '' : 'h-0 overflow-hidden opacity-0'} aria-hidden={!spinnerVisible}>
+                    {sharedSpinner}
+                  </div>
+                ) : undefined
+              }
+            />
+          )
+        })}
       </div>
 
-      <div
-        className={`mt-3 grid w-full max-w-[620px] gap-2 ${
-          playerCount <= 2 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-4'
-        }`}
-      >
-        {Array.from({ length: playerCount }, (_, index) => {
+      <div className={`mt-3 grid w-full shrink-0 gap-2 ${drawButtonGridClass}`}>
+        {players.map((player, index) => {
           const isActive = index === activePlayerIndex
           const disabled = spinning || !isActive
 
           return (
             <StatefulButton
-              key={index}
-              layoutId={`coop-player-${index}-draw`}
+              key={player.id}
+              layoutId={`coop-player-${player.id}-draw`}
               loadingLabels={['Drawing']}
               icon="shield"
               surface="shiny"
@@ -224,15 +286,13 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange, onGalleryChange }: Co
         })}
       </div>
 
-      {spinning ? (
-        <p className="mt-2 text-center text-[10px] uppercase tracking-[0.16em] text-wilds-muted">
-          Player {activePlayerIndex + 1}&apos;s turn — drawing…
-        </p>
-      ) : (
-        <p className="mt-2 text-center text-[10px] uppercase tracking-[0.16em] text-wilds-gold-light/80">
-          Player {activePlayerIndex + 1}&apos;s turn
-        </p>
-      )}
+      <p className="mt-2 shrink-0 text-center text-[10px] uppercase tracking-[0.16em] text-wilds-muted">
+        {spinning ? (
+          <>Player {activePlayerIndex + 1}&apos;s turn — drawing…</>
+        ) : (
+          <span className="text-wilds-gold-light/80">Player {activePlayerIndex + 1}&apos;s turn</span>
+        )}
+      </p>
     </div>
   )
 }

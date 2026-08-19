@@ -3,12 +3,12 @@ import { AnimatePresence, motion } from 'motion/react'
 import AppSkeleton from './components/AppSkeleton'
 import CrateOpener from './components/CrateOpener'
 import type { CrateHuntContext } from './components/CrateHunt'
+import CoopWeaponPanel from './components/CoopWeaponPanel'
+import GalleryBackdropOverlay from './components/GalleryBackdropOverlay'
 import HeaderNav from './components/HeaderNav'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
-import CoopWeaponPanel from './components/CoopWeaponPanel'
 import WeaponGalleryImage from './components/WeaponGalleryImage'
 import { useAppReady } from './hooks/useAppReady'
-import { WILDS_BACKDROP_OVERLAY } from './lib/wildsTheme'
 
 function AppBackground() {
   return (
@@ -22,25 +22,6 @@ function AppBackground() {
   )
 }
 
-function GalleryBackdropOverlay({
-  revealed,
-  emphasized,
-}: {
-  revealed: boolean
-  emphasized: boolean
-}) {
-  const opacity = !revealed ? 1 : emphasized ? 1 : 0.45
-
-  return (
-    <motion.div
-      className={`pointer-events-none absolute inset-0 z-[1] ${WILDS_BACKDROP_OVERLAY}`}
-      initial={false}
-      animate={{ opacity }}
-      transition={{ duration: 0.7, ease: 'easeInOut' }}
-    />
-  )
-}
-
 function HuntLayout({
   monsterHunt,
   onMonsterHuntChange,
@@ -48,8 +29,6 @@ function HuntLayout({
   onWeaponHuntChange,
   weaponCoopMode,
   onWeaponCoopModeChange,
-  weaponCoopGalleryUrl,
-  onWeaponCoopGalleryChange,
 }: {
   monsterHunt: CrateHuntContext
   onMonsterHuntChange: (ctx: CrateHuntContext) => void
@@ -57,13 +36,10 @@ function HuntLayout({
   onWeaponHuntChange: (ctx: CrateHuntContext) => void
   weaponCoopMode: boolean
   onWeaponCoopModeChange: (coopMode: boolean) => void
-  weaponCoopGalleryUrl: string | null
-  onWeaponCoopGalleryChange: (url: string | null) => void
 }) {
   const monsterGalleryEmphasized =
     monsterHunt.phase === 'revealed' && monsterHunt.spinnerUiVisible
   const weaponGalleryEmphasized = weaponHunt.phase === 'revealed' && weaponHunt.spinnerUiVisible
-  const coopGalleryActive = weaponCoopMode && weaponCoopGalleryUrl !== null
 
   return (
     <div className="grid h-full min-h-0 w-full grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:items-stretch lg:gap-0">
@@ -86,29 +62,34 @@ function HuntLayout({
         </div>
       </section>
 
-      <section className="relative flex min-h-0 w-full justify-center lg:items-center lg:overflow-hidden">
-        {/* Backdrop always at section level so it fills edge-to-edge */}
-        <div className="pointer-events-none absolute inset-0 hidden lg:block">
-          <WeaponGalleryImage
-            result={weaponHunt.result}
-            visible={weaponHunt.phase === 'revealed'}
-            emphasized={weaponGalleryEmphasized}
-            variant="backdrop"
-            imageUrl={weaponCoopMode ? weaponCoopGalleryUrl : null}
-            fillSection={weaponCoopMode}
-            wikiSource={coopGalleryActive}
-          />
-          <GalleryBackdropOverlay
-            revealed={weaponHunt.phase === 'revealed'}
-            emphasized={weaponGalleryEmphasized}
-          />
-        </div>
+      <section
+        className={`relative flex min-h-0 w-full justify-center lg:overflow-hidden ${
+          weaponCoopMode ? 'lg:items-stretch' : 'lg:items-center'
+        }`}
+      >
+        {!weaponCoopMode ? (
+          <div className="pointer-events-none absolute inset-0 hidden lg:block">
+            <WeaponGalleryImage
+              result={weaponHunt.result}
+              visible={weaponHunt.phase === 'revealed'}
+              emphasized={weaponGalleryEmphasized}
+              variant="backdrop"
+            />
+            <GalleryBackdropOverlay
+              revealed={weaponHunt.phase === 'revealed'}
+              emphasized={weaponGalleryEmphasized}
+            />
+          </div>
+        ) : null}
 
-        <div className="relative z-10 flex h-full min-h-0 w-full flex-col items-center lg:px-8 lg:py-5">
+        <div
+          className={`relative z-10 flex h-full min-h-0 w-full flex-col ${
+            weaponCoopMode ? 'self-stretch lg:px-4 lg:py-3' : 'items-center lg:px-8 lg:py-5'
+          }`}
+        >
           <CoopWeaponPanel
             onHuntChange={onWeaponHuntChange}
             onCoopModeChange={onWeaponCoopModeChange}
-            onGalleryChange={onWeaponCoopGalleryChange}
           />
         </div>
       </section>
@@ -132,7 +113,6 @@ function AppContent() {
     spinnerUiVisible: true,
   })
   const [weaponCoopMode, setWeaponCoopMode] = useState(false)
-  const [weaponCoopGalleryUrl, setWeaponCoopGalleryUrl] = useState<string | null>(null)
 
   return (
     <>
@@ -156,8 +136,6 @@ function AppContent() {
           onWeaponHuntChange={setWeaponHunt}
           weaponCoopMode={weaponCoopMode}
           onWeaponCoopModeChange={setWeaponCoopMode}
-          weaponCoopGalleryUrl={weaponCoopGalleryUrl}
-          onWeaponCoopGalleryChange={setWeaponCoopGalleryUrl}
         />
       </main>
 
