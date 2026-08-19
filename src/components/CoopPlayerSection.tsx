@@ -1,12 +1,21 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
-import type { CrateEntry } from '../data/types'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import type { CrateEntry, Rarity } from '../data/types'
+import { WEAPON_POOL, pickRandomWeapon } from '../data/weapons'
+import { HUNT_COLUMN_MAX_WIDTH } from '../lib/crateConfig'
+import type { CrateHuntContext } from './CrateHunt'
+import CrateHunt, { type CrateHuntHandle } from './CrateHunt'
 import GalleryBackdropOverlay from './GalleryBackdropOverlay'
 import WeaponGalleryImage from './WeaponGalleryImage'
 import { StatefulButton } from './ui/stateful-button'
-import { HUNT_COLUMN_MAX_WIDTH } from '../lib/crateConfig'
 
 /** Approximate stacked overlay height used for scale-to-fit in grid cells. */
 const SPINNER_NATURAL_HEIGHT = 620
+
+const RARITY_LABELS: Record<Rarity, string> = {
+  normal: 'Weapon Type',
+  tempered: 'Weapon Type',
+  'arch-tempered': 'Weapon Type',
+}
 
 export type PlayerDraw = {
   result: CrateEntry
@@ -16,27 +25,26 @@ export type PlayerDraw = {
 type CoopPlayerSectionProps = {
   playerIndex: number
   playerId: number
-  isDrawing: boolean
   draw: PlayerDraw | null
   borderClass?: string
-  drawDisabled: boolean
-  onDraw: () => void | Promise<void>
-  /** Shared spinner — only passed for the drawing player's cell. */
-  spinner?: ReactNode
+  overlayMode: boolean
+  isMobile: boolean
+  onDrawChange: (draw: PlayerDraw | null) => void
 }
 
 function CoopPlayerSection({
   playerIndex,
-  playerId: _playerId,
-  isDrawing,
+  playerId,
   draw,
   borderClass = '',
-  drawDisabled,
-  onDraw,
-  spinner,
+  overlayMode,
+  isMobile,
+  onDrawChange,
 }: CoopPlayerSectionProps) {
   const contentRef = useRef<HTMLDivElement>(null)
+  const crateRef = useRef<CrateHuntHandle>(null)
   const [scale, setScale] = useState(1)
+  const [phase, setPhase] = useState<CrateHuntContext['phase']>('idle')
 
   useEffect(() => {
     const el = contentRef.current
@@ -58,14 +66,37 @@ function CoopPlayerSection({
     return () => observer.disconnect()
   }, [])
 
+  const handleHuntChange = useCallback(
+    (ctx: CrateHuntContext) => {
+      setPhase(ctx.phase)
+
+      if (ctx.phase === 'revealed' && ctx.result) {
+        onDrawChange({
+          result: ctx.result,
+          spinnerUiVisible: ctx.spinnerUiVisible,
+        })
+      }
+    },
+    [onDrawChange],
+  )
+
+  const handleDraw = useCallback(async () => {
+    if (phase === 'spinning') return
+    await crateRef.current?.startSpin()
+  }, [phase])
+
   const hasDraw = draw !== null
   const galleryEmphasized = hasDraw && draw.spinnerUiVisible
+  const spinning = phase === 'spinning'
+  const showSpinner =
+    phase === 'spinning' || (phase === 'revealed' && (draw?.spinnerUiVisible ?? true))
+  const isActive = spinning || (phase === 'revealed' && showSpinner)
 
   return (
     <div className={`relative flex h-full min-h-0 flex-col overflow-hidden ${borderClass}`}>
       <span
         className={`wilds-legibility-text pointer-events-none absolute left-0 top-0 z-20 px-2 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] sm:px-2.5 sm:py-2 sm:text-xs ${
-          isDrawing ? 'text-wilds-gold-light' : 'text-wilds-muted/80'
+          isActive ? 'text-wilds-gold-light' : 'text-wilds-muted/80'
         }`}
       >
         Player {playerIndex + 1}
@@ -85,18 +116,54 @@ function CoopPlayerSection({
 
       <div ref={contentRef} className="relative z-10 flex min-h-0 flex-1 flex-col">
         <div className="flex min-h-0 flex-1 items-center justify-center">
-          {spinner ? (
-            <div
-              className="shrink-0"
-              style={{
-                width: HUNT_COLUMN_MAX_WIDTH,
-                transform: `scale(${scale})`,
-                transformOrigin: 'center center',
-              }}
-            >
-              {spinner}
-            </div>
-          ) : hasDraw ? (
+          <div
+            className={
+              showSpinner
+                ? 'shrink-0'
+                : 'pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0'
+            }
+            aria-hidden={!showSpinner}
+            style={
+              showSpinner
+                ? {
+                    width: HUNT_COLUMN_MAX_WIDTH,
+                    transform: `scale(${scale})`,
+                    transformOrigin: 'center center',
+                  }
+                : undefined
+            }
+          >
+            <CrateHunt
+              ref={crateRef}
+              poolCountLabel="Weapon Types in the pool"
+              buttonLayoutId={`coop-player-${playerId}-crate`}
+              buttonLabels={{ open: 'DRAW', again: 'DRAW' }}
+              rarityLabels={RARITY_LABELS}
+              pool={WEAPON_POOL}
+              pickRandom={pickRandomWeapon}
+              reelSide="right"
+              spinLabels={['Drawing']}
+              buttonIcon="shield"
+              buttonSurface="shiny"
+              externalGallery={overlayMode}
+              overlayMode={overlayMode}
+              revealLayout="inline"
+              hidePrimaryButton
+              onHuntChange={handleHuntChange}
+              belowReel={
+                isMobile
+                  ? ({ result, phase: huntPhase }) => (
+                      <WeaponGalleryImage
+                        result={result}
+                        visible={huntPhase === 'revealed'}
+                        emphasized={false}
+                      />
+                    )
+                  : undefined
+              }
+            />
+          </div>
+          {!showSpinner && hasDraw ? (
             <div className="wilds-legibility-text pointer-events-none px-3 text-center">
               <p className="text-base font-black uppercase leading-tight tracking-tight text-wilds-parchment sm:text-lg lg:text-xl">
                 {draw.result.name}
@@ -111,9 +178,9 @@ function CoopPlayerSection({
             loadingLabels={['Drawing']}
             icon="shield"
             surface="shiny"
-            disabled={drawDisabled}
-            onClick={onDraw}
-            className={`w-full ${isDrawing && !drawDisabled ? 'ring-1 ring-wilds-gold/50' : ''}`}
+            disabled={spinning}
+            onClick={handleDraw}
+            className={`w-full ${isActive && !spinning ? 'ring-1 ring-wilds-gold/50' : ''}`}
           >
             P{playerIndex + 1} DRAW
           </StatefulButton>
