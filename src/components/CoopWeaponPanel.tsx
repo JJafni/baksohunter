@@ -58,38 +58,24 @@ function useCoopPanelSplit(minWidth = COOP_SPLIT_MIN_WIDTH) {
 
 function coopGridClass(count: number, canSplit: boolean) {
   const base = 'grid h-full w-full gap-0 [&>*]:min-h-0'
-  if (!canSplit) {
-    switch (count) {
-      case 2:
-        return `${base} grid-cols-1 grid-rows-2`
-      case 3:
-        return `${base} grid-cols-1 grid-rows-3`
-      default:
-        return `${base} grid-cols-1 grid-rows-4`
-    }
-  }
   switch (count) {
     case 2:
-      return `${base} grid-cols-2 grid-rows-1`
+      return canSplit
+        ? `${base} grid-cols-2 grid-rows-1`
+        : `${base} grid-cols-1 grid-rows-2`
     case 3:
-      return `${base} grid-cols-2 grid-rows-2 [&>*:last-child]:col-span-2`
+      return `${base} grid-cols-2 grid-rows-2 [&>*:last-child]:col-span-2 [&>*:last-child]:mx-auto [&>*:last-child]:h-full [&>*:last-child]:w-full [&>*:last-child]:max-w-[calc(50%-0.375rem)]`
     default:
       return `${base} grid-cols-2 grid-rows-2`
   }
 }
 
 function sectionBorderClass(index: number, count: number, canSplit: boolean): string {
-  const isLast = index === count - 1
-
   if (count === 2) {
     if (!canSplit) {
       return index === 0 ? `border-b ${SECTION_BORDER}` : ''
     }
     return index === 0 ? `border-r ${SECTION_BORDER}` : ''
-  }
-
-  if (!canSplit) {
-    return isLast ? '' : `border-b ${SECTION_BORDER}`
   }
 
   if (count === 3) {
@@ -105,7 +91,7 @@ function sectionBorderClass(index: number, count: number, canSplit: boolean): st
     return ''
   }
 
-  return isLast ? '' : `border-b ${SECTION_BORDER}`
+  return index === count - 1 ? '' : `border-b ${SECTION_BORDER}`
 }
 
 function PlayerCountControls({
