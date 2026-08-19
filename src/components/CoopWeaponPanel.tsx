@@ -156,9 +156,14 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
         }
         return [...current, ...added]
       }
-      return current.slice(0, count)
+
+      const remaining = current.slice(0, count)
+      const keptIds = new Set(remaining.map((p) => p.id))
+      setDraws((prev) =>
+        Object.fromEntries(Object.entries(prev).filter(([id]) => keptIds.has(Number(id)))),
+      )
+      return remaining
     })
-    setDraws({})
   }, [])
 
   const handleDrawChange = useCallback((playerId: number, draw: PlayerDraw | null) => {
@@ -189,10 +194,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
 
   return (
     <div ref={panelRef} className="relative h-full min-h-0 w-full flex-1 self-stretch">
-      <div
-        key={`coop-grid-${players.length}-${splitTwoPlayers ? 'split' : 'stack'}`}
-        className={`absolute inset-0 ${coopGridClass(players.length, splitTwoPlayers)}`}
-      >
+      <div className={`absolute inset-0 ${coopGridClass(players.length, splitTwoPlayers)}`}>
         {players.map((player, index) => (
           <CoopPlayerSection
             key={player.id}
