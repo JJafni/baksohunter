@@ -492,7 +492,11 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
               <div aria-hidden="true" />
             ) : useCenterOverlayReveal ? (
               <div className="relative min-h-0 flex-1 w-full">
-                <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+                <div
+                  className={`absolute flex items-center justify-center overflow-hidden ${
+                    useCompactOverlayChrome ? 'inset-x-3 inset-y-2 sm:inset-x-4' : 'inset-0'
+                  }`}
+                >
                   <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
                     <SpinnerUiFade visible={showSpinnerUi}>
                       {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
@@ -500,7 +504,9 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
                   </SpinnerLayoutSlot>
                 </div>
                 <motion.div
-                  className="pointer-events-none absolute inset-0 flex items-center justify-center px-4"
+                  className={`pointer-events-none absolute flex items-center justify-center ${
+                    useCompactOverlayChrome ? 'inset-x-3 inset-y-2 sm:inset-x-4' : 'inset-0'
+                  } px-4`}
                   initial={false}
                   animate={{ opacity: showOverlayRevealName ? 1 : 0 }}
                   transition={SPINNER_UI_FADE}
