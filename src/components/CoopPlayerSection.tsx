@@ -58,7 +58,23 @@ function CoopPlayerSection({
   const contentRef = useRef<HTMLDivElement>(null)
   const crateRef = useRef<CrateHuntHandle>(null)
   const [scale, setScale] = useState(1)
-  const [phase, setPhase] = useState<CrateHuntContext['phase']>('idle')
+  const [phase, setPhase] = useState<CrateHuntContext['phase']>(() => (draw ? 'revealed' : 'idle'))
+
+  const restoredContext: CrateHuntContext | null = draw
+    ? {
+        result: draw.result,
+        questType: null,
+        huntStar: null,
+        phase: 'revealed',
+        spinnerUiVisible: false,
+      }
+    : null
+
+  useEffect(() => {
+    if (!draw) {
+      setPhase('idle')
+    }
+  }, [draw])
 
   useEffect(() => {
     const el = contentRef.current
@@ -104,7 +120,6 @@ function CoopPlayerSection({
   const galleryEmphasized = hasDraw && draw.spinnerUiVisible
   const spinning = phase === 'spinning'
   const showCrateHunt = phase !== 'idle'
-  const showFallbackName = hasDraw && phase === 'idle'
   const isActive = spinning || phase === 'revealed'
   const labelColorClass = isActive
     ? (PLAYER_LABEL_COLORS_ACTIVE[playerIndex] ?? PLAYER_LABEL_COLORS_ACTIVE[0])
@@ -168,6 +183,7 @@ function CoopPlayerSection({
               revealNameAfterSpinnerFade={useCenterReveal}
               revealLayout="inline"
               hidePrimaryButton
+              initialContext={restoredContext}
               onHuntChange={handleHuntChange}
               belowReel={
                 isMobile
@@ -182,13 +198,6 @@ function CoopPlayerSection({
               }
             />
           </div>
-          {showFallbackName ? (
-            <div className="wilds-legibility-text pointer-events-none px-3 text-center">
-              <p className="text-base font-black uppercase leading-tight tracking-tight text-wilds-parchment sm:text-lg lg:text-xl">
-                {draw.result.name}
-              </p>
-            </div>
-          ) : null}
         </div>
 
         <div className="relative z-20 shrink-0 px-2 pb-2 pt-1 sm:px-3 sm:pb-3">
