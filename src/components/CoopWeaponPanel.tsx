@@ -6,10 +6,10 @@ import WeaponCrateOpener from './WeaponCrateOpener'
 import WeaponGalleryImage from './WeaponGalleryImage'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import { WEAPON_POOL, pickRandomWeapon } from '../data/weapons'
-import { pickRandomWeaponRender } from '../lib/weaponRenderImages'
 import type { Rarity } from '../data/types'
 
 const MAX_PLAYERS = 4
+const SECTION_BORDER = 'border-wilds-gold/15'
 
 const RARITY_LABELS: Record<Rarity, string> = {
   normal: 'Weapon Type',
@@ -42,6 +42,31 @@ function coopGridClass(count: number) {
     default:
       return `${base} lg:grid-cols-2 lg:grid-rows-2`
   }
+}
+
+function sectionBorderClass(index: number, count: number): string {
+  const isLast = index === count - 1
+
+  if (count === 2) {
+    return index === 0
+      ? `border-b ${SECTION_BORDER} lg:border-b-0 lg:border-r`
+      : ''
+  }
+
+  if (count === 3) {
+    if (index === 0) return `border-b border-r ${SECTION_BORDER} lg:border-b`
+    if (index === 1) return `border-b ${SECTION_BORDER} lg:border-b`
+    return `border-t ${SECTION_BORDER} lg:border-t-0`
+  }
+
+  if (count === 4) {
+    if (index === 0) return `border-b border-r ${SECTION_BORDER} lg:border-b`
+    if (index === 1) return `border-b ${SECTION_BORDER} lg:border-b`
+    if (index === 2) return `border-r ${SECTION_BORDER}`
+    return ''
+  }
+
+  return isLast ? '' : `border-b ${SECTION_BORDER}`
 }
 
 function PlayerCountControls({
@@ -87,15 +112,12 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   const [activePlayerIndex, setActivePlayerIndex] = useState(0)
   const [draws, setDraws] = useState<Record<number, PlayerDraw>>({})
   const [spinContext, setSpinContext] = useState<CrateHuntContext>(IDLE_HUNT)
-  const [activeRender, setActiveRender] = useState<{ name: string; url: string } | null>(null)
   const crateRef = useRef<CrateHuntHandle>(null)
   const prevPhaseRef = useRef<CrateHuntContext['phase']>('idle')
 
   const coopMode = players.length > 1
-  const useMonsterWeapons = players.length >= 3
   const overlayMode = !isMobile
   const spinning = spinContext.phase === 'spinning'
-  const revealName = useMonsterWeapons ? activeRender?.name : null
 
   useEffect(() => {
     onCoopModeChange?.(coopMode)
@@ -120,7 +142,6 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
     setDraws({})
     setActivePlayerIndex(0)
     setSpinContext(IDLE_HUNT)
-    setActiveRender(null)
   }, [])
 
   const handleSpinChange = useCallback(
@@ -128,27 +149,21 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
       setSpinContext(ctx)
 
       if (ctx.phase === 'revealed' && ctx.result) {
-        const render = useMonsterWeapons ? pickRandomWeaponRender(ctx.result.slug) : null
-        setActiveRender(render ? { name: render.name, url: render.url } : null)
-
         const activeId = players[activePlayerIndex]?.id
         if (activeId !== undefined) {
           setDraws((prev) => ({
             ...prev,
             [activeId]: {
               result: ctx.result!,
-              weaponRender: render ? { name: render.name, url: render.url } : null,
-              displayName: render?.name ?? ctx.result!.name,
               spinnerUiVisible: ctx.spinnerUiVisible,
             },
           }))
         }
       }
     },
-    [activePlayerIndex, players, useMonsterWeapons],
+    [activePlayerIndex, players],
   )
 
-  // Keep spinnerUiVisible in sync for saved draws
   useEffect(() => {
     const activeId = players[activePlayerIndex]?.id
     if (activeId === undefined) return
@@ -167,7 +182,6 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
     if (prevPhaseRef.current === 'spinning' && spinContext.phase === 'revealed') {
       setActivePlayerIndex((index) => (index + 1) % players.length)
       setSpinContext(IDLE_HUNT)
-      setActiveRender(null)
     }
     prevPhaseRef.current = spinContext.phase
   }, [spinContext.phase, players.length])
@@ -175,7 +189,6 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   const handlePlayerDraw = useCallback(
     async (playerIndex: number) => {
       if (playerIndex !== activePlayerIndex || spinning) return
-      setActiveRender(null)
       await crateRef.current?.startSpin()
     },
     [activePlayerIndex, spinning],
@@ -198,19 +211,11 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
       overlayMode={overlayMode}
       revealLayout="inline"
       hidePrimaryButton
-      nameOverride={revealName}
       onHuntChange={handleSpinChange}
       belowReel={
         isMobile
           ? ({ result, phase }) => (
-              <WeaponGalleryImage
-                result={result}
-                visible={phase === 'revealed'}
-                emphasized={false}
-                imageUrl={useMonsterWeapons ? activeRender?.url : null}
-                fillSection
-                wikiSource={useMonsterWeapons && activeRender !== null}
-              />
+              <WeaponGalleryImage result={result} visible={phase === 'revealed'} emphasized={false} fillSection />
             )
           : undefined
       }
@@ -220,10 +225,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   if (!coopMode) {
     return (
       <div className="flex w-full flex-col items-center">
-        <PlayerCountControls
-          playerCount={players.length}
-          onChange={handlePlayerCountChange}
-        />
+        <PlayerCountControls playerCount={players.length} onChange={handlePlayerCountChange} />
         <WeaponCrateOpener onHuntChange={onHuntChange} />
       </div>
     )
@@ -244,7 +246,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
               playerId={player.id}
               isActive={isActive}
               draw={draws[player.id] ?? null}
-              useMonsterWeapons={useMonsterWeapons}
+              borderClass={sectionBorderClass(index, players.length)}
               drawDisabled={disabled}
               onDraw={() => handlePlayerDraw(index)}
               spinner={

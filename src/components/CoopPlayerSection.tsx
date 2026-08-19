@@ -10,8 +10,6 @@ const SPINNER_NATURAL_HEIGHT = 620
 
 export type PlayerDraw = {
   result: CrateEntry
-  weaponRender: { name: string; url: string } | null
-  displayName: string
   spinnerUiVisible: boolean
 }
 
@@ -20,7 +18,7 @@ type CoopPlayerSectionProps = {
   playerId: number
   isActive: boolean
   draw: PlayerDraw | null
-  useMonsterWeapons: boolean
+  borderClass?: string
   drawDisabled: boolean
   onDraw: () => void | Promise<void>
   /** Shared spinner — only passed for the active player's cell. */
@@ -32,7 +30,7 @@ function CoopPlayerSection({
   playerId,
   isActive,
   draw,
-  useMonsterWeapons,
+  borderClass = '',
   drawDisabled,
   onDraw,
   spinner,
@@ -62,10 +60,9 @@ function CoopPlayerSection({
 
   const hasDraw = draw !== null
   const galleryEmphasized = hasDraw && draw.spinnerUiVisible
-  const imageUrl = useMonsterWeapons ? (draw?.weaponRender?.url ?? null) : null
 
   return (
-    <div className="relative flex h-full min-h-0 flex-col overflow-hidden">
+    <div className={`relative flex h-full min-h-0 flex-col overflow-hidden ${borderClass}`}>
       <span
         className={`wilds-legibility-text pointer-events-none absolute left-0 top-0 z-20 px-2 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] sm:px-2.5 sm:py-2 sm:text-xs ${
           isActive ? 'text-wilds-gold-light' : 'text-wilds-muted/80'
@@ -81,9 +78,7 @@ function CoopPlayerSection({
             visible
             emphasized={galleryEmphasized}
             variant="backdrop"
-            imageUrl={imageUrl}
             fillSection
-            wikiSource={useMonsterWeapons && !!draw.weaponRender}
           />
           <GalleryBackdropOverlay revealed emphasized={galleryEmphasized} />
         </div>
@@ -105,7 +100,7 @@ function CoopPlayerSection({
           ) : hasDraw ? (
             <div className="wilds-legibility-text pointer-events-none px-3 text-center">
               <p className="text-base font-black uppercase leading-tight tracking-tight text-wilds-parchment sm:text-lg lg:text-xl">
-                {draw.displayName}
+                {draw.result.name}
               </p>
             </div>
           ) : null}
