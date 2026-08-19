@@ -127,11 +127,13 @@ function RevealPanel({
         />
       ) : null}
       <motion.span layout transition={METADATA_LAYOUT_MOTION} className="inline-flex items-center gap-x-1.5">
-        <span
-          className={`font-bold uppercase tracking-[0.14em] ${isMobile ? 'text-[10px] sm:text-xs' : 'text-sm sm:text-base'} ${RARITY_TEXT[visualRarity]}`}
-        >
-          {rarityLabel}
-        </span>
+        {rarityLabel ? (
+          <span
+            className={`font-bold uppercase tracking-[0.14em] ${isMobile ? 'text-[10px] sm:text-xs' : 'text-sm sm:text-base'} ${RARITY_TEXT[visualRarity]}`}
+          >
+            {rarityLabel}
+          </span>
+        ) : null}
         {huntStar ? (
           <span
             className={`font-black tracking-[0.08em] text-wilds-gold-light ${isMobile ? 'text-sm sm:text-base' : 'text-base sm:text-lg'}`}
@@ -167,12 +169,13 @@ function RevealPanel({
     const titleUpdateLabel = showMonsterInfo ? getMonsterTitleUpdateLabel(entry.slug) : null
     const rarityLabel = rarityLabelFor(entry, rarityLabels)
     const visualRarity = getVisualRarity(entry)
+    const hasMetadata = Boolean(questType || huntStar || rarityLabel)
 
     if (useInlineLayout) {
       return (
         <div className="wilds-legibility-text flex flex-col items-center gap-1.5 text-center">
           {nameRow(entry, titleUpdateLabel, inlineNameSizeClassFor(entry))}
-          {metadataRow(visualRarity, rarityLabel)}
+          {hasMetadata ? metadataRow(visualRarity, rarityLabel) : null}
           {monsterInfo ? (
             <MonsterInfoModal
               info={monsterInfo}
@@ -189,7 +192,7 @@ function RevealPanel({
       return (
         <div className="wilds-legibility-text flex flex-col items-center gap-1.5 text-center">
           {nameRow(entry, titleUpdateLabel, nameSizeClassFor(entry))}
-          {metadataRow(visualRarity, rarityLabel)}
+          {hasMetadata ? metadataRow(visualRarity, rarityLabel) : null}
           {monsterInfo ? (
             <MonsterInfoModal
               info={monsterInfo}
@@ -205,7 +208,7 @@ function RevealPanel({
     return (
       <div className="wilds-legibility-text">
         {nameRow(entry, titleUpdateLabel, nameSizeClassFor(entry))}
-        <div className="mt-2">{metadataRow(visualRarity, rarityLabel)}</div>
+        {hasMetadata ? <div className="mt-2">{metadataRow(visualRarity, rarityLabel)}</div> : null}
         {monsterInfo ? (
           <MonsterInfoModal
             info={monsterInfo}

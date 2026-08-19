@@ -6,9 +6,9 @@ import { WEAPON_POOL, pickRandomWeapon } from '../data/weapons'
 import type { Rarity } from '../data/types'
 
 const RARITY_LABELS: Record<Rarity, string> = {
-  normal: 'Weapon Type',
-  tempered: 'Weapon Type',
-  'arch-tempered': 'Weapon Type',
+  normal: '',
+  tempered: '',
+  'arch-tempered': '',
 }
 
 type WeaponCrateOpenerProps = {
@@ -22,7 +22,7 @@ function WeaponCrateOpener({ initialContext = null, onHuntChange }: WeaponCrateO
 
   return (
     <CrateHunt
-      poolCountLabel="Weapon Types in the pool"
+      poolCountLabel=""
       buttonLayoutId="weapon-crate-button"
       buttonLabels={{ open: 'DRAW', again: 'DRAW' }}
       rarityLabels={RARITY_LABELS}

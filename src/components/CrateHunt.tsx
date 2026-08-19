@@ -358,7 +358,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
           </StatefulButton>
         )}
       </div>
-      {poolLine}
+      {poolCountLabel ? poolLine : null}
     </div>
   )
 

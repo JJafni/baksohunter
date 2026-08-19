@@ -12,9 +12,9 @@ import { StatefulButton } from './ui/stateful-button'
 const SPINNER_NATURAL_HEIGHT = 620
 
 const RARITY_LABELS: Record<Rarity, string> = {
-  normal: 'Weapon Type',
-  tempered: 'Weapon Type',
-  'arch-tempered': 'Weapon Type',
+  normal: '',
+  tempered: '',
+  'arch-tempered': '',
 }
 
 const PLAYER_LABEL_COLORS = [
@@ -150,7 +150,7 @@ function CoopPlayerSection({
           >
             <CrateHunt
               ref={crateRef}
-              poolCountLabel="Weapon Types in the pool"
+              poolCountLabel=""
               buttonLayoutId={`coop-player-${playerId}-crate`}
               buttonLabels={{ open: 'DRAW', again: 'DRAW' }}
               rarityLabels={RARITY_LABELS}
