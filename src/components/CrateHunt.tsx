@@ -354,7 +354,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const filtersDisabled = phase === 'spinning'
 
   const filterRow = filters ? (
-    <div className="mb-2 flex w-full items-center justify-center overflow-visible max-lg:min-h-[7.5rem] max-lg:px-2 lg:min-h-[5.25rem] lg:px-1">
+    <div className="mb-2 flex w-full items-center justify-center overflow-visible max-lg:px-2 lg:px-1">
       <div className="mx-auto w-fit max-w-full">{filters({ disabled: filtersDisabled, layout: 'bar' })}</div>
     </div>
   ) : null
