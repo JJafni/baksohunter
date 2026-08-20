@@ -21,3 +21,5 @@ export const MOBILE_REEL_MAX_WIDTH = 620
 export const HUNT_COLUMN_MAX_WIDTH = 620
 /** Horizontal reel viewport cap on desktop overlay panels. */
 export const DESKTOP_OVERLAY_REEL_MAX_WIDTH = HUNT_COLUMN_MAX_WIDTH
+/** Shared min-height for desktop overlay footer (monster filters + action row). */
+export const DESKTOP_OVERLAY_ACTIONS_MIN_HEIGHT = '13.25rem'

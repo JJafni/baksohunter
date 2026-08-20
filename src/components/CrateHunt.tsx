@@ -15,6 +15,7 @@ import { getVisualRarity, RARITY_BACKGROUND_GLOW, type VisualRarity } from '../l
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import {
   CENTER_INDEX,
+  DESKTOP_OVERLAY_ACTIONS_MIN_HEIGHT,
   HUNT_COLUMN_MAX_WIDTH,
   OPEN_MS,
   REEL_LENGTH,
@@ -475,6 +476,39 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       namePanel
     )
 
+  const overlaySpinnerInset = useCompactOverlayChrome ? 'inset-x-3 inset-y-2 sm:inset-x-4' : 'inset-0'
+
+  const overlaySpinnerPane =
+    phase === 'idle' ? (
+      <div className="h-full min-h-0" aria-hidden="true" />
+    ) : useCenterOverlayReveal ? (
+      <div className="relative h-full min-h-0 w-full">
+        <div
+          className={`absolute flex h-full w-full items-center justify-center overflow-hidden ${overlaySpinnerInset}`}
+        >
+          <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
+            <SpinnerUiFade visible={showSpinnerUi}>
+              {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
+            </SpinnerUiFade>
+          </SpinnerLayoutSlot>
+        </div>
+        <motion.div
+          className={`pointer-events-none absolute flex h-full w-full items-center justify-center ${overlaySpinnerInset} px-4`}
+          initial={false}
+          animate={{ opacity: showOverlayRevealName ? 1 : 0 }}
+          transition={SPINNER_UI_FADE}
+        >
+          {phase === 'revealed' ? namePanel : null}
+        </motion.div>
+      </div>
+    ) : (
+      <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
+        <SpinnerUiFade visible={showSpinnerUi}>
+          {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
+        </SpinnerUiFade>
+      </SpinnerLayoutSlot>
+    )
+
   if (useStackedLayout) {
     const overlayControls = (
       <div
@@ -500,55 +534,35 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
         />
 
         {overlayMode ? (
-          <div
-            className={`mx-auto grid h-full min-h-0 w-full gap-3 ${useCompactOverlayChrome ? 'py-0' : 'py-2'} transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]`}
-            style={{
-              maxWidth: columnMaxWidth,
-              gridTemplateRows: useCompactOverlayChrome ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) auto',
-            }}
-          >
-            {phase === 'idle' ? (
-              <div className="h-full min-h-0" aria-hidden="true" />
-            ) : useCenterOverlayReveal ? (
-              <div className="relative h-full min-h-0 w-full">
-                <div
-                  className={`absolute flex h-full w-full items-center justify-center overflow-hidden ${
-                    useCompactOverlayChrome ? 'inset-x-3 inset-y-2 sm:inset-x-4' : 'inset-0'
-                  }`}
-                >
-                  <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
-                    <SpinnerUiFade visible={showSpinnerUi}>
-                      {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
-                    </SpinnerUiFade>
-                  </SpinnerLayoutSlot>
-                </div>
-                <motion.div
-                  className={`pointer-events-none absolute flex h-full w-full items-center justify-center ${
-                    useCompactOverlayChrome ? 'inset-x-3 inset-y-2 sm:inset-x-4' : 'inset-0'
-                  } px-4`}
-                  initial={false}
-                  animate={{ opacity: showOverlayRevealName ? 1 : 0 }}
-                  transition={SPINNER_UI_FADE}
-                >
-                  {phase === 'revealed' ? namePanel : null}
-                </motion.div>
-              </div>
-            ) : (
+          useCompactOverlayChrome ? (
+            <div
+              className="mx-auto grid h-full min-h-0 w-full gap-3 py-0 transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{
+                maxWidth: columnMaxWidth,
+                gridTemplateRows: 'minmax(0, 1fr)',
+              }}
+            >
+              {overlaySpinnerPane}
+            </div>
+          ) : (
+            <div
+              className="relative mx-auto h-full min-h-0 w-full py-2"
+              style={{ maxWidth: columnMaxWidth }}
+            >
               <div
-                className={`flex min-h-0 flex-1 flex-col items-center overflow-hidden ${
-                  overlaySpinnerCentered ? 'justify-center' : ''
-                }`}
+                className="absolute inset-x-0 top-2 flex items-center justify-center overflow-hidden"
+                style={{ bottom: `calc(${DESKTOP_OVERLAY_ACTIONS_MIN_HEIGHT} + 0.5rem)` }}
               >
-                <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
-                  <SpinnerUiFade visible={showSpinnerUi}>
-                    {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
-                  </SpinnerUiFade>
-                </SpinnerLayoutSlot>
-                {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
+                {overlaySpinnerPane}
               </div>
-            )}
-            {useCompactOverlayChrome ? null : overlayControls}
-          </div>
+              <div
+                className="absolute inset-x-0 bottom-0 mx-auto flex w-full flex-col justify-end"
+                style={{ maxWidth: columnMaxWidth, minHeight: DESKTOP_OVERLAY_ACTIONS_MIN_HEIGHT }}
+              >
+                {overlayControls}
+              </div>
+            </div>
+          )
         ) : (
           <div
             className="mx-auto flex w-full flex-col items-center gap-4 lg:gap-3"

@@ -83,8 +83,6 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
           spinLabels={SPIN_LABELS}
           externalGallery={overlayMode}
           overlayMode={overlayMode}
-          overlaySpinnerCentered={overlayMode}
-          revealNameAfterSpinnerFade={overlayMode}
           showMonsterInfo
           onHuntChange={onHuntChange}
           companionButton={({ disabled }) => (
