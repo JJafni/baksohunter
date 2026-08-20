@@ -57,9 +57,9 @@ function HuntLayout({
           />
         </div>
 
-        <div className="relative z-10 flex h-full min-h-0 w-full flex-col items-center overflow-visible lg:px-8">
+        <div className="relative z-10 flex h-full min-h-0 w-full flex-col overflow-visible lg:px-8">
           <PlayerCountToolbarSpacer />
-          <div className="flex h-full min-h-0 w-full flex-1 flex-col items-center">
+          <div className="flex h-full min-h-0 w-full flex-1 flex-col self-stretch">
             <CrateOpener onHuntChange={onMonsterHuntChange} />
           </div>
         </div>
