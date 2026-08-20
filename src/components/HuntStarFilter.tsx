@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
@@ -262,14 +262,46 @@ function HuntStarFilter({
   const isMobile = useIsMobileLayout()
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
   const menuId = useId()
   const isBar = variant === 'bar'
+  const [menuStyle, setMenuStyle] = useState<{ left: number; bottom: number } | null>(null)
+
+  useLayoutEffect(() => {
+    if (!open || isMobile) {
+      setMenuStyle(null)
+      return
+    }
+
+    const update = () => {
+      const trigger = triggerRef.current
+      if (!trigger) return
+
+      const rect = trigger.getBoundingClientRect()
+      setMenuStyle({
+        left: rect.left + rect.width / 2,
+        bottom: window.innerHeight - rect.top + 6,
+      })
+    }
+
+    update()
+    window.addEventListener('resize', update)
+    window.addEventListener('scroll', update, true)
+    return () => {
+      window.removeEventListener('resize', update)
+      window.removeEventListener('scroll', update, true)
+    }
+  }, [open, isMobile])
 
   useEffect(() => {
     if (!open || isMobile) return
 
     const onPointerDown = (event: MouseEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false)
+      const target = event.target as Node
+      if (rootRef.current?.contains(target)) return
+      if (dropdownRef.current?.contains(target)) return
+      setOpen(false)
     }
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setOpen(false)
@@ -290,6 +322,35 @@ function HuntStarFilter({
     ? 'filter-chip filter-chip-embedded'
     : 'filter-chip'
 
+  const desktopDropdown =
+    typeof document !== 'undefined' && !isMobile
+      ? createPortal(
+          <AnimatePresence>
+            {open && menuStyle ? (
+              <motion.div
+                ref={dropdownRef}
+                key="star-filter-menu"
+                id={menuId}
+                role="listbox"
+                aria-label="Star difficulty filter"
+                initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.97 }}
+                transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                className="fixed z-[200] w-[15rem] origin-bottom -translate-x-1/2 rounded-lg border border-wilds-gold/30 bg-wilds-950/95 p-2.5 shadow-[0_-8px_32px_rgba(0,0,0,0.55)] backdrop-blur-sm"
+                style={{
+                  left: menuStyle.left,
+                  bottom: menuStyle.bottom,
+                }}
+              >
+                <StarFilterPanel value={value} onChange={onChange} layout="dropdown" />
+              </motion.div>
+            ) : null}
+          </AnimatePresence>,
+          document.body,
+        )
+      : null
+
   return (
     <>
       <div
@@ -307,6 +368,7 @@ function HuntStarFilter({
         ) : null}
 
         <button
+          ref={triggerRef}
           type="button"
           disabled={disabled}
           aria-haspopup={isMobile ? 'dialog' : 'listbox'}
@@ -317,7 +379,7 @@ function HuntStarFilter({
             isDefault
               ? 'border-wilds-gold/25 bg-wilds-950/75 text-wilds-parchment/85 hover:border-wilds-gold/40 hover:text-wilds-parchment'
               : 'border-wilds-gold/50 bg-wilds-gold/10 text-wilds-gold-light'
-          } disabled:cursor-not-allowed disabled:opacity-50`}
+          } disabled:cursor-not-allowed disabled:opacity-50 enabled:cursor-pointer`}
         >
           <span>{label}</span>
           {!isMobile ? (
@@ -331,26 +393,9 @@ function HuntStarFilter({
             </svg>
           ) : null}
         </button>
-
-        {!isMobile ? (
-          <AnimatePresence>
-            {open ? (
-              <motion.div
-                id={menuId}
-                role="listbox"
-                aria-label="Star difficulty filter"
-                initial={{ opacity: 0, y: 8, scale: 0.97 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 8, scale: 0.97 }}
-                transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute bottom-full left-1/2 z-50 mb-1.5 w-[15rem] -translate-x-1/2 origin-bottom rounded-lg border border-wilds-gold/30 bg-wilds-950/95 p-2.5 shadow-[0_-8px_32px_rgba(0,0,0,0.55)] backdrop-blur-sm"
-              >
-                <StarFilterPanel value={value} onChange={onChange} layout="dropdown" />
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
-        ) : null}
       </div>
+
+      {desktopDropdown}
 
       {isMobile ? (
         <HuntStarFilterModal

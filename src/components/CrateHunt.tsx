@@ -598,10 +598,12 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     const overlayControlsCollapsible =
       showMonsterInfo && overlayMode ? (
         <div
-          className="grid w-full overflow-hidden transition-[grid-template-rows] duration-300 ease-in-out"
+          className={`grid w-full transition-[grid-template-rows] duration-300 ease-in-out ${overlayChromeHidden ? 'overflow-hidden' : 'overflow-visible'}`}
           style={{ gridTemplateRows: overlayChromeHidden ? '0fr' : '1fr' }}
         >
-          <div className="min-h-0 overflow-hidden">{overlayControls}</div>
+          <div className={`min-h-0 ${overlayChromeHidden ? 'overflow-hidden' : 'overflow-visible'}`}>
+            {overlayControls}
+          </div>
         </div>
       ) : (
         overlayControls
@@ -657,7 +659,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
                 {overlaySpinnerPane}
               </div>
               <div
-                className="absolute inset-x-0 bottom-0 mx-auto flex w-full flex-col justify-end overflow-hidden transition-[min-height] duration-300 ease-in-out"
+                className={`absolute inset-x-0 bottom-0 mx-auto flex w-full flex-col justify-end transition-[min-height] duration-300 ease-in-out ${overlayChromeHidden && showMonsterInfo ? 'overflow-hidden' : 'overflow-visible'}`}
                 style={{
                   maxWidth: columnMaxWidth,
                   minHeight: overlayChromeHidden && showMonsterInfo ? 0 : overlayActionsMinHeight,

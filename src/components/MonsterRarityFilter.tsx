@@ -147,10 +147,12 @@ function MonsterRarityFilter({
             <FilterChevron open={filtersExpanded} />
           </button>
           <div
-            className="grid w-full overflow-hidden transition-[grid-template-rows] duration-300 ease-in-out"
+            className={`grid w-full transition-[grid-template-rows] duration-300 ease-in-out ${filtersExpanded ? 'overflow-visible' : 'overflow-hidden'}`}
             style={{ gridTemplateRows: filtersExpanded ? '1fr' : '0fr' }}
           >
-            <div className="min-h-0 overflow-hidden">{filterChips}</div>
+            <div className={`min-h-0 ${filtersExpanded ? 'overflow-visible' : 'overflow-hidden'}`}>
+              {filterChips}
+            </div>
           </div>
         </>
       ) : (
