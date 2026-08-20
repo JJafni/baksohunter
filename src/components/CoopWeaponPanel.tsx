@@ -294,10 +294,9 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
         playerCount={players.length}
         onPlayerCountChange={handlePlayerCountChange}
         mobile={isMobile}
+        expand={isMobile}
       >
-        <div
-          className={`flex w-full flex-col items-center ${isMobile ? 'px-1' : 'h-full min-h-0 flex-1'}`}
-        >
+        <div className="flex h-full min-h-0 w-full flex-1 flex-col items-center">
           <WeaponCrateOpener
             key={`solo-${soloPlayerId ?? 0}`}
             initialContext={soloInitialContext}

@@ -1,7 +1,5 @@
 import type { CrateHuntContext } from './CrateHunt'
 import CrateHunt from './CrateHunt'
-import WeaponGalleryImage from './WeaponGalleryImage'
-import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import { WEAPON_POOL, pickRandomWeapon } from '../data/weapons'
 import type { Rarity } from '../data/types'
 
@@ -17,8 +15,7 @@ type WeaponCrateOpenerProps = {
 }
 
 function WeaponCrateOpener({ initialContext = null, onHuntChange }: WeaponCrateOpenerProps) {
-  const isMobile = useIsMobileLayout()
-  const overlayMode = !isMobile && Boolean(onHuntChange)
+  const overlayMode = Boolean(onHuntChange)
 
   return (
     <CrateHunt
@@ -39,17 +36,6 @@ function WeaponCrateOpener({ initialContext = null, onHuntChange }: WeaponCrateO
       revealLayout="inline"
       initialContext={initialContext}
       onHuntChange={onHuntChange}
-      belowReel={
-        isMobile
-          ? ({ result, phase }) => (
-              <WeaponGalleryImage
-                result={result}
-                visible={phase === 'revealed'}
-                emphasized={false}
-              />
-            )
-          : undefined
-      }
     />
   )
 }

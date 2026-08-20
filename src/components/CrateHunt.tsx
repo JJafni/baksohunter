@@ -395,38 +395,45 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     />
   )
 
-  const stackedRevealSlot = !useStackedLayout ? null : isMobile ? (
-    <motion.div
-      className="flex w-full shrink-0 items-center justify-center overflow-hidden"
-      initial={false}
-      animate={{ height: phase === 'idle' ? 0 : MOBILE_REVEAL_ROW_H }}
-      transition={OPEN_TRANSITION}
-    >
-      {phase !== 'idle' ? namePanel : null}
-    </motion.div>
-  ) : phase !== 'idle' && !useCenterOverlayReveal ? (
-    revealNameAfterSpinnerFade ? (
-      <motion.div
-        className="w-full overflow-hidden"
-        initial={false}
-        animate={{ opacity: showOverlayRevealName ? 1 : 0 }}
-        transition={SPINNER_UI_FADE}
-        style={{
-          display: 'grid',
-          gridTemplateRows: showOverlayRevealName ? '1fr' : '0fr',
-        }}
-      >
-        <div className="min-h-0 overflow-hidden">{phase === 'revealed' ? namePanel : null}</div>
-      </motion.div>
-    ) : (
-      <div
-        className="w-full transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
-        style={{ display: 'grid', gridTemplateRows: phase === 'revealed' ? 'auto' : '0fr' }}
-      >
-        <div className="min-h-0 overflow-hidden">{namePanel}</div>
-      </div>
-    )
-  ) : null
+  const stackedRevealSlot =
+    !useStackedLayout || useCenterOverlayReveal
+      ? null
+      : isMobile
+        ? (
+            <motion.div
+              className="flex w-full shrink-0 items-center justify-center overflow-hidden"
+              initial={false}
+              animate={{ height: phase === 'idle' ? 0 : MOBILE_REVEAL_ROW_H }}
+              transition={OPEN_TRANSITION}
+            >
+              {phase !== 'idle' ? namePanel : null}
+            </motion.div>
+          )
+        : phase !== 'idle'
+          ? revealNameAfterSpinnerFade
+            ? (
+                <motion.div
+                  className="w-full overflow-hidden"
+                  initial={false}
+                  animate={{ opacity: showOverlayRevealName ? 1 : 0 }}
+                  transition={SPINNER_UI_FADE}
+                  style={{
+                    display: 'grid',
+                    gridTemplateRows: showOverlayRevealName ? '1fr' : '0fr',
+                  }}
+                >
+                  <div className="min-h-0 overflow-hidden">{phase === 'revealed' ? namePanel : null}</div>
+                </motion.div>
+              )
+            : (
+                <div
+                  className="w-full transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  style={{ display: 'grid', gridTemplateRows: phase === 'revealed' ? 'auto' : '0fr' }}
+                >
+                  <div className="min-h-0 overflow-hidden">{namePanel}</div>
+                </div>
+              )
+          : null
 
   const reelSlot =
     phase === 'idle' || sequence.length === 0 || skipReelMountRef.current ? null : (
