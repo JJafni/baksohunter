@@ -105,7 +105,7 @@ function SpinnerUiFade({ visible, children }: { visible: boolean; children: Reac
     <motion.div
       initial={false}
       animate={{ opacity: visible ? 1 : 0 }}
-      transition={SPINNER_UI_FADE}
+      transition={visible ? { duration: 0 } : SPINNER_UI_FADE}
       className={`w-full shrink-0 ${visible ? '' : 'pointer-events-none'}`}
     >
       {children}
@@ -189,7 +189,6 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     return []
   })
   const [spinKey, setSpinKey] = useState(() => (initialContext?.phase === 'revealed' ? 1 : 0))
-  const [isEntering, setIsEntering] = useState(false)
   const [spinnerUiVisible, setSpinnerUiVisible] = useState(
     () => (isRestoredReveal ? false : (initialContext?.spinnerUiVisible ?? true)),
   )
@@ -221,10 +220,6 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     setHuntStar(nextHuntStar)
     setSequence(buildReelSequence(pool, target, REEL_LENGTH, CENTER_INDEX))
 
-    if (phase === 'idle' && !useCompactOverlayChrome) {
-      setIsEntering(true)
-    }
-
     await new Promise<void>((resolve) => {
       spinResolverRef.current = resolve
     })
@@ -244,13 +239,6 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   useEffect(() => {
     if (!questTypeEnabled) setQuestType(null)
   }, [questTypeEnabled])
-
-  useEffect(() => {
-    if (!isEntering) return
-
-    const timer = window.setTimeout(() => setIsEntering(false), OPEN_MS)
-    return () => window.clearTimeout(timer)
-  }, [isEntering])
 
   const handleLanded = useCallback(() => {
     setPhase('revealed')
@@ -305,14 +293,16 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       (useCenterOverlayReveal ? !showSpinnerUi : !showSpinnerUi && !spinnerHoldLayout))
 
   useEffect(() => {
-    if (useCompactOverlayChrome || showSpinnerUi) {
+    // Desktop overlay spinners sit in a fixed band — keep the slot open so re-spins
+    // fade/scale in instead of dropping as the grid row expands from 0fr.
+    if (useCompactOverlayChrome || overlayMode || showSpinnerUi) {
       setSpinnerHoldLayout(true)
       return
     }
 
     const timer = window.setTimeout(() => setSpinnerHoldLayout(false), SPINNER_UI_FADE_MS)
     return () => window.clearTimeout(timer)
-  }, [showSpinnerUi, useCompactOverlayChrome])
+  }, [showSpinnerUi, useCompactOverlayChrome, overlayMode])
 
   useEffect(() => {
     onHuntChange?.({ result, questType, huntStar, phase, spinnerUiVisible })
@@ -329,7 +319,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 
   const blockWidth = useStackedLayout ? '100%' : REEL_WIDTH
   const stretchClass =
-    isEntering && !useCompactOverlayChrome
+    phase !== 'idle' && !useCompactOverlayChrome
       ? useStackedLayout
         ? 'animate-hunt-reel-stretch-x'
         : 'animate-hunt-reel-stretch-y'
@@ -450,6 +440,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const reelSlot =
     phase === 'idle' || sequence.length === 0 || skipReelMountRef.current ? null : (
       <motion.div
+        key={spinKey}
         initial={{ opacity: 0, scale: 0.88 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={OPEN_TRANSITION}
