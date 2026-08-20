@@ -23,3 +23,5 @@ export const HUNT_COLUMN_MAX_WIDTH = 620
 export const DESKTOP_OVERLAY_REEL_MAX_WIDTH = HUNT_COLUMN_MAX_WIDTH
 /** Shared min-height for desktop overlay footer (monster filters + action row). */
 export const DESKTOP_OVERLAY_ACTIONS_MIN_HEIGHT = '13.25rem'
+/** Taller mobile overlay footer — keeps large pool filter chips at full size. */
+export const MOBILE_OVERLAY_ACTIONS_MIN_HEIGHT = '17rem'

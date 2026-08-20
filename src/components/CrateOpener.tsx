@@ -1,12 +1,10 @@
 import { useCallback, useMemo, useState } from 'react'
 import type { CrateHuntContext } from './CrateHunt'
 import CrateHunt from './CrateHunt'
-import MonsterGalleryImage from './MonsterGalleryImage'
 import HuntStarFilter from './HuntStarFilter'
 import MonsterExcludeModal from './MonsterExcludeModal'
 import MonsterRarityFilter from './MonsterRarityFilter'
 import MonstersPickerButton from './MonstersPickerButton'
-import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import { pickQuestTypeForMonster } from '../data/questTypes'
 import { MONSTER_POOL } from '../data/monsters'
 import type { Rarity } from '../data/types'
@@ -41,7 +39,6 @@ type CrateOpenerProps = {
 }
 
 function CrateOpener({ onHuntChange }: CrateOpenerProps) {
-  const isMobile = useIsMobileLayout()
   const [poolFilter, setPoolFilter] = useState<MonsterPoolFilterState>(DEFAULT_MONSTER_POOL_FILTER)
   const [starFilter, setStarFilter] = useState<HuntStarFilterState>(DEFAULT_HUNT_STAR_FILTER)
   const [questTypeEnabled, setQuestTypeEnabled] = useState(true)
@@ -64,7 +61,7 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
   )
 
   const poolCountLabel = formatPoolCountLabel(filteredPool.length)
-  const overlayMode = !isMobile && Boolean(onHuntChange)
+  const overlayMode = Boolean(onHuntChange)
 
   return (
     <>
@@ -111,17 +108,6 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
               }
             />
           )}
-          belowReel={
-            isMobile
-              ? ({ result, phase }) => (
-                  <MonsterGalleryImage
-                    result={result}
-                    visible={phase === 'revealed'}
-                    emphasized={false}
-                  />
-                )
-              : undefined
-          }
         />
       </div>
 

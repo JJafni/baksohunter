@@ -17,6 +17,7 @@ import {
   CENTER_INDEX,
   DESKTOP_OVERLAY_ACTIONS_MIN_HEIGHT,
   HUNT_COLUMN_MAX_WIDTH,
+  MOBILE_OVERLAY_ACTIONS_MIN_HEIGHT,
   OPEN_MS,
   REEL_LENGTH,
   REEL_WIDTH,
@@ -170,8 +171,8 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const isMobile = useIsMobileLayout()
   const useStackedLayout = isMobile || reelOrientation === 'horizontal'
   const useCenterOverlayReveal = overlayMode && overlaySpinnerCentered && revealNameAfterSpinnerFade
-  /** Co-op overlay uses post-reveal fade on mobile too; stacked solo mobile keeps spinner visible. */
-  const spinnerFadeEnabled = !isMobile || useCenterOverlayReveal
+  /** Co-op overlay uses post-reveal fade on mobile too; overlay hunts fade on all breakpoints. */
+  const spinnerFadeEnabled = overlayMode || !isMobile
   /** Co-op uses an external DRAW button — drop empty overlay action chrome. */
   const useCompactOverlayChrome = hidePrimaryButton && useCenterOverlayReveal
   const isRestoredReveal = initialContext?.phase === 'revealed'
@@ -343,6 +344,9 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const huntContextForRender: CrateHuntContext = { result, questType, huntStar, phase, spinnerUiVisible }
   const belowReelSlot = externalGallery ? null : belowReel?.(huntContextForRender) ?? null
   const columnMaxWidth = HUNT_COLUMN_MAX_WIDTH
+  const overlayActionsMinHeight = isMobile
+    ? MOBILE_OVERLAY_ACTIONS_MIN_HEIGHT
+    : DESKTOP_OVERLAY_ACTIONS_MIN_HEIGHT
 
   const filtersDisabled = phase === 'spinning'
 
@@ -400,7 +404,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const stackedRevealSlot =
     !useStackedLayout || useCenterOverlayReveal
       ? null
-      : isMobile
+      : isMobile && !overlayMode
         ? (
             <motion.div
               className="flex w-full shrink-0 items-center justify-center overflow-hidden"
@@ -542,13 +546,13 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
             >
               <div
                 className="absolute inset-x-0 top-2 flex items-center justify-center overflow-hidden"
-                style={{ bottom: `calc(${DESKTOP_OVERLAY_ACTIONS_MIN_HEIGHT} + 0.5rem)` }}
+                style={{ bottom: `calc(${overlayActionsMinHeight} + 0.5rem)` }}
               >
                 {overlaySpinnerPane}
               </div>
               <div
                 className="absolute inset-x-0 bottom-0 mx-auto flex w-full flex-col justify-end"
-                style={{ maxWidth: columnMaxWidth, minHeight: DESKTOP_OVERLAY_ACTIONS_MIN_HEIGHT }}
+                style={{ maxWidth: columnMaxWidth, minHeight: overlayActionsMinHeight }}
               >
                 {overlayControls}
               </div>

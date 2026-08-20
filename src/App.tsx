@@ -43,8 +43,8 @@ function HuntLayout({
 
   return (
     <div className="grid h-full min-h-0 w-full grid-cols-1 gap-8 max-lg:flex max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col lg:grid-cols-2 lg:items-stretch lg:gap-0">
-      <section className="relative flex min-h-0 w-full shrink-0 justify-center max-lg:shrink-0 lg:items-stretch lg:border-r lg:border-wilds-gold/15">
-        <div className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
+      <section className="relative flex min-h-0 w-full max-lg:min-h-[min(58vh,500px)] max-lg:shrink-0 justify-center lg:items-stretch lg:border-r lg:border-wilds-gold/15">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <MonsterGalleryImage
             result={monsterHunt.result}
             visible={monsterHunt.phase === 'revealed'}
