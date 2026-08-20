@@ -168,8 +168,9 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 ) {
   const isMobile = useIsMobileLayout()
   const useStackedLayout = isMobile || reelOrientation === 'horizontal'
-  const spinnerFadeEnabled = !isMobile
   const useCenterOverlayReveal = overlayMode && overlaySpinnerCentered && revealNameAfterSpinnerFade
+  /** Co-op overlay uses post-reveal fade on mobile too; stacked solo mobile keeps spinner visible. */
+  const spinnerFadeEnabled = !isMobile || useCenterOverlayReveal
   /** Co-op uses an external DRAW button — drop empty overlay action chrome. */
   const useCompactOverlayChrome = hidePrimaryButton && useCenterOverlayReveal
   const isRestoredReveal = initialContext?.phase === 'revealed'
