@@ -24,6 +24,15 @@ type CoopWeaponPanelProps = {
 
 /** Min weapon-panel width before 2-player co-op sits side-by-side (~450px per cell). */
 const COOP_TWO_PLAYER_SPLIT_MIN_WIDTH = 900
+/** Mobile: allow side-by-side 2-player layout on typical phone widths. */
+const COOP_TWO_PLAYER_SPLIT_MIN_WIDTH_MOBILE = 360
+/** Scaled spinner + external draw button per grid row — mobile minimum. */
+const COOP_MOBILE_ROW_HEIGHT = 280
+
+function coopMobilePanelMinHeight(count: number, splitTwoPlayers: boolean) {
+  const rows = count === 2 ? (splitTwoPlayers ? 1 : 2) : 2
+  return rows * COOP_MOBILE_ROW_HEIGHT
+}
 
 function useCoopPanelSplit(minWidth = COOP_TWO_PLAYER_SPLIT_MIN_WIDTH) {
   const [canSplit, setCanSplit] = useState(false)
@@ -97,22 +106,32 @@ function sectionBorderClass(index: number, count: number, splitTwoPlayers: boole
 function PlayerCountControls({
   playerCount,
   onChange,
+  mobile = false,
 }: {
   playerCount: number
   onChange: (count: number) => void
+  mobile?: boolean
 }) {
   return (
-    <div className="flex shrink-0 items-center justify-center gap-2 sm:gap-3">
+    <div className={`flex shrink-0 items-center justify-center ${mobile ? 'gap-4' : 'gap-2 sm:gap-3'}`}>
       <button
         type="button"
         aria-label="Remove player"
         disabled={playerCount <= 1}
         onClick={() => onChange(playerCount - 1)}
-        className="inline-flex size-7 items-center justify-center rounded-md border border-wilds-gold/25 bg-wilds-900/70 text-sm font-bold text-wilds-parchment transition hover:border-wilds-gold/45 hover:bg-wilds-850 disabled:cursor-not-allowed disabled:opacity-35 sm:size-8"
+        className={`inline-flex items-center justify-center rounded-md border border-wilds-gold/25 bg-wilds-900/70 font-bold text-wilds-parchment transition hover:border-wilds-gold/45 hover:bg-wilds-850 disabled:cursor-not-allowed disabled:opacity-35 ${
+          mobile ? 'size-11 text-lg' : 'size-7 text-sm sm:size-8'
+        }`}
       >
         −
       </button>
-      <span className="min-w-[5.5rem] text-center text-[10px] font-bold uppercase tracking-[0.16em] text-wilds-muted sm:min-w-[7rem] sm:text-[11px] sm:tracking-[0.18em]">
+      <span
+        className={`text-center font-bold uppercase tracking-[0.16em] text-wilds-muted ${
+          mobile
+            ? 'min-w-[7rem] text-xs tracking-[0.14em]'
+            : 'min-w-[5.5rem] text-[10px] sm:min-w-[7rem] sm:text-[11px] sm:tracking-[0.18em]'
+        }`}
+      >
         {playerCount} {playerCount === 1 ? 'Player' : 'Players'}
       </span>
       <button
@@ -120,7 +139,9 @@ function PlayerCountControls({
         aria-label="Add player"
         disabled={playerCount >= MAX_PLAYERS}
         onClick={() => onChange(playerCount + 1)}
-        className="inline-flex size-7 items-center justify-center rounded-md border border-wilds-gold/25 bg-wilds-900/70 text-sm font-bold text-wilds-parchment transition hover:border-wilds-gold/45 hover:bg-wilds-850 disabled:cursor-not-allowed disabled:opacity-35 sm:size-8"
+        className={`inline-flex items-center justify-center rounded-md border border-wilds-gold/25 bg-wilds-900/70 font-bold text-wilds-parchment transition hover:border-wilds-gold/45 hover:bg-wilds-850 disabled:cursor-not-allowed disabled:opacity-35 ${
+          mobile ? 'size-11 text-lg' : 'size-7 text-sm sm:size-8'
+        }`}
       >
         +
       </button>
@@ -146,33 +167,44 @@ export function PlayerCountToolbarSpacer() {
 function CoopPanelShell({
   playerCount,
   onPlayerCountChange,
+  mobile = false,
+  expand = false,
   children,
 }: {
   playerCount: number
   onPlayerCountChange: (count: number) => void
+  mobile?: boolean
+  expand?: boolean
   children: ReactNode
 }) {
+  const stretch = expand || !mobile
+
   return (
-    <div className="flex h-full min-h-0 w-full flex-col">
+    <div className={`flex w-full flex-col ${stretch ? 'h-full min-h-0 flex-1' : ''}`}>
       <div
-        className={`${PLAYER_TOOLBAR_SHELL_CLASS} bg-wilds-950/70 backdrop-blur-sm`}
+        className={`${PLAYER_TOOLBAR_SHELL_CLASS} bg-wilds-950/70 backdrop-blur-sm ${mobile ? 'py-3' : ''}`}
       >
-        <PlayerCountControls playerCount={playerCount} onChange={onPlayerCountChange} />
+        <PlayerCountControls
+          playerCount={playerCount}
+          onChange={onPlayerCountChange}
+          mobile={mobile}
+        />
       </div>
-      <div className="relative flex min-h-0 flex-1 flex-col">{children}</div>
+      <div className={`relative flex w-full flex-col ${stretch ? 'min-h-0 flex-1' : ''}`}>{children}</div>
     </div>
   )
 }
 
 function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProps) {
   const isMobile = useIsMobileLayout()
-  const { ref: panelRef, canSplit: splitTwoPlayers } = useCoopPanelSplit()
+  const splitMinWidth = isMobile ? COOP_TWO_PLAYER_SPLIT_MIN_WIDTH_MOBILE : COOP_TWO_PLAYER_SPLIT_MIN_WIDTH
+  const { ref: panelRef, canSplit: splitTwoPlayers } = useCoopPanelSplit(splitMinWidth)
   const [players, setPlayers] = useState<PlayerSlot[]>([{ id: 1 }])
   const nextIdRef = useRef(2)
   const [draws, setDraws] = useState<Record<number, PlayerDraw>>({})
 
   const coopMode = players.length > 1
-  const overlayMode = !isMobile
+  const overlayMode = true
   const soloPlayerId = players[0]?.id
   const soloDraw = soloPlayerId != null ? (draws[soloPlayerId] ?? null) : null
   const soloInitialContext: CrateHuntContext | null = soloDraw
@@ -258,8 +290,14 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
 
   if (!coopMode) {
     return (
-      <CoopPanelShell playerCount={players.length} onPlayerCountChange={handlePlayerCountChange}>
-        <div className="flex h-full min-h-0 w-full flex-1 flex-col items-center">
+      <CoopPanelShell
+        playerCount={players.length}
+        onPlayerCountChange={handlePlayerCountChange}
+        mobile={isMobile}
+      >
+        <div
+          className={`flex w-full flex-col items-center ${isMobile ? 'px-1' : 'h-full min-h-0 flex-1'}`}
+        >
           <WeaponCrateOpener
             key={`solo-${soloPlayerId ?? 0}`}
             initialContext={soloInitialContext}
@@ -271,8 +309,21 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   }
 
   return (
-    <CoopPanelShell playerCount={players.length} onPlayerCountChange={handlePlayerCountChange}>
-      <div ref={panelRef} className="relative h-full min-h-0 w-full flex-1 self-stretch">
+    <CoopPanelShell
+      playerCount={players.length}
+      onPlayerCountChange={handlePlayerCountChange}
+      mobile={isMobile}
+      expand={isMobile}
+    >
+      <div
+        ref={panelRef}
+        className="relative flex min-h-0 w-full flex-1 self-stretch"
+        style={
+          isMobile
+            ? { minHeight: coopMobilePanelMinHeight(players.length, splitTwoPlayers) }
+            : undefined
+        }
+      >
         <div className={`absolute inset-0 ${coopGridClass(players.length, splitTwoPlayers)}`}>
           {players.map((player, index) => (
             <CoopPlayerSection

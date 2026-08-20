@@ -42,8 +42,12 @@ function HuntLayout({
   const weaponGalleryEmphasized = weaponHunt.phase === 'revealed' && weaponHunt.spinnerUiVisible
 
   return (
-    <div className="grid h-full min-h-0 w-full grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:items-stretch lg:gap-0">
-      <section className="relative flex min-h-0 w-full justify-center lg:items-stretch lg:border-r lg:border-wilds-gold/15">
+    <div
+      className={`grid h-full min-h-0 w-full grid-cols-1 gap-8 lg:grid-cols-2 lg:items-stretch lg:gap-0 ${
+        weaponCoopMode ? 'max-lg:flex max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col' : 'items-start'
+      }`}
+    >
+      <section className="relative flex min-h-0 w-full shrink-0 justify-center lg:items-stretch lg:border-r lg:border-wilds-gold/15">
         <div className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
           <MonsterGalleryImage
             result={monsterHunt.result}
@@ -65,7 +69,11 @@ function HuntLayout({
         </div>
       </section>
 
-      <section className="relative flex h-full min-h-0 w-full lg:items-stretch lg:overflow-hidden">
+      <section
+        className={`relative flex min-h-0 w-full lg:items-stretch lg:overflow-hidden ${
+          weaponCoopMode ? 'max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col' : 'h-full'
+        }`}
+      >
         {!weaponCoopMode ? (
           <div className="pointer-events-none absolute inset-0 hidden lg:block">
             <WeaponGalleryImage
@@ -83,7 +91,7 @@ function HuntLayout({
 
         <div
           className={`relative z-10 flex h-full min-h-0 w-full flex-col ${
-            weaponCoopMode ? 'self-stretch lg:p-0' : 'items-center self-stretch lg:p-0'
+            weaponCoopMode ? 'max-lg:flex-1 max-lg:self-stretch lg:p-0' : 'items-center self-stretch lg:p-0'
           }`}
         >
           <CoopWeaponPanel
@@ -127,7 +135,11 @@ function AppContent() {
         <HeaderNav activeMode="normal" />
       </header>
 
-      <main className="relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:overflow-hidden lg:px-0 lg:py-0">
+      <main
+        className={`relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:overflow-hidden lg:px-0 lg:py-0 ${
+          weaponCoopMode ? 'max-lg:min-h-0' : ''
+        }`}
+      >
         <HuntLayout
           monsterHunt={monsterHunt}
           onMonsterHuntChange={setMonsterHunt}

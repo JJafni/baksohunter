@@ -120,7 +120,7 @@ function CoopPlayerSection({
     await crateRef.current?.startSpin()
   }, [phase])
 
-  const useCenterReveal = overlayMode && !isMobile
+  const useCenterReveal = overlayMode
   const hasDraw = draw !== null
   const galleryVisible = hasDraw && phase === 'revealed'
   const galleryEmphasized = galleryVisible && spinnerUiVisible
@@ -151,7 +151,7 @@ function CoopPlayerSection({
         </div>
       ) : null}
 
-      <div ref={contentRef} className="relative z-10 flex min-h-0 flex-1 flex-col">
+      <div ref={contentRef} className="relative z-10 flex min-h-0 w-full flex-1 flex-col">
         <div className="flex min-h-0 flex-1 items-center justify-center">
           <div
             className={
@@ -191,17 +191,6 @@ function CoopPlayerSection({
               hidePrimaryButton
               initialContext={restoredContext}
               onHuntChange={handleHuntChange}
-              belowReel={
-                isMobile
-                  ? ({ result, phase: huntPhase }) => (
-                      <WeaponGalleryImage
-                        result={result}
-                        visible={huntPhase === 'revealed'}
-                        emphasized={false}
-                      />
-                    )
-                  : undefined
-              }
             />
           </div>
         </div>
@@ -214,7 +203,7 @@ function CoopPlayerSection({
             surface="shiny"
             disabled={spinning}
             onClick={handleDraw}
-            className={`w-full ${isActive && !spinning ? 'ring-1 ring-wilds-gold/50' : ''}`}
+            className={`w-full ${isMobile ? 'text-sm tracking-[0.12em]' : ''} ${isActive && !spinning ? 'ring-1 ring-wilds-gold/50' : ''}`}
           >
             P{playerIndex + 1} DRAW
           </StatefulButton>
