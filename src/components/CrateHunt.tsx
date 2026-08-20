@@ -188,7 +188,7 @@ function ImmersiveRestoreButton({ onClick }: { onClick: () => void }) {
       type="button"
       aria-label="Show hunt controls"
       onClick={onClick}
-      className="absolute bottom-5 left-1/2 z-30 inline-flex size-10 -translate-x-1/2 items-center justify-center rounded-full border border-wilds-gold/35 bg-wilds-950/80 text-wilds-gold-light shadow-[0_8px_24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition hover:border-wilds-gold/55 hover:bg-wilds-900/90 hover:text-wilds-parchment"
+      className="absolute bottom-5 left-1/2 z-30 inline-flex size-10 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full border border-wilds-gold/35 bg-wilds-950/80 text-wilds-gold-light shadow-[0_8px_24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition hover:border-wilds-gold/55 hover:bg-wilds-900/90 hover:text-wilds-parchment"
     >
       <ImmersiveViewIcon hidden />
     </button>

@@ -141,7 +141,7 @@ function MonsterRarityFilter({
             type="button"
             aria-expanded={filtersExpanded}
             onClick={() => setFiltersExpanded((open) => !open)}
-            className="filter-section-label inline-flex items-center gap-1.5 rounded-sm px-1 py-0.5 transition hover:text-wilds-parchment"
+            className="filter-section-label inline-flex cursor-pointer items-center gap-1.5 rounded-sm px-1 py-0.5 transition hover:text-wilds-parchment"
           >
             Pool Filters
             <FilterChevron open={filtersExpanded} />

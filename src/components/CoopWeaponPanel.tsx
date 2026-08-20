@@ -119,7 +119,7 @@ function PlayerCountControls({
         aria-label="Remove player"
         disabled={playerCount <= 1}
         onClick={() => onChange(playerCount - 1)}
-        className={`inline-flex items-center justify-center rounded-md border border-wilds-gold/25 bg-wilds-900/70 font-bold text-wilds-parchment transition hover:border-wilds-gold/45 hover:bg-wilds-850 disabled:cursor-not-allowed disabled:opacity-35 ${
+        className={`inline-flex items-center justify-center rounded-md border border-wilds-gold/25 bg-wilds-900/70 font-bold text-wilds-parchment transition enabled:cursor-pointer hover:border-wilds-gold/45 hover:bg-wilds-850 disabled:cursor-not-allowed disabled:opacity-35 ${
           mobile ? 'size-11 text-lg' : 'size-7 text-sm sm:size-8'
         }`}
       >
@@ -139,7 +139,7 @@ function PlayerCountControls({
         aria-label="Add player"
         disabled={playerCount >= MAX_PLAYERS}
         onClick={() => onChange(playerCount + 1)}
-        className={`inline-flex items-center justify-center rounded-md border border-wilds-gold/25 bg-wilds-900/70 font-bold text-wilds-parchment transition hover:border-wilds-gold/45 hover:bg-wilds-850 disabled:cursor-not-allowed disabled:opacity-35 ${
+        className={`inline-flex items-center justify-center rounded-md border border-wilds-gold/25 bg-wilds-900/70 font-bold text-wilds-parchment transition enabled:cursor-pointer hover:border-wilds-gold/45 hover:bg-wilds-850 disabled:cursor-not-allowed disabled:opacity-35 ${
           mobile ? 'size-11 text-lg' : 'size-7 text-sm sm:size-8'
         }`}
       >
