@@ -27,6 +27,9 @@ type RevealPanelProps = {
   questTypeVisible?: boolean
   /** When set, replaces the entry name on reveal (e.g. specific monster weapon). */
   nameOverride?: string | null
+  /** Show eye toggle beside monster type metadata (monster overlay hunts). */
+  showImmersiveToggle?: boolean
+  onHideOverlayChrome?: () => void
 }
 
 const RARITY_TEXT = RARITY_TEXT_CLASS
@@ -57,6 +60,28 @@ function MonsterInfoButton({ onClick }: { onClick: () => void }) {
   )
 }
 
+function ImmersiveHideButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-label="Hide controls for full image view"
+      onClick={onClick}
+      className="inline-flex size-7 shrink-0 items-center justify-center rounded-full border border-wilds-gold/30 bg-wilds-850/80 text-wilds-gold-light transition hover:border-wilds-gold/50 hover:bg-wilds-800 hover:text-wilds-parchment sm:size-8"
+    >
+      <svg viewBox="0 0 20 20" aria-hidden="true" className="size-3.5 sm:size-4">
+        <path
+          d="M1 10s3-6 9-6 9 6 9 6-3 6-9 6-9-6-9-6Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+        <circle cx="10" cy="10" r="2.25" fill="currentColor" />
+      </svg>
+    </button>
+  )
+}
+
 function RevealPanel({
   result,
   visible,
@@ -70,6 +95,8 @@ function RevealPanel({
   questType = null,
   questTypeVisible = false,
   nameOverride = null,
+  showImmersiveToggle = false,
+  onHideOverlayChrome,
 }: RevealPanelProps) {
   const [infoOpen, setInfoOpen] = useState(false)
   const isMobile = variant === 'mobile'
@@ -140,6 +167,9 @@ function RevealPanel({
           >
             {formatHuntStar(huntStar)}
           </span>
+        ) : null}
+        {showImmersiveToggle && onHideOverlayChrome ? (
+          <ImmersiveHideButton onClick={onHideOverlayChrome} />
         ) : null}
       </motion.span>
     </motion.div>

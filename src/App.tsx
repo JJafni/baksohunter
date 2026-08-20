@@ -38,7 +38,10 @@ function HuntLayout({
   onWeaponCoopModeChange: (coopMode: boolean) => void
 }) {
   const monsterGalleryEmphasized =
-    monsterHunt.phase === 'revealed' && monsterHunt.spinnerUiVisible
+    monsterHunt.phase === 'revealed' &&
+    monsterHunt.spinnerUiVisible &&
+    !monsterHunt.immersiveView
+  const monsterGalleryImmersive = monsterHunt.phase === 'revealed' && Boolean(monsterHunt.immersiveView)
   const weaponGalleryEmphasized = weaponHunt.phase === 'revealed' && weaponHunt.spinnerUiVisible
 
   return (
@@ -54,6 +57,7 @@ function HuntLayout({
           <GalleryBackdropOverlay
             revealed={monsterHunt.phase === 'revealed'}
             emphasized={monsterGalleryEmphasized}
+            immersive={monsterGalleryImmersive}
           />
         </div>
         {monsterHunt.phase !== 'idle' ? (
@@ -67,6 +71,7 @@ function HuntLayout({
             <GalleryBackdropOverlay
               revealed={monsterHunt.phase === 'revealed'}
               emphasized={monsterGalleryEmphasized}
+              immersive={monsterGalleryImmersive}
             />
           </div>
         ) : null}
@@ -113,6 +118,7 @@ function AppContent() {
     huntStar: null,
     phase: 'idle',
     spinnerUiVisible: true,
+    immersiveView: false,
   })
   const [weaponHunt, setWeaponHunt] = useState<CrateHuntContext>({
     result: null,

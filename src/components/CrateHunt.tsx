@@ -39,6 +39,8 @@ export type CrateHuntContext = {
   phase: Phase
   /** False after post-reveal fade; true while idle, spinning, or before fade completes. */
   spinnerUiVisible: boolean
+  /** Monster overlay footer hidden for an unobstructed gallery view. */
+  immersiveView?: boolean
 }
 
 type CrateHuntProps = {
@@ -136,6 +138,63 @@ function SpinnerLayoutSlot({
   )
 }
 
+function ImmersiveViewIcon({ hidden = false }: { hidden?: boolean }) {
+  if (hidden) {
+    return (
+      <svg viewBox="0 0 20 20" aria-hidden="true" className="size-3.5 sm:size-4">
+        <path
+          d="M2.5 2.5 17.5 17.5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <path
+          d="M7.5 7.8A4.2 4.2 0 0 0 7 10c0 3.3 3 6 3 6 1 0 1.8-.3 2.5-.8M12.8 12.2c.5-.7.7-1.4.7-2.2 0-3.3-3-6-3-6-.8 0-1.5.2-2.2.5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M1 10s3-6 9-6c1.8 0 3.3.6 4.5 1.3"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      </svg>
+    )
+  }
+
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true" className="size-3.5 sm:size-4">
+      <path
+        d="M1 10s3-6 9-6 9 6 9 6-3 6-9 6-9-6-9-6Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <circle cx="10" cy="10" r="2.25" fill="currentColor" />
+    </svg>
+  )
+}
+
+function ImmersiveRestoreButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-label="Show hunt controls"
+      onClick={onClick}
+      className="absolute bottom-5 left-1/2 z-30 inline-flex size-10 -translate-x-1/2 items-center justify-center rounded-full border border-wilds-gold/35 bg-wilds-950/80 text-wilds-gold-light shadow-[0_8px_24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition hover:border-wilds-gold/55 hover:bg-wilds-900/90 hover:text-wilds-parchment"
+    >
+      <ImmersiveViewIcon hidden />
+    </button>
+  )
+}
+
 const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt(
   {
     poolCountLabel,
@@ -193,6 +252,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const [spinnerUiVisible, setSpinnerUiVisible] = useState(
     () => (isRestoredReveal ? false : (initialContext?.spinnerUiVisible ?? true)),
   )
+  const [overlayChromeHidden, setOverlayChromeHidden] = useState(false)
   const spinResolverRef = useRef<(() => void) | null>(null)
   const spinnerFadeTimerRef = useRef<number | null>(null)
 
@@ -209,6 +269,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     skipReelMountRef.current = false
     clearSpinnerFadeTimer()
     setSpinnerUiVisible(true)
+    setOverlayChromeHidden(false)
 
     const target = pickRandom()
     const nextQuestType =
@@ -251,6 +312,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     if (phase === 'idle') {
       clearSpinnerFadeTimer()
       setSpinnerUiVisible(true)
+      setOverlayChromeHidden(false)
       return
     }
 
@@ -306,8 +368,19 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   }, [showSpinnerUi, useCompactOverlayChrome, overlayMode])
 
   useEffect(() => {
-    onHuntChange?.({ result, questType, huntStar, phase, spinnerUiVisible })
-  }, [result, questType, huntStar, phase, spinnerUiVisible, onHuntChange])
+    onHuntChange?.({
+      result,
+      questType,
+      huntStar,
+      phase,
+      spinnerUiVisible,
+      immersiveView: overlayChromeHidden,
+    })
+  }, [result, questType, huntStar, phase, spinnerUiVisible, overlayChromeHidden, onHuntChange])
+
+  const showImmersiveToggle =
+    showMonsterInfo && overlayMode && phase === 'revealed' && showOverlayRevealName
+  const hideOverlayChrome = useCallback(() => setOverlayChromeHidden(true), [])
 
   const visualRarity: VisualRarity = result ? getVisualRarity(result) : 'normal'
   const backgroundGlow = RARITY_BACKGROUND_GLOW
@@ -401,6 +474,8 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       questType={questTypeEnabled && pickRandomQuestType ? questType : null}
       questTypeVisible={phase === 'revealed'}
       nameOverride={nameOverride}
+      showImmersiveToggle={showImmersiveToggle && !overlayChromeHidden}
+      onHideOverlayChrome={hideOverlayChrome}
     />
   )
 
@@ -520,6 +595,23 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
         {actions}
       </div>
     )
+    const overlayControlsCollapsible =
+      showMonsterInfo && overlayMode ? (
+        <div
+          className="grid w-full overflow-hidden transition-[grid-template-rows] duration-300 ease-in-out"
+          style={{ gridTemplateRows: overlayChromeHidden ? '0fr' : '1fr' }}
+        >
+          <div className="min-h-0 overflow-hidden">{overlayControls}</div>
+        </div>
+      ) : (
+        overlayControls
+      )
+    const immersiveRestoreButton =
+      overlayChromeHidden && showMonsterInfo && overlayMode && phase === 'revealed' ? (
+        <ImmersiveRestoreButton onClick={() => setOverlayChromeHidden(false)} />
+      ) : null
+    const desktopSpinnerBandBottom =
+      overlayChromeHidden && showMonsterInfo ? '0.5rem' : `calc(${overlayActionsMinHeight} + 0.5rem)`
 
     return (
       <div
@@ -546,11 +638,12 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
               {overlaySpinnerPane}
             </div>
           ) : isMobile ? (
-            <div className="mx-auto flex h-full min-h-0 w-full flex-col">
+            <div className="relative mx-auto flex h-full min-h-0 w-full flex-col">
               <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden">
                 {overlaySpinnerPane}
               </div>
-              <div className="shrink-0">{overlayControls}</div>
+              <div className="shrink-0">{overlayControlsCollapsible}</div>
+              {immersiveRestoreButton}
             </div>
           ) : (
             <div
@@ -558,17 +651,21 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
               style={{ maxWidth: columnMaxWidth }}
             >
               <div
-                className="absolute inset-x-0 top-2 flex items-center justify-center overflow-hidden"
-                style={{ bottom: `calc(${overlayActionsMinHeight} + 0.5rem)` }}
+                className="absolute inset-x-0 top-2 flex items-center justify-center overflow-hidden transition-[bottom] duration-300 ease-in-out"
+                style={{ bottom: desktopSpinnerBandBottom }}
               >
                 {overlaySpinnerPane}
               </div>
               <div
-                className="absolute inset-x-0 bottom-0 mx-auto flex w-full flex-col justify-end"
-                style={{ maxWidth: columnMaxWidth, minHeight: overlayActionsMinHeight }}
+                className="absolute inset-x-0 bottom-0 mx-auto flex w-full flex-col justify-end overflow-hidden transition-[min-height] duration-300 ease-in-out"
+                style={{
+                  maxWidth: columnMaxWidth,
+                  minHeight: overlayChromeHidden && showMonsterInfo ? 0 : overlayActionsMinHeight,
+                }}
               >
-                {overlayControls}
+                {overlayControlsCollapsible}
               </div>
+              {immersiveRestoreButton}
             </div>
           )
         ) : (

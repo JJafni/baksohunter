@@ -4,11 +4,13 @@ import { WILDS_BACKDROP_OVERLAY } from '../lib/wildsTheme'
 function GalleryBackdropOverlay({
   revealed,
   emphasized,
+  immersive = false,
 }: {
   revealed: boolean
   emphasized: boolean
+  immersive?: boolean
 }) {
-  const opacity = !revealed ? 1 : emphasized ? 1 : 0.45
+  const opacity = immersive ? 0.08 : !revealed ? 1 : emphasized ? 1 : 0.45
 
   return (
     <motion.div
