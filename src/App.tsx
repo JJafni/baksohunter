@@ -42,8 +42,8 @@ function HuntLayout({
   const weaponGalleryEmphasized = weaponHunt.phase === 'revealed' && weaponHunt.spinnerUiVisible
 
   return (
-    <div className="grid h-full min-h-0 w-full grid-cols-1 gap-8 max-lg:flex max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col lg:grid-cols-2 lg:items-stretch lg:gap-0">
-      <section className="relative flex min-h-0 w-full max-lg:min-h-[min(58vh,500px)] max-lg:flex-col max-lg:shrink-0 justify-center lg:items-stretch lg:border-r lg:border-wilds-gold/15">
+    <div className="grid h-full min-h-0 w-full grid-cols-1 gap-8 max-lg:flex max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:gap-0 lg:grid-cols-2 lg:items-stretch lg:gap-0">
+      <section className="relative flex min-h-0 w-full max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:border-b max-lg:border-wilds-gold/15 lg:items-stretch lg:justify-center lg:border-r lg:border-wilds-gold/15">
         <div className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
           <MonsterGalleryImage
             result={monsterHunt.result}
@@ -137,7 +137,7 @@ function AppContent() {
         <HeaderNav activeMode="normal" />
       </header>
 
-      <main className="relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-x-hidden px-4 py-6 max-lg:min-h-0 sm:px-6 sm:py-8 lg:overflow-hidden lg:px-0 lg:py-0">
+      <main className="relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-x-hidden max-lg:min-h-0 max-lg:px-0 max-lg:py-0 lg:overflow-hidden lg:px-0 lg:py-0">
         <HuntLayout
           monsterHunt={monsterHunt}
           onMonsterHuntChange={setMonsterHunt}

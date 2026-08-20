@@ -52,7 +52,7 @@ function MonsterGalleryImage({
             onError={() => {
               if (showHd) setUseIconFallback(true)
             }}
-            className="h-full w-full scale-105 object-contain object-center"
+            className="h-full w-full scale-105 object-contain object-center max-lg:object-cover"
           />
         ) : (
           <div className="h-full w-full bg-wilds-950/80" />

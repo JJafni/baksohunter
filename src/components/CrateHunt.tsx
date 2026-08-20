@@ -347,11 +347,14 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const overlayActionsMinHeight = isMobile
     ? MOBILE_OVERLAY_ACTIONS_MIN_HEIGHT
     : DESKTOP_OVERLAY_ACTIONS_MIN_HEIGHT
+  /** Mobile overlay hunts use the full panel width; desktop caps at 620px. */
+  const huntColumnWidthStyle =
+    isMobile && overlayMode ? undefined : { maxWidth: columnMaxWidth }
 
   const filtersDisabled = phase === 'spinning'
 
   const filterRow = filters ? (
-    <div className="mb-2 flex w-full items-center justify-center overflow-visible px-1 max-lg:min-h-[7.5rem] lg:min-h-[5.25rem]">
+    <div className="mb-2 flex w-full items-center justify-center overflow-visible max-lg:min-h-[7.5rem] max-lg:px-2 lg:min-h-[5.25rem] lg:px-1">
       <div className="mx-auto w-fit max-w-full">{filters({ disabled: filtersDisabled, layout: 'bar' })}</div>
     </div>
   ) : null
@@ -359,7 +362,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const actions = (
     <div
       className={`mx-auto flex w-full flex-col items-center ${actionsPadding}`}
-      style={{ maxWidth: columnMaxWidth }}
+      style={huntColumnWidthStyle}
     >
       {filterRow}
       <div className="flex w-full gap-2">
@@ -449,7 +452,10 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
         animate={{ opacity: 1, scale: 1 }}
         transition={OPEN_TRANSITION}
         className={`w-full ${stretchClass}`}
-        style={{ width: blockWidth, maxWidth: columnMaxWidth }}
+        style={{
+          width: blockWidth,
+          maxWidth: isMobile && overlayMode ? undefined : columnMaxWidth,
+        }}
       >
         <Reel
           key={`${spinKey}-${reelOrientation}`}
@@ -507,8 +513,8 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   if (useStackedLayout) {
     const overlayControls = (
       <div
-        className="mx-auto flex w-full flex-col items-center gap-3"
-        style={{ maxWidth: columnMaxWidth }}
+        className="mx-auto flex w-full flex-col items-center gap-3 max-lg:px-2"
+        style={huntColumnWidthStyle}
       >
         {stackedRevealSlot}
         {actions}
@@ -518,7 +524,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     return (
       <div
         className={`relative flex h-full min-h-0 w-full flex-1 flex-col ${overlayMode ? '' : 'mx-auto shrink-0'}`}
-        style={overlayMode ? undefined : { maxWidth: columnMaxWidth }}
+        style={overlayMode ? undefined : huntColumnWidthStyle}
       >
         <div
           className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
@@ -540,11 +546,8 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
               {overlaySpinnerPane}
             </div>
           ) : isMobile ? (
-            <div
-              className="mx-auto flex h-full min-h-0 w-full flex-col py-2"
-              style={{ maxWidth: columnMaxWidth }}
-            >
-              <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden px-1">
+            <div className="mx-auto flex h-full min-h-0 w-full flex-col">
+              <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden">
                 {overlaySpinnerPane}
               </div>
               <div className="shrink-0">{overlayControls}</div>
