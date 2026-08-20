@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react'
 import { motion } from 'motion/react'
 import type { QuestType } from '../data/questTypes'
 import type { HuntStar } from '../data/huntStars'
@@ -65,7 +73,21 @@ type CrateHuntProps = {
   revealLayout?: 'stacked' | 'inline'
   /** Optional button beside the primary action (1/4 width). */
   companionButton?: (ctx: { disabled: boolean }) => ReactNode
+  /** Hide the built-in DRAW button (co-op uses external player buttons). */
+  hidePrimaryButton?: boolean
+  /** Override the revealed entry name (e.g. specific monster weapon). */
+  nameOverride?: string | null
+  /** Restore a previous hunt session (e.g. solo after co-op). */
+  initialContext?: CrateHuntContext | null
+  /** Center the overlay spinner in the column (weapon desktop). */
+  overlaySpinnerCentered?: boolean
+  /** Fade the reveal name in only after the post-reveal spinner fade (weapon desktop). */
+  revealNameAfterSpinnerFade?: boolean
   onHuntChange?: (ctx: CrateHuntContext) => void
+}
+
+export type CrateHuntHandle = {
+  startSpin: () => Promise<void>
 }
 
 /** Shared row heights so monster and weapon columns line up horizontally. */
@@ -99,7 +121,7 @@ function SpinnerLayoutSlot({
 }) {
   return (
     <div
-      className="grid w-full overflow-hidden"
+      className={`grid w-full overflow-hidden ${holdLayout ? 'h-full' : ''}`}
       style={{
         gridTemplateRows: holdLayout ? '1fr' : '0fr',
         transitionProperty: 'grid-template-rows',
@@ -107,46 +129,69 @@ function SpinnerLayoutSlot({
         transitionTimingFunction: 'ease-in-out',
       }}
     >
-      <div className="min-h-0 overflow-hidden">{children}</div>
+      <div className="flex min-h-0 items-center justify-center overflow-hidden">{children}</div>
     </div>
   )
 }
 
-function CrateHunt({
-  poolCountLabel,
-  buttonLayoutId,
-  buttonLabels,
-  rarityLabels,
-  pool,
-  pickRandom,
-  pickRandomQuestType,
-  pickRandomHuntStar,
-  questTypeEnabled = true,
-  reelSide,
-  filters,
-  spinLabels,
-  buttonIcon = 'sword',
-  buttonSurface = 'matte',
-  reelOrientation = 'horizontal',
-  belowReel,
-  externalGallery = false,
-  showMonsterInfo = false,
-  overlayMode = false,
-  revealLayout = 'stacked',
-  companionButton,
-  onHuntChange,
-}: CrateHuntProps) {
+const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt(
+  {
+    poolCountLabel,
+    buttonLayoutId,
+    buttonLabels,
+    rarityLabels,
+    pool,
+    pickRandom,
+    pickRandomQuestType,
+    pickRandomHuntStar,
+    questTypeEnabled = true,
+    reelSide,
+    filters,
+    spinLabels,
+    buttonIcon = 'sword',
+    buttonSurface = 'matte',
+    reelOrientation = 'horizontal',
+    belowReel,
+    externalGallery = false,
+    showMonsterInfo = false,
+    overlayMode = false,
+    revealLayout = 'stacked',
+    companionButton,
+    hidePrimaryButton = false,
+    nameOverride = null,
+    initialContext = null,
+    overlaySpinnerCentered = false,
+    revealNameAfterSpinnerFade = false,
+    onHuntChange,
+  },
+  ref,
+) {
   const isMobile = useIsMobileLayout()
   const useStackedLayout = isMobile || reelOrientation === 'horizontal'
-  const spinnerFadeEnabled = !isMobile
-  const [phase, setPhase] = useState<Phase>('idle')
-  const [result, setResult] = useState<CrateEntry | null>(null)
-  const [questType, setQuestType] = useState<QuestType | null>(null)
-  const [huntStar, setHuntStar] = useState<HuntStar | null>(null)
-  const [sequence, setSequence] = useState<CrateEntry[]>([])
-  const [spinKey, setSpinKey] = useState(0)
+  const useCenterOverlayReveal = overlayMode && overlaySpinnerCentered && revealNameAfterSpinnerFade
+  /** Co-op overlay uses post-reveal fade on mobile too; stacked solo mobile keeps spinner visible. */
+  const spinnerFadeEnabled = !isMobile || useCenterOverlayReveal
+  /** Co-op uses an external DRAW button — drop empty overlay action chrome. */
+  const useCompactOverlayChrome = hidePrimaryButton && useCenterOverlayReveal
+  const isRestoredReveal = initialContext?.phase === 'revealed'
+  const restoredRevealRef = useRef(isRestoredReveal)
+  /** Restored hunts show the result statically — skip mounting Reel until the next draw. */
+  const skipReelMountRef = useRef(isRestoredReveal)
+  const [phase, setPhase] = useState<Phase>(() => initialContext?.phase ?? 'idle')
+  const [result, setResult] = useState<CrateEntry | null>(() => initialContext?.result ?? null)
+  const [questType, setQuestType] = useState<QuestType | null>(() => initialContext?.questType ?? null)
+  const [huntStar, setHuntStar] = useState<HuntStar | null>(() => initialContext?.huntStar ?? null)
+  const [sequence, setSequence] = useState<CrateEntry[]>(() => {
+    if (initialContext?.phase === 'revealed' && initialContext.result) {
+      return buildReelSequence(pool, initialContext.result, REEL_LENGTH, CENTER_INDEX)
+    }
+    return []
+  })
+  const [spinKey, setSpinKey] = useState(() => (initialContext?.phase === 'revealed' ? 1 : 0))
   const [isEntering, setIsEntering] = useState(false)
-  const [spinnerUiVisible, setSpinnerUiVisible] = useState(true)
+  const [spinnerUiVisible, setSpinnerUiVisible] = useState(
+    () => (isRestoredReveal ? false : (initialContext?.spinnerUiVisible ?? true)),
+  )
   const spinResolverRef = useRef<(() => void) | null>(null)
   const spinnerFadeTimerRef = useRef<number | null>(null)
 
@@ -160,6 +205,7 @@ function CrateHunt({
   const startHunt = useCallback(async () => {
     if (phase === 'spinning' || pool.length === 0) return
 
+    skipReelMountRef.current = false
     clearSpinnerFadeTimer()
     setSpinnerUiVisible(true)
 
@@ -174,14 +220,25 @@ function CrateHunt({
     setHuntStar(nextHuntStar)
     setSequence(buildReelSequence(pool, target, REEL_LENGTH, CENTER_INDEX))
 
-    if (phase === 'idle') {
+    if (phase === 'idle' && !useCompactOverlayChrome) {
       setIsEntering(true)
     }
 
     await new Promise<void>((resolve) => {
       spinResolverRef.current = resolve
     })
-  }, [phase, pickRandom, pickRandomQuestType, pickRandomHuntStar, questTypeEnabled, pool, clearSpinnerFadeTimer])
+  }, [
+    phase,
+    pickRandom,
+    pickRandomQuestType,
+    pickRandomHuntStar,
+    questTypeEnabled,
+    pool,
+    clearSpinnerFadeTimer,
+    useCompactOverlayChrome,
+  ])
+
+  useImperativeHandle(ref, () => ({ startSpin: startHunt }), [startHunt])
 
   useEffect(() => {
     if (!questTypeEnabled) setQuestType(null)
@@ -212,6 +269,18 @@ function CrateHunt({
       return
     }
 
+    if (restoredRevealRef.current) {
+      restoredRevealRef.current = false
+      if (!spinnerFadeEnabled || !spinnerUiVisible) return
+
+      spinnerFadeTimerRef.current = window.setTimeout(() => {
+        setSpinnerUiVisible(false)
+        spinnerFadeTimerRef.current = null
+      }, REVEAL_UI_FADE_DELAY_MS)
+
+      return clearSpinnerFadeTimer
+    }
+
     setSpinnerUiVisible(true)
     if (!spinnerFadeEnabled) return
 
@@ -224,17 +293,25 @@ function CrateHunt({
   }, [phase, spinKey, clearSpinnerFadeTimer, spinnerFadeEnabled])
 
   const showSpinnerUi = spinnerFadeEnabled ? spinnerUiVisible : true
-  const [spinnerHoldLayout, setSpinnerHoldLayout] = useState(true)
+  const [spinnerHoldLayout, setSpinnerHoldLayout] = useState(
+    () =>
+      useCompactOverlayChrome ? true : !(isRestoredReveal && revealNameAfterSpinnerFade),
+  )
+  const showOverlayRevealName =
+    phase === 'revealed' &&
+    (!revealNameAfterSpinnerFade ||
+      skipReelMountRef.current ||
+      (useCenterOverlayReveal ? !showSpinnerUi : !showSpinnerUi && !spinnerHoldLayout))
 
   useEffect(() => {
-    if (showSpinnerUi) {
+    if (useCompactOverlayChrome || showSpinnerUi) {
       setSpinnerHoldLayout(true)
       return
     }
 
     const timer = window.setTimeout(() => setSpinnerHoldLayout(false), SPINNER_UI_FADE_MS)
     return () => window.clearTimeout(timer)
-  }, [showSpinnerUi])
+  }, [showSpinnerUi, useCompactOverlayChrome])
 
   useEffect(() => {
     onHuntChange?.({ result, questType, huntStar, phase, spinnerUiVisible })
@@ -250,17 +327,19 @@ function CrateHunt({
   const nameColClass = reelOnLeft ? 'col-start-2' : 'col-start-1'
 
   const blockWidth = useStackedLayout ? '100%' : REEL_WIDTH
-  const stretchClass = isEntering
-    ? useStackedLayout
-      ? 'animate-hunt-reel-stretch-x'
-      : 'animate-hunt-reel-stretch-y'
-    : ''
+  const stretchClass =
+    isEntering && !useCompactOverlayChrome
+      ? useStackedLayout
+        ? 'animate-hunt-reel-stretch-x'
+        : 'animate-hunt-reel-stretch-y'
+      : ''
 
   const actionsPadding =
     phase === 'idle' ? 'pt-0' : useStackedLayout ? 'pt-2' : 'pt-4'
 
   const poolLine = (
     <p
+      aria-hidden={!poolCountLabel}
       className={`mt-3 flex items-center justify-center whitespace-nowrap text-center uppercase tracking-[0.18em] text-wilds-muted ${
         useStackedLayout ? 'px-2 text-[10px]' : 'text-[10px] sm:text-xs'
       }`}
@@ -276,13 +355,11 @@ function CrateHunt({
 
   const filtersDisabled = phase === 'spinning'
 
-  const filterRow = (
+  const filterRow = filters ? (
     <div className="mb-2 flex w-full items-center justify-center overflow-visible px-1 max-lg:min-h-[7.5rem] lg:min-h-[5.25rem]">
-      {filters ? (
-        <div className="mx-auto w-fit max-w-full">{filters({ disabled: filtersDisabled, layout: 'bar' })}</div>
-      ) : null}
+      <div className="mx-auto w-fit max-w-full">{filters({ disabled: filtersDisabled, layout: 'bar' })}</div>
     </div>
-  )
+  ) : null
 
   const actions = (
     <div
@@ -294,17 +371,19 @@ function CrateHunt({
         {companionButton ? (
           <div className="w-1/4 min-w-0 shrink-0">{companionButton({ disabled: filtersDisabled })}</div>
         ) : null}
-        <StatefulButton
-          layoutId={buttonLayoutId}
-          loadingLabels={spinLabels}
-          icon={buttonIcon}
-          surface={buttonSurface}
-          onClick={startHunt}
-          disabled={phase === 'spinning' || !canSpin}
-          className={companionButton ? 'min-w-0 flex-[3]' : 'w-full'}
-        >
-          {buttonLabel}
-        </StatefulButton>
+        {hidePrimaryButton ? null : (
+          <StatefulButton
+            layoutId={buttonLayoutId}
+            loadingLabels={spinLabels}
+            icon={buttonIcon}
+            surface={buttonSurface}
+            onClick={startHunt}
+            disabled={phase === 'spinning' || !canSpin}
+            className={companionButton ? 'min-w-0 flex-[3]' : 'w-full'}
+          >
+            {buttonLabel}
+          </StatefulButton>
+        )}
       </div>
       {poolLine}
     </div>
@@ -313,7 +392,7 @@ function CrateHunt({
   const namePanel = (
     <RevealPanel
       result={result}
-      visible={phase === 'revealed'}
+      visible={showOverlayRevealName}
       revealKey={spinKey}
       rarityLabels={rarityLabels}
       align={useStackedLayout ? 'center' : reelSide === 'left' ? 'right' : 'left'}
@@ -323,29 +402,52 @@ function CrateHunt({
       huntStar={pickRandomHuntStar ? huntStar : null}
       questType={questTypeEnabled && pickRandomQuestType ? questType : null}
       questTypeVisible={phase === 'revealed'}
+      nameOverride={nameOverride}
     />
   )
 
-  const stackedRevealSlot = !useStackedLayout ? null : isMobile ? (
-    <motion.div
-      className="flex w-full shrink-0 items-center justify-center overflow-hidden"
-      initial={false}
-      animate={{ height: phase === 'idle' ? 0 : MOBILE_REVEAL_ROW_H }}
-      transition={OPEN_TRANSITION}
-    >
-      {phase !== 'idle' ? namePanel : null}
-    </motion.div>
-  ) : phase !== 'idle' ? (
-    <div
-      className="w-full transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
-      style={{ display: 'grid', gridTemplateRows: phase === 'revealed' ? 'auto' : '0fr' }}
-    >
-      <div className="min-h-0 overflow-hidden">{namePanel}</div>
-    </div>
-  ) : null
+  const stackedRevealSlot =
+    !useStackedLayout || useCenterOverlayReveal
+      ? null
+      : isMobile
+        ? (
+            <motion.div
+              className="flex w-full shrink-0 items-center justify-center overflow-hidden"
+              initial={false}
+              animate={{ height: phase === 'idle' ? 0 : MOBILE_REVEAL_ROW_H }}
+              transition={OPEN_TRANSITION}
+            >
+              {phase !== 'idle' ? namePanel : null}
+            </motion.div>
+          )
+        : phase !== 'idle'
+          ? revealNameAfterSpinnerFade
+            ? (
+                <motion.div
+                  className="w-full overflow-hidden"
+                  initial={false}
+                  animate={{ opacity: showOverlayRevealName ? 1 : 0 }}
+                  transition={SPINNER_UI_FADE}
+                  style={{
+                    display: 'grid',
+                    gridTemplateRows: showOverlayRevealName ? '1fr' : '0fr',
+                  }}
+                >
+                  <div className="min-h-0 overflow-hidden">{phase === 'revealed' ? namePanel : null}</div>
+                </motion.div>
+              )
+            : (
+                <div
+                  className="w-full transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  style={{ display: 'grid', gridTemplateRows: phase === 'revealed' ? 'auto' : '0fr' }}
+                >
+                  <div className="min-h-0 overflow-hidden">{namePanel}</div>
+                </div>
+              )
+          : null
 
   const reelSlot =
-    phase === 'idle' ? null : (
+    phase === 'idle' || sequence.length === 0 || skipReelMountRef.current ? null : (
       <motion.div
         initial={{ opacity: 0, scale: 0.88 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -386,8 +488,8 @@ function CrateHunt({
 
     return (
       <div
-        className={`relative mx-auto w-full shrink-0 ${overlayMode ? 'flex h-full flex-col' : ''}`}
-        style={{ maxWidth: columnMaxWidth }}
+        className={`relative flex h-full min-h-0 w-full flex-1 flex-col ${overlayMode ? '' : 'mx-auto shrink-0'}`}
+        style={overlayMode ? undefined : { maxWidth: columnMaxWidth }}
       >
         <div
           className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
@@ -399,16 +501,44 @@ function CrateHunt({
 
         {overlayMode ? (
           <div
-            className="mx-auto grid h-full min-h-0 w-full gap-3 py-2 transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+            className={`mx-auto grid h-full min-h-0 w-full gap-3 ${useCompactOverlayChrome ? 'py-0' : 'py-2'} transition-[grid-template-rows] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]`}
             style={{
               maxWidth: columnMaxWidth,
-              gridTemplateRows: phase === 'idle' ? '1fr auto 1fr' : 'minmax(0, 1fr) auto',
+              gridTemplateRows: useCompactOverlayChrome ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) auto',
             }}
           >
             {phase === 'idle' ? (
-              <div aria-hidden="true" />
+              <div className="h-full min-h-0" aria-hidden="true" />
+            ) : useCenterOverlayReveal ? (
+              <div className="relative h-full min-h-0 w-full">
+                <div
+                  className={`absolute flex h-full w-full items-center justify-center overflow-hidden ${
+                    useCompactOverlayChrome ? 'inset-x-3 inset-y-2 sm:inset-x-4' : 'inset-0'
+                  }`}
+                >
+                  <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
+                    <SpinnerUiFade visible={showSpinnerUi}>
+                      {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
+                    </SpinnerUiFade>
+                  </SpinnerLayoutSlot>
+                </div>
+                <motion.div
+                  className={`pointer-events-none absolute flex h-full w-full items-center justify-center ${
+                    useCompactOverlayChrome ? 'inset-x-3 inset-y-2 sm:inset-x-4' : 'inset-0'
+                  } px-4`}
+                  initial={false}
+                  animate={{ opacity: showOverlayRevealName ? 1 : 0 }}
+                  transition={SPINNER_UI_FADE}
+                >
+                  {phase === 'revealed' ? namePanel : null}
+                </motion.div>
+              </div>
             ) : (
-              <div className="flex min-h-0 flex-col items-center overflow-hidden">
+              <div
+                className={`flex min-h-0 flex-1 flex-col items-center overflow-hidden ${
+                  overlaySpinnerCentered ? 'justify-center' : ''
+                }`}
+              >
                 <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
                   <SpinnerUiFade visible={showSpinnerUi}>
                     {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
@@ -417,8 +547,7 @@ function CrateHunt({
                 {!externalGallery && belowReelSlot ? <div className="w-full">{belowReelSlot}</div> : null}
               </div>
             )}
-            {overlayControls}
-            {phase === 'idle' ? <div aria-hidden="true" /> : null}
+            {useCompactOverlayChrome ? null : overlayControls}
           </div>
         ) : (
           <div
@@ -469,6 +598,6 @@ function CrateHunt({
       </div>
     </div>
   )
-}
+})
 
 export default CrateHunt

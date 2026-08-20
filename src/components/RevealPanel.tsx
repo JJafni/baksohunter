@@ -25,6 +25,8 @@ type RevealPanelProps = {
   huntStar?: HuntStar | null
   questType?: QuestType | null
   questTypeVisible?: boolean
+  /** When set, replaces the entry name on reveal (e.g. specific monster weapon). */
+  nameOverride?: string | null
 }
 
 const RARITY_TEXT = RARITY_TEXT_CLASS
@@ -67,6 +69,7 @@ function RevealPanel({
   huntStar = null,
   questType = null,
   questTypeVisible = false,
+  nameOverride = null,
 }: RevealPanelProps) {
   const [infoOpen, setInfoOpen] = useState(false)
   const isMobile = variant === 'mobile'
@@ -92,7 +95,8 @@ function RevealPanel({
         : 'justify-start'
 
   const nameSizeClassFor = (entry: CrateEntry) => {
-    const isLongName = entry.name.length >= 8
+    const label = nameOverride ?? entry.name
+    const isLongName = label.length >= 8
     if (isMobile) {
       return isLongName ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'
     }
@@ -100,7 +104,8 @@ function RevealPanel({
   }
 
   const inlineNameSizeClassFor = (entry: CrateEntry) => {
-    const isLongName = entry.name.length >= 10
+    const label = nameOverride ?? entry.name
+    const isLongName = label.length >= 10
     if (isMobile) {
       return isLongName ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
     }
@@ -122,11 +127,13 @@ function RevealPanel({
         />
       ) : null}
       <motion.span layout transition={METADATA_LAYOUT_MOTION} className="inline-flex items-center gap-x-1.5">
-        <span
-          className={`font-bold uppercase tracking-[0.14em] ${isMobile ? 'text-[10px] sm:text-xs' : 'text-sm sm:text-base'} ${RARITY_TEXT[visualRarity]}`}
-        >
-          {rarityLabel}
-        </span>
+        {rarityLabel ? (
+          <span
+            className={`font-bold uppercase tracking-[0.14em] ${isMobile ? 'text-[10px] sm:text-xs' : 'text-sm sm:text-base'} ${RARITY_TEXT[visualRarity]}`}
+          >
+            {rarityLabel}
+          </span>
+        ) : null}
         {huntStar ? (
           <span
             className={`font-black tracking-[0.08em] text-wilds-gold-light ${isMobile ? 'text-sm sm:text-base' : 'text-base sm:text-lg'}`}
@@ -138,13 +145,28 @@ function RevealPanel({
     </motion.div>
   )
 
-  const nameRow = (entry: CrateEntry, titleUpdateLabel: string | null, nameClass: string) => (
-    <div className={`inline-flex max-w-full items-center gap-2 ${nameRowClass}`}>
+  const nameRow = (entry: CrateEntry, titleUpdateLabel: string | null, nameClass: string) => {
+    const displayName = nameOverride ?? entry.name
+    const showWeaponIcon = useInlineLayout && !showMonsterInfo
+
+    return (
+    <div className={`inline-flex max-w-full items-center gap-2 sm:gap-3 ${nameRowClass}`}>
       {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
+      {showWeaponIcon ? (
+        <img
+          src={entry.icon}
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+          className={`shrink-0 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)] ${
+            isMobile ? 'size-10 sm:size-12' : 'size-12 sm:size-14 lg:size-16'
+          }`}
+        />
+      ) : null}
       <h2
         className={`font-black uppercase leading-[0.95] tracking-tight text-wilds-parchment ${nameClass}`}
       >
-        {entry.name}
+        {displayName}
       </h2>
       {titleUpdateLabel ? (
         <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.24em] text-wilds-gold-light/90 sm:text-[10px]">
@@ -152,18 +174,20 @@ function RevealPanel({
         </span>
       ) : null}
     </div>
-  )
+    )
+  }
 
   const revealContent = (entry: CrateEntry) => {
     const titleUpdateLabel = showMonsterInfo ? getMonsterTitleUpdateLabel(entry.slug) : null
     const rarityLabel = rarityLabelFor(entry, rarityLabels)
     const visualRarity = getVisualRarity(entry)
+    const hasMetadata = Boolean(questType || huntStar || rarityLabel)
 
     if (useInlineLayout) {
       return (
         <div className="wilds-legibility-text flex flex-col items-center gap-1.5 text-center">
           {nameRow(entry, titleUpdateLabel, inlineNameSizeClassFor(entry))}
-          {metadataRow(visualRarity, rarityLabel)}
+          {hasMetadata ? metadataRow(visualRarity, rarityLabel) : null}
           {monsterInfo ? (
             <MonsterInfoModal
               info={monsterInfo}
@@ -180,7 +204,7 @@ function RevealPanel({
       return (
         <div className="wilds-legibility-text flex flex-col items-center gap-1.5 text-center">
           {nameRow(entry, titleUpdateLabel, nameSizeClassFor(entry))}
-          {metadataRow(visualRarity, rarityLabel)}
+          {hasMetadata ? metadataRow(visualRarity, rarityLabel) : null}
           {monsterInfo ? (
             <MonsterInfoModal
               info={monsterInfo}
@@ -196,7 +220,7 @@ function RevealPanel({
     return (
       <div className="wilds-legibility-text">
         {nameRow(entry, titleUpdateLabel, nameSizeClassFor(entry))}
-        <div className="mt-2">{metadataRow(visualRarity, rarityLabel)}</div>
+        {hasMetadata ? <div className="mt-2">{metadataRow(visualRarity, rarityLabel)}</div> : null}
         {monsterInfo ? (
           <MonsterInfoModal
             info={monsterInfo}

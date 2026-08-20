@@ -3,12 +3,12 @@ import { AnimatePresence, motion } from 'motion/react'
 import AppSkeleton from './components/AppSkeleton'
 import CrateOpener from './components/CrateOpener'
 import type { CrateHuntContext } from './components/CrateHunt'
+import CoopWeaponPanel, { PlayerCountToolbarSpacer } from './components/CoopWeaponPanel'
+import GalleryBackdropOverlay from './components/GalleryBackdropOverlay'
 import HeaderNav from './components/HeaderNav'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
-import WeaponCrateOpener from './components/WeaponCrateOpener'
 import WeaponGalleryImage from './components/WeaponGalleryImage'
 import { useAppReady } from './hooks/useAppReady'
-import { WILDS_BACKDROP_OVERLAY } from './lib/wildsTheme'
 
 function AppBackground() {
   return (
@@ -22,43 +22,28 @@ function AppBackground() {
   )
 }
 
-function GalleryBackdropOverlay({
-  revealed,
-  emphasized,
-}: {
-  revealed: boolean
-  emphasized: boolean
-}) {
-  const opacity = !revealed ? 1 : emphasized ? 1 : 0.45
-
-  return (
-    <motion.div
-      className={`pointer-events-none absolute inset-0 z-[1] ${WILDS_BACKDROP_OVERLAY}`}
-      initial={false}
-      animate={{ opacity }}
-      transition={{ duration: 0.7, ease: 'easeInOut' }}
-    />
-  )
-}
-
 function HuntLayout({
   monsterHunt,
   onMonsterHuntChange,
   weaponHunt,
   onWeaponHuntChange,
+  weaponCoopMode,
+  onWeaponCoopModeChange,
 }: {
   monsterHunt: CrateHuntContext
   onMonsterHuntChange: (ctx: CrateHuntContext) => void
   weaponHunt: CrateHuntContext
   onWeaponHuntChange: (ctx: CrateHuntContext) => void
+  weaponCoopMode: boolean
+  onWeaponCoopModeChange: (coopMode: boolean) => void
 }) {
   const monsterGalleryEmphasized =
     monsterHunt.phase === 'revealed' && monsterHunt.spinnerUiVisible
   const weaponGalleryEmphasized = weaponHunt.phase === 'revealed' && weaponHunt.spinnerUiVisible
 
   return (
-    <div className="grid h-full min-h-0 w-full grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:items-stretch lg:gap-0">
-      <section className="relative flex min-h-0 w-full justify-center lg:items-center lg:border-r lg:border-wilds-gold/15">
+    <div className="grid h-full min-h-0 w-full grid-cols-1 gap-8 max-lg:flex max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col lg:grid-cols-2 lg:items-stretch lg:gap-0">
+      <section className="relative flex min-h-0 w-full shrink-0 justify-center max-lg:shrink-0 lg:items-stretch lg:border-r lg:border-wilds-gold/15">
         <div className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
           <MonsterGalleryImage
             result={monsterHunt.result}
@@ -72,27 +57,35 @@ function HuntLayout({
           />
         </div>
 
-        <div className="relative z-10 flex h-full min-h-0 w-full flex-col items-center overflow-visible lg:px-8 lg:py-5">
-          <CrateOpener onHuntChange={onMonsterHuntChange} />
+        <div className="relative z-10 flex h-full min-h-0 w-full flex-col items-center overflow-visible lg:px-8">
+          <PlayerCountToolbarSpacer />
+          <div className="flex h-full min-h-0 w-full flex-1 flex-col items-center">
+            <CrateOpener onHuntChange={onMonsterHuntChange} />
+          </div>
         </div>
       </section>
 
-      <section className="relative flex min-h-0 w-full justify-center lg:items-center lg:overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 hidden lg:block">
-          <WeaponGalleryImage
-            result={weaponHunt.result}
-            visible={weaponHunt.phase === 'revealed'}
-            emphasized={weaponGalleryEmphasized}
-            variant="backdrop"
-          />
-          <GalleryBackdropOverlay
-            revealed={weaponHunt.phase === 'revealed'}
-            emphasized={weaponGalleryEmphasized}
-          />
-        </div>
+      <section className="relative flex min-h-0 w-full max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col lg:items-stretch lg:overflow-hidden">
+        {!weaponCoopMode ? (
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <WeaponGalleryImage
+              result={weaponHunt.result}
+              visible={weaponHunt.phase === 'revealed'}
+              emphasized={weaponGalleryEmphasized}
+              variant="backdrop"
+            />
+            <GalleryBackdropOverlay
+              revealed={weaponHunt.phase === 'revealed'}
+              emphasized={weaponGalleryEmphasized}
+            />
+          </div>
+        ) : null}
 
-        <div className="relative z-10 flex h-full min-h-0 w-full flex-col items-center lg:px-8 lg:py-5">
-          <WeaponCrateOpener onHuntChange={onWeaponHuntChange} />
+        <div className="relative z-10 flex h-full min-h-0 w-full flex-col max-lg:flex-1 max-lg:self-stretch lg:p-0">
+          <CoopWeaponPanel
+            onHuntChange={onWeaponHuntChange}
+            onCoopModeChange={onWeaponCoopModeChange}
+          />
         </div>
       </section>
     </div>
@@ -114,6 +107,7 @@ function AppContent() {
     phase: 'idle',
     spinnerUiVisible: true,
   })
+  const [weaponCoopMode, setWeaponCoopMode] = useState(false)
 
   return (
     <>
@@ -129,12 +123,14 @@ function AppContent() {
         <HeaderNav activeMode="normal" />
       </header>
 
-      <main className="relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:overflow-hidden lg:px-0 lg:py-0">
+      <main className="relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-x-hidden px-4 py-6 max-lg:min-h-0 sm:px-6 sm:py-8 lg:overflow-hidden lg:px-0 lg:py-0">
         <HuntLayout
           monsterHunt={monsterHunt}
           onMonsterHuntChange={setMonsterHunt}
           weaponHunt={weaponHunt}
           onWeaponHuntChange={setWeaponHunt}
+          weaponCoopMode={weaponCoopMode}
+          onWeaponCoopModeChange={setWeaponCoopMode}
         />
       </main>
 

@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import type { CrateEntry } from '../data/types'
 import { useGalleryDisplayResult } from '../hooks/useGalleryDisplayResult'
-import { getWeaponGalleryImageUrl, WEAPON_GALLERY_SOURCE_URL } from '../lib/weaponGalleryImages'
-import { hasLocalWeaponGallery } from '../lib/localGalleryAssets'
+import { getWeaponGalleryImageUrl, hasBundledWeaponGallery, WEAPON_GALLERY_SOURCE_URL } from '../lib/weaponGalleryImages'
+import { WIKI_WEAPON_RENDER_SOURCE_URL } from '../lib/weaponRenderImages'
 
 const GALLERY_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 
@@ -13,6 +13,12 @@ type WeaponGalleryImageProps = {
   /** Darker overlay while the spinner is still on screen after reveal. */
   emphasized?: boolean
   variant?: 'inline' | 'hero' | 'backdrop'
+  /** Custom image URL (e.g. wiki monster weapon render). */
+  imageUrl?: string | null
+  /** Zoom the showcase to better fill its container. */
+  fillSection?: boolean
+  /** When true, caption links to the MHWilds wiki weapon renders category. */
+  wikiSource?: boolean
 }
 
 function WeaponGalleryImage({
@@ -20,6 +26,9 @@ function WeaponGalleryImage({
   visible,
   emphasized = true,
   variant = 'inline',
+  imageUrl: imageUrlOverride = null,
+  fillSection = false,
+  wikiSource = false,
 }: WeaponGalleryImageProps) {
   const [useIconFallback, setUseIconFallback] = useState(false)
   const displayedResult = useGalleryDisplayResult(result, visible)
@@ -28,12 +37,16 @@ function WeaponGalleryImage({
 
   useEffect(() => {
     setUseIconFallback(false)
-  }, [displayedResult?.slug])
+  }, [displayedResult?.slug, imageUrlOverride])
 
   if (isBackdrop) {
-    const galleryUrl = displayedResult ? getWeaponGalleryImageUrl(displayedResult.slug) : undefined
+    const galleryUrl =
+      imageUrlOverride ?? (displayedResult ? getWeaponGalleryImageUrl(displayedResult.slug) : undefined)
     const showHd = Boolean(galleryUrl) && !useIconFallback
     const imageUrl = displayedResult && showHd ? galleryUrl! : displayedResult?.icon
+    const backdropImageClass = fillSection
+      ? 'h-full w-full scale-110 object-contain object-center'
+      : 'h-full w-full scale-105 object-contain object-center'
 
     return (
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden={!visible || !result}>
@@ -52,7 +65,7 @@ function WeaponGalleryImage({
             onError={() => {
               if (showHd) setUseIconFallback(true)
             }}
-            className="h-full w-full scale-105 object-contain object-center"
+            className={backdropImageClass}
           />
         ) : (
           <div className="h-full w-full bg-wilds-950/80" />
@@ -74,10 +87,15 @@ function WeaponGalleryImage({
     return null
   }
 
-  const galleryUrl = getWeaponGalleryImageUrl(displayedResult.slug)
+  const galleryUrl = imageUrlOverride ?? getWeaponGalleryImageUrl(displayedResult.slug)
   const showHd = Boolean(galleryUrl) && !useIconFallback
   const imageUrl = showHd ? galleryUrl! : displayedResult.icon
-  const isLocalGallery = hasLocalWeaponGallery(displayedResult.slug)
+  const isLocalGallery = hasBundledWeaponGallery(displayedResult.slug) && !imageUrlOverride
+  const inlineImageClass = fillSection
+    ? 'relative z-10 mx-auto max-h-[min(52vh,440px)] w-full scale-110 object-contain'
+    : showHd
+      ? 'mx-auto w-full max-h-[min(42vh,360px)] p-2 sm:p-3'
+      : 'mx-auto w-full max-h-[min(32vh,280px)] p-2 opacity-90 sm:p-3'
 
   return (
     <figure
@@ -106,17 +124,25 @@ function WeaponGalleryImage({
             if (showHd) setUseIconFallback(true)
           }}
           className={`relative z-10 object-contain ${
-            isHero
-              ? 'max-h-full max-w-full'
-              : showHd
-                ? 'mx-auto w-full max-h-[min(42vh,360px)] p-2 sm:p-3'
-                : 'mx-auto w-full max-h-[min(32vh,280px)] p-2 opacity-90 sm:p-3'
+            isHero ? 'max-h-full max-w-full' : inlineImageClass
           }`}
         />
       </div>
       <figcaption className="shrink-0 border-t border-wilds-gold/10 px-3 py-2 text-center text-[9px] uppercase tracking-[0.14em] text-wilds-muted sm:text-[10px]">
         {showHd ? (
-          isLocalGallery ? (
+          wikiSource ? (
+            <>
+              Render via{' '}
+              <a
+                href={WIKI_WEAPON_RENDER_SOURCE_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="text-wilds-muted underline-offset-2 hover:text-wilds-gold-light hover:underline"
+              >
+                Monster Hunter Wiki
+              </a>
+            </>
+          ) : isLocalGallery ? (
             <span className="text-wilds-muted">Showcase image</span>
           ) : (
             <>

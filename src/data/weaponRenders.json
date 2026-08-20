@@ -1,0 +1,2214 @@
+{
+  "bow": [
+    {
+      "name": "Angelbein",
+      "file": "MHWilds-Angelbein Render 001.webp"
+    },
+    {
+      "name": "Angelbein",
+      "file": "MHWilds-Angelbein Render 002.webp"
+    },
+    {
+      "name": "Angelbein",
+      "file": "MHWilds-Angelbein Render 003.webp"
+    },
+    {
+      "name": "Azure Era “Soaring Dragon”",
+      "file": "MHWilds-Azure Era “Soaring Dragon” Render 001.webp"
+    },
+    {
+      "name": "Blazing Samira",
+      "file": "MHWilds-Blazing Samira Render 001.webp"
+    },
+    {
+      "name": "Blazing Samira",
+      "file": "MHWilds-Blazing Samira Render 002.webp"
+    },
+    {
+      "name": "Bookwilthe's Punisher",
+      "file": "MHWilds-Bookwilthe's Punisher Render 001.webp"
+    },
+    {
+      "name": "Dark Filament",
+      "file": "MHWilds-Dark Filament Render 001.webp"
+    },
+    {
+      "name": "Dosha Fearbringer",
+      "file": "MHWilds-Dosha Fearbringer Render 001.webp"
+    },
+    {
+      "name": "Esperanza Bow",
+      "file": "MHWilds-Esperanza Bow Render 001.webp"
+    },
+    {
+      "name": "Fearbringer Callistox",
+      "file": "MHWilds-Fearbringer Callistox Render 001.webp"
+    },
+    {
+      "name": "Firetrail Leviora",
+      "file": "MHWilds-Firetrail Leviora Render 001.webp"
+    },
+    {
+      "name": "Fulgurbow Guardiana",
+      "file": "MHWilds-Fulgurbow Guardiana Render 001.webp"
+    },
+    {
+      "name": "G. Renowned Tristram",
+      "file": "MHWilds-G. Renowned Tristram Render 001.webp"
+    },
+    {
+      "name": "Griefbringer Urstox",
+      "file": "MHWilds-Griefbringer Urstox Render 001.webp"
+    },
+    {
+      "name": "Heaven's Manna",
+      "file": "MHWilds-Heaven's Manna Render 001.webp"
+    },
+    {
+      "name": "Heaven's Manna",
+      "file": "MHWilds-Heaven's Manna Render.webp"
+    },
+    {
+      "name": "High Voltsender",
+      "file": "MHWilds-High Voltsender Render 001.webp"
+    },
+    {
+      "name": "High Voltsender",
+      "file": "MHWilds-High Voltsender Render 002.webp"
+    },
+    {
+      "name": "Hunter's Stoutbow",
+      "file": "MHWilds-Hunter's Stoutbow Render 001.webp"
+    },
+    {
+      "name": "Insurgent Bow",
+      "file": "MHWilds-Insurgent Bow Render 001.webp"
+    },
+    {
+      "name": "Insurgent Bow",
+      "file": "MHWilds-Insurgent Bow Render 002.webp"
+    },
+    {
+      "name": "Khviluk-of-the-Waves",
+      "file": "MHWilds-Khviluk-of-the-Waves Render 001.webp"
+    },
+    {
+      "name": "Nershock",
+      "file": "MHWilds-Nershock Render 001.webp"
+    },
+    {
+      "name": "Perkonis Clairbow",
+      "file": "MHWilds-Perkonis Clairbow Render 001.webp"
+    },
+    {
+      "name": "Queen's Melody",
+      "file": "MHWilds-Queen's Melody Render 001.webp"
+    },
+    {
+      "name": "Quematrice Arco",
+      "file": "MHWilds-Quematrice Arco Render 001.webp"
+    },
+    {
+      "name": "Renowned Tristram",
+      "file": "MHWilds-Renowned Tristram Render 001.webp"
+    },
+    {
+      "name": "Singha Sharanga",
+      "file": "MHWilds-Singha Sharanga Render 001.webp"
+    },
+    {
+      "name": "Solar Spicule",
+      "file": "MHWilds-Solar Spicule Render 001.webp"
+    },
+    {
+      "name": "Strange Kut-Ku Stave",
+      "file": "MHWilds-Strange Kut-Ku Stave Render 001.webp"
+    },
+    {
+      "name": "True Dragon Perforator",
+      "file": "MHWilds-True Dragon Perforator Render 001.webp"
+    },
+    {
+      "name": "Verzweiflung",
+      "file": "MHWilds-Verzweiflung Render 001.webp"
+    },
+    {
+      "name": "Wildwood Kalifa",
+      "file": "MHWilds-Wildwood Kalifa Render 001.webp"
+    },
+    {
+      "name": "Windbrace Ibami",
+      "file": "MHWilds-Windbrace Ibami Render 001.webp"
+    }
+  ],
+  "great-sword": [
+    {
+      "name": "Abaddonian Krake",
+      "file": "MHWilds-Abaddonian Krake Render 001.webp"
+    },
+    {
+      "name": "Akanesasu",
+      "file": "MHWilds-Akanesasu Render 001.webp"
+    },
+    {
+      "name": "Akanesasu",
+      "file": "MHWilds-Akanesasu Render.webp"
+    },
+    {
+      "name": "Blazing Veiah",
+      "file": "MHWilds-Blazing Veiah Render 001.webp"
+    },
+    {
+      "name": "Bone Slasher",
+      "file": "MHWilds-Bone Slasher Render 001.webp"
+    },
+    {
+      "name": "Buster Sword",
+      "file": "MHWilds-Buster Sword Render 001.webp"
+    },
+    {
+      "name": "Destructive Torpor",
+      "file": "MHWilds-Destructive Torpor Render 001.webp"
+    },
+    {
+      "name": "Dosha Fellslayer",
+      "file": "MHWilds-Dosha Fellslayer Render 001.webp"
+    },
+    {
+      "name": "Düsterstolz",
+      "file": "MHWilds-Düsterstolz Render 001.webp"
+    },
+    {
+      "name": "Esperanza Blade",
+      "file": "MHWilds-Esperanza Blade Render 001.webp"
+    },
+    {
+      "name": "Fellslayer Dangeom",
+      "file": "MHWilds-Fellslayer Dangeom Render 001.webp"
+    },
+    {
+      "name": "Firetrail Blaisdell",
+      "file": "MHWilds-Firetrail Blaisdell Render 001.webp"
+    },
+    {
+      "name": "Freezer Speartuna",
+      "file": "MHWilds-Freezer Speartuna Render 001.webp"
+    },
+    {
+      "name": "Fulgurcleaver Guardiana",
+      "file": "MHWilds-Fulgurcleaver Guardiana Render 001.webp"
+    },
+    {
+      "name": "G. Stalwart Lamorak",
+      "file": "MHWilds-G. Stalwart Lamorak Render 001.webp"
+    },
+    {
+      "name": "Giant Jawblade",
+      "file": "MHWilds-Giant Jawblade Render 001.webp"
+    },
+    {
+      "name": "Grimslayer Urgeom",
+      "file": "MHWilds-Grimslayer Urgeom Render 001.webp"
+    },
+    {
+      "name": "High Lagia Blade",
+      "file": "MHWilds-High Lagia Blade Render 001.webp"
+    },
+    {
+      "name": "Immolator Blade",
+      "file": "MHWilds-Immolator Blade Render 001.webp"
+    },
+    {
+      "name": "Impudent Cheda",
+      "file": "MHWilds-Impudent Cheda Render 001.webp"
+    },
+    {
+      "name": "Poison King",
+      "file": "MHWilds-Poison King Render 001.webp"
+    },
+    {
+      "name": "Precipice Metallam",
+      "file": "MHWilds-Precipice Metallam Render 001.webp"
+    },
+    {
+      "name": "Prinvrilo's Dissolution",
+      "file": "MHWilds-Prinvrilo's Dissolution Render 001.webp"
+    },
+    {
+      "name": "Quematrice Espada",
+      "file": "MHWilds-Quematrice Espada Render 001.webp"
+    },
+    {
+      "name": "Rathalos Firesword",
+      "file": "MHWilds-Rathalos Firesword Render 001.webp"
+    },
+    {
+      "name": "Ravager Blade",
+      "file": "MHWilds-Ravager Blade Render 001.webp"
+    },
+    {
+      "name": "Rooster Decapitator",
+      "file": "MHWilds-Rooster Decapitator Render 001.webp"
+    },
+    {
+      "name": "Shatterseal Drakenest",
+      "file": "MHWilds-Shatterseal Drakenest Render 001.webp"
+    },
+    {
+      "name": "Sieglinde",
+      "file": "MHWilds-Sieglinde Render 001.webp"
+    },
+    {
+      "name": "Stalwart Lamorak",
+      "file": "MHWilds-Stalwart Lamorak Render 001.webp"
+    },
+    {
+      "name": "True Shadowbringer",
+      "file": "MHWilds-True Shadowbringer Render 001.webp"
+    },
+    {
+      "name": "Varianza",
+      "file": "MHWilds-Varianza Render 001.webp"
+    },
+    {
+      "name": "Varianza",
+      "file": "MHWilds-Varianza Render 002.webp"
+    },
+    {
+      "name": "Varianza",
+      "file": "MHWilds-Varianza Render 003.webp"
+    },
+    {
+      "name": "Whitefire Rathguard",
+      "file": "MHWilds-Whitefire Rathguard Render 001.webp"
+    }
+  ],
+  "long-sword": [
+    {
+      "name": "Azure Star “Dragon Dance”",
+      "file": "MHWilds-Azure Star “Dragon Dance” Render 001.webp"
+    },
+    {
+      "name": "Barina Flamberge",
+      "file": "MHWilds-Barina Flamberge Render 001.webp"
+    },
+    {
+      "name": "Blangongaberge",
+      "file": "MHWilds-Blangongaberge Render 001.webp"
+    },
+    {
+      "name": "Blazing Rafel",
+      "file": "MHWilds-Blazing Rafel Render 001.webp"
+    },
+    {
+      "name": "Blazing Rafel",
+      "file": "MHWilds-Blazing Rafel Render 002.webp"
+    },
+    {
+      "name": "Blood Scream",
+      "file": "MHWilds-Blood Scream Render 001.webp"
+    },
+    {
+      "name": "Dimensius",
+      "file": "MHWilds-Dimensius Render 001.webp"
+    },
+    {
+      "name": "Dimensius",
+      "file": "MHWilds-Dimensius Render 002.webp"
+    },
+    {
+      "name": "Dimensius",
+      "file": "MHWilds-Dimensius Render 003.webp"
+    },
+    {
+      "name": "Dosha Fatecleaver",
+      "file": "MHWilds-Dosha Fatecleaver Render 001.webp"
+    },
+    {
+      "name": "Esperanza Edge",
+      "file": "MHWilds-Esperanza Edge Render 001.webp"
+    },
+    {
+      "name": "Fatecleaver Kimkemush",
+      "file": "MHWilds-Fatecleaver Kimkemush Render 001.webp"
+    },
+    {
+      "name": "Firetrail Ferrocere",
+      "file": "MHWilds-Firetrail Ferrocere Render 001.webp"
+    },
+    {
+      "name": "Fulgurblade Guardiana",
+      "file": "MHWilds-Fulgurblade Guardiana Render 001.webp"
+    },
+    {
+      "name": "G. Righteous Lancelot",
+      "file": "MHWilds-G. Righteous Lancelot Render 001.webp"
+    },
+    {
+      "name": "Gravecleaver Urkemush",
+      "file": "MHWilds-Gravecleaver Urkemush Render 001.webp"
+    },
+    {
+      "name": "Hard Bone Shotel",
+      "file": "MHWilds-Hard Bone Shotel Render 001.webp"
+    },
+    {
+      "name": "Heaven's Thunder",
+      "file": "MHWilds-Heaven's Thunder Render 001.webp"
+    },
+    {
+      "name": "Iron Katana",
+      "file": "MHWilds-Iron Katana Render 001.webp"
+    },
+    {
+      "name": "Keen Edge",
+      "file": "MHWilds-Keen Edge Render 001.webp"
+    },
+    {
+      "name": "Khanga Rebellion",
+      "file": "MHWilds-Khanga Rebellion Render 001.webp"
+    },
+    {
+      "name": "Khlunda-of-the-Waves",
+      "file": "MHWilds-Khlunda-of-the-Waves Render 001.webp"
+    },
+    {
+      "name": "Lala Ornithocton",
+      "file": "MHWilds-Lala Ornithocton Render 001.webp"
+    },
+    {
+      "name": "Mad Scavenger Pickaxe",
+      "file": "MHWilds-Mad Scavenger Pickaxe Render.webp"
+    },
+    {
+      "name": "Quematrice Lima",
+      "file": "MHWilds-Quematrice Lima Render 001.webp"
+    },
+    {
+      "name": "Righteous Lancelot",
+      "file": "MHWilds-Righteous Lancelot Render 001.webp"
+    },
+    {
+      "name": "Rompo Mytoxin",
+      "file": "MHWilds-Rompo Mytoxin Render 001.webp"
+    },
+    {
+      "name": "Stahlrecht",
+      "file": "MHWilds-Stahlrecht Render 001.webp"
+    },
+    {
+      "name": "Tamonowo",
+      "file": "MHWilds-Tamonowo Render 001.webp"
+    },
+    {
+      "name": "Tamonowo",
+      "file": "MHWilds-Tamonowo Render.webp"
+    },
+    {
+      "name": "Tonitrus Clairblade",
+      "file": "MHWilds-Tonitrus Clairblade Render 001.webp"
+    },
+    {
+      "name": "Windclaw Kiribami",
+      "file": "MHWilds-Windclaw Kiribami Render 001.webp"
+    },
+    {
+      "name": "Wyvern Blade Holly",
+      "file": "MHWilds-Wyvern Blade Holly Render 001.webp"
+    },
+    {
+      "name": "Wyvern Blade Lily",
+      "file": "MHWilds-Wyvern Blade Lily Render 001.webp"
+    },
+    {
+      "name": "Wyvern Blade Maple",
+      "file": "MHWilds-Wyvern Blade Maple Render 001.webp"
+    }
+  ],
+  "sword-and-shield": [
+    {
+      "name": "Ajara-Subinda",
+      "file": "MHWilds-Ajara-Subinda Render 001.webp"
+    },
+    {
+      "name": "Balahara Blade",
+      "file": "MHWilds-Balahara Blade Render 001.webp"
+    },
+    {
+      "name": "Barina Dague",
+      "file": "MHWilds-Barina Dague Render 001.webp"
+    },
+    {
+      "name": "Blazing Mikal",
+      "file": "MHWilds-Blazing Mikal Render 001.webp"
+    },
+    {
+      "name": "Catburglar",
+      "file": "MHWilds-Catburglar Render 001.webp"
+    },
+    {
+      "name": "Chata Club",
+      "file": "MHWilds-Chata Club Render 001.webp"
+    },
+    {
+      "name": "Chief Kukri",
+      "file": "MHWilds-Chief Kukri Render 001.webp"
+    },
+    {
+      "name": "Cordayle's Revocation",
+      "file": "MHWilds-Cordayle's Revocation Render 001.webp"
+    },
+    {
+      "name": "Corona",
+      "file": "MHWilds-Corona Render 001.webp"
+    },
+    {
+      "name": "Digmore War Pick",
+      "file": "MHWilds-Digmore War Pick Render 001.webp"
+    },
+    {
+      "name": "Esperanza Sword",
+      "file": "MHWilds-Esperanza Sword Render 001.webp"
+    },
+    {
+      "name": "Feral Fangs",
+      "file": "MHWilds-Feral Fangs Render 001.webp"
+    },
+    {
+      "name": "Firetrail Fornax",
+      "file": "MHWilds-Firetrail Fornax Render 001.webp"
+    },
+    {
+      "name": "Fulgursword Guardiana",
+      "file": "MHWilds-Fulgursword Guardiana Render 001.webp"
+    },
+    {
+      "name": "G. Guiding Artorius",
+      "file": "MHWilds-G. Guiding Artorius Render 001.webp"
+    },
+    {
+      "name": "Guiding Artorius",
+      "file": "MHWilds-Guiding Artorius Render 001.webp"
+    },
+    {
+      "name": "High Lagia Sword",
+      "file": "MHWilds-High Lagia Sword Render 001.webp"
+    },
+    {
+      "name": "Jäger-Ankh",
+      "file": "MHWilds-Jäger-Ankh Render 001.webp"
+    },
+    {
+      "name": "Kuara Clairsword",
+      "file": "MHWilds-Kuara Clairsword Render 001.webp"
+    },
+    {
+      "name": "Kurenawi Ougi",
+      "file": "MHWilds-Kurenawi Ougi Render 001.webp"
+    },
+    {
+      "name": "Kurenawi Ougi",
+      "file": "MHWilds-Kurenawi Ougi Render 002.webp"
+    },
+    {
+      "name": "Lala Acanthopelm",
+      "file": "MHWilds-Lala Acanthopelm Render 001.webp"
+    },
+    {
+      "name": "Melting Point",
+      "file": "MHWilds-Melting Point Render 001.webp"
+    },
+    {
+      "name": "Mining Pickaxe",
+      "file": "MHWilds-Mining Pickaxe Render 002.webp"
+    },
+    {
+      "name": "Nerskiller",
+      "file": "MHWilds-Nerskiller Render 001.webp"
+    },
+    {
+      "name": "Precipice Mateptro",
+      "file": "MHWilds-Precipice Mateptro Render 001.webp"
+    },
+    {
+      "name": "Queen Rapier",
+      "file": "MHWilds-Queen Rapier Render 001.webp"
+    },
+    {
+      "name": "Quematrice Cuchillo I",
+      "file": "MHWilds-Quematrice Cuchillo I Render 001.webp"
+    },
+    {
+      "name": "Sandsea Katduva",
+      "file": "MHWilds-Sandsea Katduva Render 001.webp"
+    },
+    {
+      "name": "Shrouded Katalo",
+      "file": "MHWilds-Shrouded Katalo Render 001.webp"
+    },
+    {
+      "name": "Smithy's Pride",
+      "file": "MHWilds-Smithy's Pride Render 001.webp"
+    },
+    {
+      "name": "Snow Lion Jambiya",
+      "file": "MHWilds-Snow Lion Jambiya Render 001.webp"
+    },
+    {
+      "name": "Titan's Armament",
+      "file": "MHWilds-Titan's Armament Render 001.webp"
+    },
+    {
+      "name": "True Omega's Sword",
+      "file": "MHWilds-True Omega's Sword Render.webp"
+    },
+    {
+      "name": "Verdoloto",
+      "file": "MHWilds-Verdoloto Render 001.webp"
+    },
+    {
+      "name": "Verdoloto",
+      "file": "MHWilds-Verdoloto Render 002.webp"
+    },
+    {
+      "name": "Verdoloto",
+      "file": "MHWilds-Verdoloto Render 003.webp"
+    },
+    {
+      "name": "Viperine Saber",
+      "file": "MHWilds-Viperine Saber Render 001.webp"
+    }
+  ],
+  "dual-blades": [
+    {
+      "name": "Ajara-Panthaka",
+      "file": "MHWilds-Ajara-Panthaka Render 001.webp"
+    },
+    {
+      "name": "Barina Faucilles",
+      "file": "MHWilds-Barina Faucilles Render 001.webp"
+    },
+    {
+      "name": "Bequeathed Oblivion",
+      "file": "MHWilds-Bequeathed Oblivion Render 001.webp"
+    },
+    {
+      "name": "Blango Trishula",
+      "file": "MHWilds-Blango Trishula Render 001.webp"
+    },
+    {
+      "name": "Blazing Liel",
+      "file": "MHWilds-Blazing Liel Render 001.webp"
+    },
+    {
+      "name": "Blazing Liel",
+      "file": "MHWilds-Blazing Liel Render 002.webp"
+    },
+    {
+      "name": "Dosha Fastflayers",
+      "file": "MHWilds-Dosha Fastflayers Render 001.webp"
+    },
+    {
+      "name": "Dual Cleavers",
+      "file": "MHWilds-Dual Cleavers Render 001.webp"
+    },
+    {
+      "name": "Dual Kut-Ku",
+      "file": "MHWilds-Dual Kut-Ku Render 001.webp"
+    },
+    {
+      "name": "Esperanza Daggers",
+      "file": "MHWilds-Esperanza Daggers Render 001.webp"
+    },
+    {
+      "name": "Evening Dusk",
+      "file": "MHWilds-Evening Dusk Render 001.webp"
+    },
+    {
+      "name": "Evening Dusk",
+      "file": "MHWilds-Evening Dusk Render.webp"
+    },
+    {
+      "name": "Fastflayers Jambastra",
+      "file": "MHWilds-Fastflayers Jambastra Render 001.webp"
+    },
+    {
+      "name": "Final Battleaxes",
+      "file": "MHWilds-Final Battleaxes Render 001.webp"
+    },
+    {
+      "name": "Firetrail Magnesiae",
+      "file": "MHWilds-Firetrail Magnesiae Render 001.webp"
+    },
+    {
+      "name": "Fulgurtwins Guardiana",
+      "file": "MHWilds-Fulgurtwins Guardiana Render 001.webp"
+    },
+    {
+      "name": "Funky Maracas",
+      "file": "MHWilds-Funky Maracas Render 001.webp"
+    },
+    {
+      "name": "G. Inspired Ywain",
+      "file": "MHWilds-G. Inspired Ywain Render 001.webp"
+    },
+    {
+      "name": "G. Inspired Ywain",
+      "file": "MHWilds-G. Inspired Ywain Render 002.webp"
+    },
+    {
+      "name": "Gravios Conquerors",
+      "file": "MHWilds-Gravios Conquerors Render 001.webp"
+    },
+    {
+      "name": "Guardflayers Urbastra",
+      "file": "MHWilds-Guardflayers Urbastra Render 001.webp"
+    },
+    {
+      "name": "Hungerklauen",
+      "file": "MHWilds-Hungerklauen Render 001.webp"
+    },
+    {
+      "name": "Inspired Ywain",
+      "file": "MHWilds-Inspired Ywain Render 001.webp"
+    },
+    {
+      "name": "Inspired Ywain",
+      "file": "MHWilds-Inspired Ywain Render 002.webp"
+    },
+    {
+      "name": "Lala Harpactirs",
+      "file": "MHWilds-Lala Harpactirs Render 001.webp"
+    },
+    {
+      "name": "Levin Acrus",
+      "file": "MHWilds-Levin Acrus Render 001.webp"
+    },
+    {
+      "name": "Master Sabers",
+      "file": "MHWilds-Master Sabers Render 001.webp"
+    },
+    {
+      "name": "Ngarpatu-of-the-Waves",
+      "file": "MHWilds-Ngarpatu-of-the-Waves Render 001.webp"
+    },
+    {
+      "name": "Precipice Ulokiem",
+      "file": "MHWilds-Precipice Ulokiem Render 001.webp"
+    },
+    {
+      "name": "Quematrice Silexes",
+      "file": "MHWilds-Quematrice Silexes Render 001.webp"
+    },
+    {
+      "name": "Terrible Twins",
+      "file": "MHWilds-Terrible Twins Render 001.webp"
+    },
+    {
+      "name": "Tiltkreise",
+      "file": "MHWilds-Tiltkreise Render 001.webp"
+    },
+    {
+      "name": "Tiltkreise",
+      "file": "MHWilds-Tiltkreise Render 002.webp"
+    },
+    {
+      "name": "Tiltkreise",
+      "file": "MHWilds-Tiltkreise Render 003.webp"
+    },
+    {
+      "name": "Wild Hatchets",
+      "file": "MHWilds-Wild Hatchets Render 001.webp"
+    },
+    {
+      "name": "Wyvern Lovers",
+      "file": "MHWilds-Wyvern Lovers Render 001.webp"
+    },
+    {
+      "name": "Wyvern Sentinels",
+      "file": "MHWilds-Wyvern Sentinels Render 001.webp"
+    }
+  ],
+  "hammer": [
+    {
+      "name": "Abaddonian Pulpo",
+      "file": "Mhwilds-Abaddonian Pulpo Render 001.webp"
+    },
+    {
+      "name": "Argyl Hammer",
+      "file": "MHWilds-Argyl Hammer Render 001.webp"
+    },
+    {
+      "name": "Balahara Hammer",
+      "file": "Mhwilds-Balahara Hammer Render 001.webp"
+    },
+    {
+      "name": "Binder Mace",
+      "file": "Mhwilds-Binder Mace Render 001.webp"
+    },
+    {
+      "name": "Blazing Uria",
+      "file": "MHWilds-Blazing Uria Render 001.webp"
+    },
+    {
+      "name": "Blazing Uria",
+      "file": "MHWilds-Blazing Uria Render 002.webp"
+    },
+    {
+      "name": "Chata Clobberer",
+      "file": "Mhwilds-Chata Clobberer Render 001.webp"
+    },
+    {
+      "name": "Death Venom Hammer",
+      "file": "Mhwilds-Death Venom Hammer Render 001.webp"
+    },
+    {
+      "name": "Esperanza Hammer",
+      "file": "Mhwilds-Esperanza Hammer Render 001.webp"
+    },
+    {
+      "name": "Exultant Bedivere",
+      "file": "Mhwilds-Exultant Bedivere Render 001.webp"
+    },
+    {
+      "name": "Fulgurhammer Guardiana",
+      "file": "Mhwilds-Fulgurhammer Guardiana Render 001.webp"
+    },
+    {
+      "name": "G. Exultant Bedivere",
+      "file": "Mhwilds-G. Exultant Bedivere Render 001.webp"
+    },
+    {
+      "name": "Gibil Hammer",
+      "file": "Mhwilds-Gibil Hammer Render 001.webp"
+    },
+    {
+      "name": "Graviton Hammer",
+      "file": "Mhwilds-Graviton Hammer Render 001.webp"
+    },
+    {
+      "name": "Grimmblick",
+      "file": "Mhwilds-Grimmblick Render 001.webp"
+    },
+    {
+      "name": "Heavy Bone Bludgeon",
+      "file": "Mhwilds-Heavy Bone Bludgeon Render 001.webp"
+    },
+    {
+      "name": "High Vortex Hammer",
+      "file": "MHWilds-High Vortex Hammer Render 001.webp"
+    },
+    {
+      "name": "Huracan Hammer",
+      "file": "Mhwilds-Huracan Hammer Render 001.webp"
+    },
+    {
+      "name": "Iron Devil",
+      "file": "Mhwilds-Iron Devil Render 001.webp"
+    },
+    {
+      "name": "Kut-Ku Thwap",
+      "file": "Mhwilds-Kut-Ku Thwap Render 001.webp"
+    },
+    {
+      "name": "Moteurvankel",
+      "file": "Mhwilds-Moteurvankel Render 001.webp"
+    },
+    {
+      "name": "Moteurvankel",
+      "file": "Mhwilds-Moteurvankel Render 002.webp"
+    },
+    {
+      "name": "Moteurvankel",
+      "file": "Mhwilds-Moteurvankel Render 003.webp"
+    },
+    {
+      "name": "Nerscrapper",
+      "file": "Mhwilds-Nerscrapper Render 001.webp"
+    },
+    {
+      "name": "Precipice Logamtu",
+      "file": "Mhwilds-Precipice Logamtu Render 001.webp"
+    },
+    {
+      "name": "Rompo Robustox",
+      "file": "Mhwilds-Rompo Robustox Render 001.webp"
+    },
+    {
+      "name": "Sandsea Siamitiya",
+      "file": "Mhwilds-Sandsea Siamitiya Render 001.webp"
+    },
+    {
+      "name": "Shell Hammer",
+      "file": "Mhwilds-Shell Hammer Render 001.webp"
+    },
+    {
+      "name": "Shrouded Aghaturi",
+      "file": "Mhwilds-Shrouded Aghaturi Render 001.webp"
+    },
+    {
+      "name": "Singha Gada",
+      "file": "Mhwilds-Singha Gada Render 001.webp"
+    },
+    {
+      "name": "Sinter Hammer",
+      "file": "MHWilds-Sinter Hammer Render 001.webp"
+    },
+    {
+      "name": "Sinter Hammer",
+      "file": "MHWilds-Sinter Hammer Render.webp"
+    },
+    {
+      "name": "Zaccio's Execution",
+      "file": "Mhwilds-Zaccio's Execution Render 001.webp"
+    }
+  ],
+  "hunting-horn": [
+    {
+      "name": "Ajara-Jivaka",
+      "file": "MHWilds-Ajara-Jivaka Render 001.webp"
+    },
+    {
+      "name": "Allysyl Muse",
+      "file": "MHWilds-Allysyl Muse Render 001.webp"
+    },
+    {
+      "name": "Balahara Horn",
+      "file": "MHWilds-Balahara Horn Render 001.webp"
+    },
+    {
+      "name": "Blazing Gariel",
+      "file": "MHWilds-Blazing Gariel Render 001.webp"
+    },
+    {
+      "name": "Blazing Gariel",
+      "file": "MHWilds-Blazing Gariel Render.webp"
+    },
+    {
+      "name": "Crazed Melody",
+      "file": "MHWilds-Crazed Melody Render 001.webp"
+    },
+    {
+      "name": "Dosha Farsounder",
+      "file": "MHWilds-Dosha Farsounder Render 001.webp"
+    },
+    {
+      "name": "Esperanza Horn",
+      "file": "MHWilds-Esperanza Horn Render 001.webp"
+    },
+    {
+      "name": "Farsounder Honga",
+      "file": "MHWilds-Farsounder Honga Render 001.webp"
+    },
+    {
+      "name": "Fulgurhowl Guardiana",
+      "file": "MHWilds-Fulgurhowl Guardiana Render 001.webp"
+    },
+    {
+      "name": "G. Rathalos Feroce",
+      "file": "MHWilds-G. Rathalos Feroce Render 001.webp"
+    },
+    {
+      "name": "G. Resounding Galahad",
+      "file": "MHWilds-G. Resounding Galahad Render 001.webp"
+    },
+    {
+      "name": "Glass Royale",
+      "file": "MHWilds-Glass Royale Render 001.webp"
+    },
+    {
+      "name": "Gramklang",
+      "file": "MHWilds-Gramklang Render 001.webp"
+    },
+    {
+      "name": "Great Bagpipe",
+      "file": "MHWilds-Great Bagpipe Render 001.webp"
+    },
+    {
+      "name": "Grudgesounder Urga",
+      "file": "MHWilds-Grudgesounder Urga Render 001.webp"
+    },
+    {
+      "name": "Hardened Bone Horn",
+      "file": "MHWilds-Hardened Bone Horn Render 001.webp"
+    },
+    {
+      "name": "Kae-Jin's Lament",
+      "file": "MHWilds-Kae-Jin's Lament Render 001.webp"
+    },
+    {
+      "name": "Kut-Ku Cantabile",
+      "file": "MHWilds-Kut-Ku Cantabile Render 001.webp"
+    },
+    {
+      "name": "Lagia Thunderpeal",
+      "file": "MHWilds-Lagia Thunderpeal Render 001.webp"
+    },
+    {
+      "name": "Omiltika",
+      "file": "MHWilds-Omiltika Render 001.webp"
+    },
+    {
+      "name": "Omiltika",
+      "file": "MHWilds-Omiltika Render 002.webp"
+    },
+    {
+      "name": "Omiltika",
+      "file": "MHWilds-Omiltika Render 003.webp"
+    },
+    {
+      "name": "Perun Clairhorn",
+      "file": "MHWilds-Perun Clairhorn Render 001.webp"
+    },
+    {
+      "name": "Precipice Kovira",
+      "file": "MHWilds-Precipice Kovira Render 001.webp"
+    },
+    {
+      "name": "Queen Chordmaker",
+      "file": "MHWilds-Queen Chordmaker Render 001.webp"
+    },
+    {
+      "name": "Rathalos Feroce",
+      "file": "MHWilds-Rathalos Feroce Render 001.webp"
+    },
+    {
+      "name": "Resounding Galahad",
+      "file": "MHWilds-Resounding Galahad Render 001.webp"
+    },
+    {
+      "name": "Sandsea Ghantisil",
+      "file": "MHWilds-Sandsea Ghantisil Render 001.webp"
+    },
+    {
+      "name": "Sonic Horn",
+      "file": "MHWilds-Sonic Horn Render 001.webp"
+    },
+    {
+      "name": "Summoning Bell",
+      "file": "MHWilds-Summoning Bell Render 001.webp"
+    },
+    {
+      "name": "War Conga",
+      "file": "MHWilds-War Conga Render 001.webp"
+    }
+  ],
+  "lance": [
+    {
+      "name": "Abaddonian Osminog",
+      "file": "MHWilds-Abaddonian Osminog Render 001.webp"
+    },
+    {
+      "name": "Babel Spear",
+      "file": "MHWilds-Babel Spear Render 001.webp"
+    },
+    {
+      "name": "Balahara Lance",
+      "file": "MHWilds-Balahara Lance Render 001.webp"
+    },
+    {
+      "name": "Barina Sarissa",
+      "file": "MHWilds-Barina Sarissa Render 001.webp"
+    },
+    {
+      "name": "Bequeathed Regret",
+      "file": "MHWilds-Bequeathed Regret Render 001.webp"
+    },
+    {
+      "name": "Blazing Sital",
+      "file": "MHWilds-Blazing Sital Render 001.webp"
+    },
+    {
+      "name": "Chrome Lance",
+      "file": "MHWilds-Chrome Lance Render 001.webp"
+    },
+    {
+      "name": "Dosha Fierceborer",
+      "file": "MHWilds-Dosha Fierceborer Render 001.webp"
+    },
+    {
+      "name": "Esperanza Lance",
+      "file": "MHWilds-Esperanza Lance Render 001.webp"
+    },
+    {
+      "name": "Fieberschild",
+      "file": "MHWilds-Fieberschild Render 001.webp"
+    },
+    {
+      "name": "Fierceborer Dubhanith",
+      "file": "MHWilds-Fierceborer Dubhanith Render 001.webp"
+    },
+    {
+      "name": "Firetrail Kaminet",
+      "file": "MHWilds-Firetrail Kaminet Render 001.webp"
+    },
+    {
+      "name": "G. Purifying Beaumains",
+      "file": "MHWilds-G. Purifying Beaumains Render 001.webp"
+    },
+    {
+      "name": "Gloomborer Urshanith",
+      "file": "MHWilds-Gloomborer Urshanith Render 001.webp"
+    },
+    {
+      "name": "Gravios Lance",
+      "file": "MHWilds-Gravios Lance Render 001.webp"
+    },
+    {
+      "name": "Hard Bone Lance",
+      "file": "MHWilds-Hard Bone Lance Render 001.webp"
+    },
+    {
+      "name": "High Acrus Lance",
+      "file": "MHWilds-High Acrus Lance Render 001.webp"
+    },
+    {
+      "name": "Indra Clairlance",
+      "file": "MHWilds-Indra Clairlance Render 001.webp"
+    },
+    {
+      "name": "Kimi Ga Kiru",
+      "file": "MHWilds-Kimi Ga Kiru Render 001.webp"
+    },
+    {
+      "name": "Lala Aviculari",
+      "file": "MHWilds-Lala Aviculari Render 001.webp"
+    },
+    {
+      "name": "Paladin Lance",
+      "file": "MHWilds-Paladin Lance Render 001.webp"
+    },
+    {
+      "name": "Purifying Beaumains",
+      "file": "MHWilds-Purifying Beaumains Render 001.webp"
+    },
+    {
+      "name": "Quematrice Lanza",
+      "file": "MHWilds-Quematrice Lanza Render 001.webp"
+    },
+    {
+      "name": "Rompo Tetrotox",
+      "file": "MHWilds-Rompo Tetrotox Render 001.webp"
+    },
+    {
+      "name": "Sandsea Prallaya",
+      "file": "MHWilds-Sandsea Prallaya Render 001.webp"
+    },
+    {
+      "name": "Shining Pillar",
+      "file": "MHWilds-Shining Pillar Render 001.webp"
+    },
+    {
+      "name": "Skyscraper",
+      "file": "MHWilds-Skyscraper Render 001.webp"
+    },
+    {
+      "name": "Skyscraper",
+      "file": "MHWilds-Skyscraper Render 002.webp"
+    },
+    {
+      "name": "Skyscraper",
+      "file": "MHWilds-Skyscraper Render 003.webp"
+    },
+    {
+      "name": "Spear of Prominence",
+      "file": "MHWilds-Spear of Prominence Render 001.webp"
+    },
+    {
+      "name": "Turbulent Lance",
+      "file": "MHWilds-Turbulent Lance Render 001.webp"
+    },
+    {
+      "name": "Windpierce Tsukibami",
+      "file": "MHWilds-Windpierce Tsukibami Render 001.webp"
+    }
+  ],
+  "gunlance": [
+    {
+      "name": "Ajara-Kalika",
+      "file": "MHWilds-Ajara-Kalika Render 001.webp"
+    },
+    {
+      "name": "Argenesis",
+      "file": "MHWilds-Argenesis Render 001.webp"
+    },
+    {
+      "name": "Argenesis",
+      "file": "MHWilds-Argenesis Render 002.webp"
+    },
+    {
+      "name": "Argenesis",
+      "file": "MHWilds-Argenesis Render 003.webp"
+    },
+    {
+      "name": "Balahara Exploder I",
+      "file": "MHWilds-Balahara Exploder I Render 001.webp"
+    },
+    {
+      "name": "Big Slugger",
+      "file": "MHWilds-Big Slugger Render 001.webp"
+    },
+    {
+      "name": "Blazing Lael",
+      "file": "MHWilds-Blazing Lael Render 001.webp"
+    },
+    {
+      "name": "Blazing Lael",
+      "file": "MHWilds-Blazing Lael Render 002.webp"
+    },
+    {
+      "name": "Blazing Lael",
+      "file": "MHWilds-Blazing Lael Render 003.webp"
+    },
+    {
+      "name": "Blazing Lael",
+      "file": "MHWilds-Blazing Lael Render 004.webp"
+    },
+    {
+      "name": "Crimson Rook",
+      "file": "MHWilds-Crimson Rook Render 001.webp"
+    },
+    {
+      "name": "Debilitating Torpor",
+      "file": "MHWilds-Debilitating Torpor Render 001.webp"
+    },
+    {
+      "name": "Esperanza Gunlance",
+      "file": "MHWilds-Esperanza Gunlance Render 001.webp"
+    },
+    {
+      "name": "Exlagia Gunlance",
+      "file": "MHWilds-Exlagia Gunlance Render 001.webp"
+    },
+    {
+      "name": "Exlagia Gunlance",
+      "file": "MHWilds-Exlagia Gunlance Render 002.webp"
+    },
+    {
+      "name": "Exlagia Gunlance",
+      "file": "MHWilds-Exlagia Gunlance Render 003.webp"
+    },
+    {
+      "name": "Falarmata-of-the-Waves",
+      "file": "MHWilds-Falarmata-of-the-Waves Render 001.webp"
+    },
+    {
+      "name": "Firetrail Quemador",
+      "file": "MHWilds-Firetrail Quemador Render 001.webp"
+    },
+    {
+      "name": "Fulgurcannon Guardiana",
+      "file": "MHWilds-Fulgurcannon Guardiana Render 001.webp"
+    },
+    {
+      "name": "G. Lawful Bors",
+      "file": "MHWilds-G. Lawful Bors Render 001.webp"
+    },
+    {
+      "name": "Great Bone Gunlance",
+      "file": "MHWilds-Great Bone Gunlance Render 001.webp"
+    },
+    {
+      "name": "Lawful Bors",
+      "file": "MHWilds-Lawful Bors Render 001.webp"
+    },
+    {
+      "name": "Mighty Cornpopper",
+      "file": "MHWilds-Mighty Cornpopper Render 001.webp"
+    },
+    {
+      "name": "Mighty Cornpopper",
+      "file": "MHWilds-Mighty Cornpopper Render 002.webp"
+    },
+    {
+      "name": "Mighty Cornpopper",
+      "file": "MHWilds-Mighty Cornpopper Render 003.webp"
+    },
+    {
+      "name": "Mizumori",
+      "file": "MHWilds-Mizumori Render 001.webp"
+    },
+    {
+      "name": "Mizumori",
+      "file": "MHWilds-Mizumori Render 002.webp"
+    },
+    {
+      "name": "Mizumori",
+      "file": "MHWilds-Mizumori Render 003.webp"
+    },
+    {
+      "name": "Ortlinde",
+      "file": "MHWilds-Ortlinde Render 001.webp"
+    },
+    {
+      "name": "Precipice Lohamata",
+      "file": "MHWilds-Precipice Lohamata Render 001.webp"
+    },
+    {
+      "name": "Quematrice Culebrina I",
+      "file": "MHWilds-Quematrice Culebrina I Render 001.webp"
+    },
+    {
+      "name": "Riotous Gunlance",
+      "file": "MHWilds-Riotous Gunlance Render 001.webp"
+    },
+    {
+      "name": "Riotous Gunlance",
+      "file": "MHWilds-Riotous Gunlance Render 002.webp"
+    },
+    {
+      "name": "Riotous Gunlance",
+      "file": "MHWilds-Riotous Gunlance Render 003.webp"
+    },
+    {
+      "name": "Sandsea Visponan",
+      "file": "MHWilds-Sandsea Visponan Render 001.webp"
+    },
+    {
+      "name": "Shining Rook",
+      "file": "MHWilds-Shining Rook Render 001.webp"
+    },
+    {
+      "name": "Solid Gunberd",
+      "file": "MHWilds-Solid Gunberd Render 001.webp"
+    },
+    {
+      "name": "Triumvirate Edge",
+      "file": "MHWilds-Triumvirate Edge Render 001.webp"
+    },
+    {
+      "name": "Verräterarm",
+      "file": "MHWilds-Verräterarm Render 001.webp"
+    },
+    {
+      "name": "White Cannon",
+      "file": "MHWilds-White Cannon Render 001.webp"
+    }
+  ],
+  "switch-axe": [
+    {
+      "name": "Abaddonian Zhangyu",
+      "file": "MHWilds-Abaddonian Zhangyu Render 001.webp"
+    },
+    {
+      "name": "Albirath Blaze Splitter",
+      "file": "MHWilds-Albirath Blaze Splitter Render 001.webp"
+    },
+    {
+      "name": "Baran Defiance",
+      "file": "MHWilds-Baran Defiance Render 001.webp"
+    },
+    {
+      "name": "Baran Defiance",
+      "file": "MHWilds-Baran Defiance Render 002.webp"
+    },
+    {
+      "name": "Baran Defiance",
+      "file": "MHWilds-Baran Defiance Render 003.webp"
+    },
+    {
+      "name": "Barina Hache",
+      "file": "MHWilds-Barina Hache Render 001.webp"
+    },
+    {
+      "name": "Blazing Mahaiah",
+      "file": "MHWilds-Blazing Mahaiah Render 001.webp"
+    },
+    {
+      "name": "Blazing Mahaiah",
+      "file": "MHWilds-Blazing Mahaiah Render 002.webp"
+    },
+    {
+      "name": "Blazing Mahaiah",
+      "file": "MHWilds-Blazing Mahaiah Render 003.webp"
+    },
+    {
+      "name": "Bone Smasher",
+      "file": "MHWilds-Bone Smasher Render 001.webp"
+    },
+    {
+      "name": "Brutus's Abolishment",
+      "file": "MHWilds-Brutus's Abolishment Render 001.webp"
+    },
+    {
+      "name": "Chrome Accelerator",
+      "file": "MHWilds-Chrome Accelerator Render 001.webp"
+    },
+    {
+      "name": "Dosha Fleshhacker",
+      "file": "MHWilds-Dosha Fleshhacker Render 001.webp"
+    },
+    {
+      "name": "Eisengeist",
+      "file": "MHWilds-Eisengeist Render 001.webp"
+    },
+    {
+      "name": "Esperanza Axe",
+      "file": "MHWilds-Esperanza Axe Render 001.webp"
+    },
+    {
+      "name": "Fleshhacker Yaogahaac",
+      "file": "MHWilds-Fleshhacker Yaogahaac Render 001.webp"
+    },
+    {
+      "name": "Fulgurswitch Guardiana",
+      "file": "MHWilds-Fulgurswitch Guardiana Render 001.webp"
+    },
+    {
+      "name": "G. Indomitable Perceval",
+      "file": "MHWilds-G. Indomitable Perceval Render 001.webp"
+    },
+    {
+      "name": "Gorehacker Urgahaac",
+      "file": "MHWilds-Gorehacker Urgahaac Render 001.webp"
+    },
+    {
+      "name": "Gríðr's Landmaker",
+      "file": "MHWilds-Gríðr's Landmaker Render 001.webp"
+    },
+    {
+      "name": "Gundava Vandal",
+      "file": "MHWilds-Gundava Vandal Render 001.webp"
+    },
+    {
+      "name": "High Bolt Axe",
+      "file": "MHWilds-High Bolt Axe Render 001.webp"
+    },
+    {
+      "name": "High Bolt Axe",
+      "file": "MHWilds-High Bolt Axe Render 002.webp"
+    },
+    {
+      "name": "High Bolt Axe",
+      "file": "MHWilds-High Bolt Axe Render 003.webp"
+    },
+    {
+      "name": "Indomitable Perceval",
+      "file": "MHWilds-Indomitable Perceval Render 001.webp"
+    },
+    {
+      "name": "Lala Selenocosmi",
+      "file": "MHWilds-Lala Selenocosmi Render 001.webp"
+    },
+    {
+      "name": "Mundus Altus",
+      "file": "MHWilds-Mundus Altus Render 001.webp"
+    },
+    {
+      "name": "Mundus Altus",
+      "file": "MHWilds-Mundus Altus Render 002.webp"
+    },
+    {
+      "name": "Mundus Altus",
+      "file": "MHWilds-Mundus Altus Render 003.webp"
+    },
+    {
+      "name": "Olacha-of-the-Waves",
+      "file": "MHWilds-Olacha-of-the-Waves Render 001.webp"
+    },
+    {
+      "name": "Parting Slice",
+      "file": "MHWilds-Parting Slice Render 001.webp"
+    },
+    {
+      "name": "Parting Slice",
+      "file": "MHWilds-Parting Slice Render 002.webp"
+    },
+    {
+      "name": "Parting Slice",
+      "file": "MHWilds-Parting Slice Render 003.webp"
+    },
+    {
+      "name": "Rath Blaze Splitter",
+      "file": "MHWilds-Rath Blaze Splitter Render 001.webp"
+    },
+    {
+      "name": "Sawbill Axe",
+      "file": "MHWilds-Sawbill Axe Render 001.webp"
+    },
+    {
+      "name": "Windsunder Sakibami",
+      "file": "MHWilds-Windsunder Sakibami Render 001.webp"
+    }
+  ],
+  "charge-blade": [
+    {
+      "name": "Abaddonian Pweza",
+      "file": "MHWilds-Abaddonian Pweza Render 001.webp"
+    },
+    {
+      "name": "Abiding Gawain",
+      "file": "MHWilds-Abiding Gawain Render 001.webp"
+    },
+    {
+      "name": "Arachnoscythe",
+      "file": "MHWilds-Arachnoscythe Render 001.webp"
+    },
+    {
+      "name": "Astrapi Clairaxe",
+      "file": "MHWilds-Astrapi Clairaxe Render 001.webp"
+    },
+    {
+      "name": "Bardichion Blade",
+      "file": "MHWilds-Bardichion Blade Render 001.webp"
+    },
+    {
+      "name": "Barina Bouclier",
+      "file": "MHWilds-Barina Bouclier Render 001.webp"
+    },
+    {
+      "name": "Bequeathed Enmity",
+      "file": "MHWilds-Bequeathed Enmity Render 001.webp"
+    },
+    {
+      "name": "Blazing Yirmiya",
+      "file": "MHWilds-Blazing Yirmiya Render 001.webp"
+    },
+    {
+      "name": "Blazing Yirmiya",
+      "file": "MHWilds-Blazing Yirmiya Render 002.webp"
+    },
+    {
+      "name": "Blazing Yirmiya",
+      "file": "MHWilds-Blazing Yirmiya Render 003.webp"
+    },
+    {
+      "name": "Chata Strongarm",
+      "file": "MHWilds-Chata Strongarm Render 001.webp"
+    },
+    {
+      "name": "Chrono Gear",
+      "file": "MHWilds-Chrono Gear Render 001.webp"
+    },
+    {
+      "name": "Chrono Gear",
+      "file": "MHWilds-Chrono Gear Render 002.webp"
+    },
+    {
+      "name": "Chrono Gear",
+      "file": "MHWilds-Chrono Gear Render 003.webp"
+    },
+    {
+      "name": "Dear Lutemia",
+      "file": "MHWilds-Dear Lutemia Render 001.webp"
+    },
+    {
+      "name": "Esperanza Strongarm",
+      "file": "MHWilds-Esperanza Strongarm Render 001.webp"
+    },
+    {
+      "name": "Final Fieldblade",
+      "file": "MHWilds-Final Fieldblade Render 001.webp"
+    },
+    {
+      "name": "Final Fieldblade",
+      "file": "MHWilds-Final Fieldblade Render 002.webp"
+    },
+    {
+      "name": "Final Fieldblade",
+      "file": "MHWilds-Final Fieldblade Render 003.webp"
+    },
+    {
+      "name": "G. Abiding Gawain",
+      "file": "MHWilds-G. Abiding Gawain Render 001.webp"
+    },
+    {
+      "name": "Guardian Albathos",
+      "file": "MHWilds-Guardian Albathos Render 001.webp"
+    },
+    {
+      "name": "Hard Bone Strongarm",
+      "file": "MHWilds-Hard Bone Strongarm Render 001.webp"
+    },
+    {
+      "name": "Lala Eumenophor",
+      "file": "MHWilds-Lala Eumenophor Render 001.webp"
+    },
+    {
+      "name": "Leidenskraft",
+      "file": "MHWilds-Leidenskraft Render 001.webp"
+    },
+    {
+      "name": "Rebellious Charger",
+      "file": "MHWilds-Rebellious Charger Render 001.webp"
+    },
+    {
+      "name": "Rebellious Charger",
+      "file": "MHWilds-Rebellious Charger Render 002.webp"
+    },
+    {
+      "name": "Rebellious Charger",
+      "file": "MHWilds-Rebellious Charger Render 003.webp"
+    },
+    {
+      "name": "Regas Hyper",
+      "file": "MHWilds-Regas Hyper Render 001.webp"
+    },
+    {
+      "name": "Rompo Dendrotox",
+      "file": "MHWilds-Rompo Dendrotox Render 001.webp"
+    },
+    {
+      "name": "Shrouded Kutharja",
+      "file": "MHWilds-Shrouded Kutharja Render 001.webp"
+    },
+    {
+      "name": "Valeroje-of-the-Waves",
+      "file": "MHWilds-Valeroje-of-the-Waves Render 001.webp"
+    },
+    {
+      "name": "Vankrom Blade",
+      "file": "MHWilds-Vankrom Blade Render 001.webp"
+    },
+    {
+      "name": "Vankrom Blade",
+      "file": "MHWilds-Vankrom Blade Render 002.webp"
+    },
+    {
+      "name": "Vankrom Blade",
+      "file": "MHWilds-Vankrom Blade Render 003.webp"
+    },
+    {
+      "name": "Venom's Kiss",
+      "file": "MHWilds-Venom's Kiss Render 001.webp"
+    },
+    {
+      "name": "Windthrash Tamebami",
+      "file": "MHWilds-Windthrash Tamebami Render 001.webp"
+    }
+  ],
+  "insect-glaive": [
+    {
+      "name": "Aerial Glaive",
+      "file": "MHWilds-Aerial Glaive Render 001.webp"
+    },
+    {
+      "name": "Ajara-Bhadra",
+      "file": "MHWilds-Ajara-Bhadra Render 001.webp"
+    },
+    {
+      "name": "Alabaster Rathmaul",
+      "file": "MHWilds-Alabaster Rathmaul Render 001.webp"
+    },
+    {
+      "name": "Alteal",
+      "file": "MHWilds-Alteal Render 001.webp"
+    },
+    {
+      "name": "Alteal",
+      "file": "MHWilds-Alteal Render 002.webp"
+    },
+    {
+      "name": "Balahara Glaive",
+      "file": "MHWilds-Balahara Glaive Render 001.webp"
+    },
+    {
+      "name": "Barina Perche",
+      "file": "MHWilds-Barina Perche Render 001.webp"
+    },
+    {
+      "name": "Bequeathed Testament",
+      "file": "MHWilds-Bequeathed Testament Render 001.webp"
+    },
+    {
+      "name": "Blazing Katir",
+      "file": "MHWilds-Blazing Katir Render 001.webp"
+    },
+    {
+      "name": "Chata Glaive",
+      "file": "MHWilds-Chata Glaive Render 001.webp"
+    },
+    {
+      "name": "Chrome Gale",
+      "file": "MHWilds-Chrome Gale Render 001.webp"
+    },
+    {
+      "name": "Curved Naganagi",
+      "file": "MHWilds-Curved Naganagi Render 001.webp"
+    },
+    {
+      "name": "Curved Naganagi",
+      "file": "MHWilds-Curved Naganagi Render.webp"
+    },
+    {
+      "name": "Diprielcha",
+      "file": "MHWilds-Diprielcha Render 001.webp"
+    },
+    {
+      "name": "Diprielcha",
+      "file": "MHWilds-Diprielcha Render 002.webp"
+    },
+    {
+      "name": "Diprielcha",
+      "file": "MHWilds-Diprielcha Render 003.webp"
+    },
+    {
+      "name": "Enduring Tor",
+      "file": "MHWilds-Enduring Tor Render 001.webp"
+    },
+    {
+      "name": "Esperanza Glaive",
+      "file": "MHWilds-Esperanza Glaive Render 001.webp"
+    },
+    {
+      "name": "Firedance Rathmaul",
+      "file": "MHWilds-Firedance Rathmaul Render 001.webp"
+    },
+    {
+      "name": "Fractal Glaive Boltlagia",
+      "file": "MHWilds-Fractal Glaive Boltlagia Render 001.webp"
+    },
+    {
+      "name": "Fulgurglaive Guardiana",
+      "file": "MHWilds-Fulgurglaive Guardiana Render 001.webp"
+    },
+    {
+      "name": "G. Enduring Tor",
+      "file": "MHWilds-G. Enduring Tor Render 001.webp"
+    },
+    {
+      "name": "Gravordius",
+      "file": "MHWilds-Gravordius Render 001.webp"
+    },
+    {
+      "name": "Immaculate Blizzard",
+      "file": "MHWilds-Immaculate Blizzard Render 001.webp"
+    },
+    {
+      "name": "Lala Stromatopelm",
+      "file": "MHWilds-Lala Stromatopelm Render 001.webp"
+    },
+    {
+      "name": "Leumundsgift",
+      "file": "MHWilds-Leumundsgift Render 001.webp"
+    },
+    {
+      "name": "Precipice Geumgel",
+      "file": "MHWilds-Precipice Geumgel Render 001.webp"
+    },
+    {
+      "name": "Queen Regalia",
+      "file": "MHWilds-Queen Regalia Render 001.webp"
+    },
+    {
+      "name": "Rey Halilintar",
+      "file": "MHWilds-Rey Halilintar Render 001.webp"
+    },
+    {
+      "name": "Sandsea Uchaltiya",
+      "file": "MHWilds-Sandsea Uchaltiya Render 001.webp"
+    },
+    {
+      "name": "Shrouded Laphoka",
+      "file": "MHWilds-Shrouded Laphoka Render 001.webp"
+    },
+    {
+      "name": "Stealth Glaive Redux",
+      "file": "MHWilds-Stealth Glaive Redux Render 001.webp"
+    },
+    {
+      "name": "Toucan Pike",
+      "file": "MHWilds-Toucan Pike Render 001.webp"
+    },
+    {
+      "name": "True Omega's Rod",
+      "file": "MHWilds-True Omega's Rod Render 001.webp"
+    },
+    {
+      "name": "Vangaurd's Pride",
+      "file": "MHWilds-Vangaurd's Pride Render 001.webp"
+    }
+  ],
+  "light-bowgun": [
+    {
+      "name": "Abaddonian Chobotnice",
+      "file": "MHWilds-Abaddonian Chobotnice Render 001.webp"
+    },
+    {
+      "name": "Ajara Shellgun",
+      "file": "MHWilds-Ajara Shellgun Render 001.webp"
+    },
+    {
+      "name": "Ajara-Angaja",
+      "file": "MHWilds-Ajara-Angaja Render 001.webp"
+    },
+    {
+      "name": "Animilater",
+      "file": "MHWilds-Animilater Render 001.webp"
+    },
+    {
+      "name": "Animilater",
+      "file": "MHWilds-Animilater Render 002.webp"
+    },
+    {
+      "name": "Animilater",
+      "file": "MHWilds-Animilater Render 003.webp"
+    },
+    {
+      "name": "Artian Blaster",
+      "file": "MHWilds-Artian Blaster Render 001.webp"
+    },
+    {
+      "name": "Artian Blaster",
+      "file": "MHWilds-Artian Blaster Render 002.webp"
+    },
+    {
+      "name": "Artian Blaster",
+      "file": "MHWilds-Artian Blaster Render 003.webp"
+    },
+    {
+      "name": "Assault Conga",
+      "file": "MHWilds-Assault Conga Render 001.webp"
+    },
+    {
+      "name": "Bequeathed Animus",
+      "file": "MHWilds-Bequeathed Animus Render 001.webp"
+    },
+    {
+      "name": "Blazing Kaiah",
+      "file": "MHWilds-Blazing Kaiah Render 001.webp"
+    },
+    {
+      "name": "Blazing Kaiah",
+      "file": "MHWilds-Blazing Kaiah Render 002.webp"
+    },
+    {
+      "name": "Chain Blitz",
+      "file": "MHWilds-Chain Blitz Render 001.webp"
+    },
+    {
+      "name": "Chthonian Gunfire",
+      "file": "MHWilds-Chthonian Gunfire Render 001.webp"
+    },
+    {
+      "name": "Combat Conga",
+      "file": "MHWilds-Combat Conga Render 001.webp"
+    },
+    {
+      "name": "Desolate Mist",
+      "file": "MHWilds-Desolate Mist Render 001.webp"
+    },
+    {
+      "name": "Desolate Mist",
+      "file": "MHWilds-Desolate Mist Render 002.webp"
+    },
+    {
+      "name": "Dosha Faithbreaker",
+      "file": "MHWilds-Dosha Faithbreaker Render 001.webp"
+    },
+    {
+      "name": "Dosha Gigasbreaker",
+      "file": "MHWilds-Dosha Gigasbreaker Render 001.webp"
+    },
+    {
+      "name": "Esperanza Rifle",
+      "file": "MHWilds-Esperanza Rifle Render 001.webp"
+    },
+    {
+      "name": "Expiating Caius",
+      "file": "MHWilds-Expiating Caius Render 001.webp"
+    },
+    {
+      "name": "Faithbreaker Leibolkule",
+      "file": "MHWilds-Faithbreaker Leibolkule Render 001.webp"
+    },
+    {
+      "name": "Felling Fulgur",
+      "file": "MHWilds-Felling Fulgur Render 001.webp"
+    },
+    {
+      "name": "Fulgursnipe Guardiana",
+      "file": "MHWilds-Fulgursnipe Guardiana Render 001.webp"
+    },
+    {
+      "name": "Fäulnisschleuder",
+      "file": "MHWilds-Fäulnisschleuder Render 001.webp"
+    },
+    {
+      "name": "G. Expiating Caius",
+      "file": "MHWilds-G. Expiating Caius Render 001.webp"
+    },
+    {
+      "name": "G. Rathling Gun",
+      "file": "MHWilds-G. Rathling Gun Render 001.webp"
+    },
+    {
+      "name": "G. Veldian Impetum",
+      "file": "MHWilds-G. Veldian Impetum Render 001.webp"
+    },
+    {
+      "name": "Gigasbreaker Urbolkule",
+      "file": "MHWilds-Gigasbreaker Urbolkule Render 001.webp"
+    },
+    {
+      "name": "High Chain Blitz",
+      "file": "MHWilds-High Chain Blitz Render 001.webp"
+    },
+    {
+      "name": "Hope Rifle",
+      "file": "MHWilds-Hope Rifle Render 001.webp"
+    },
+    {
+      "name": "Hunter's Rifle",
+      "file": "MHWilds-Hunter's Rifle Render 001.webp"
+    },
+    {
+      "name": "Kut-Ku Anger",
+      "file": "MHWilds-Kut-Ku Anger Render 001.webp"
+    },
+    {
+      "name": "Kut-Ku Counterattack",
+      "file": "MHWilds-Kut-Ku Counterattack Render 001.webp"
+    },
+    {
+      "name": "Nifl Mist",
+      "file": "MHWilds-Nifl Mist Render 001.webp"
+    },
+    {
+      "name": "Nifl Mist",
+      "file": "MHWilds-Nifl Mist Render 002.webp"
+    },
+    {
+      "name": "Nu Chobotnice",
+      "file": "MHWilds-Nu Chobotnice Render 001.webp"
+    },
+    {
+      "name": "Power Rifle",
+      "file": "MHWilds-Power Rifle Render 001.webp"
+    },
+    {
+      "name": "Rasasa Bowgun",
+      "file": "MHWilds-Rasasa Bowgun Render 001.webp"
+    },
+    {
+      "name": "Rasasa Bowgun",
+      "file": "MHWilds-Rasasa Bowgun Render 002.webp"
+    },
+    {
+      "name": "Rathling Gun",
+      "file": "MHWilds-Rathling Gun Render 001.webp"
+    },
+    {
+      "name": "Rathling Phoenix",
+      "file": "MHWilds-Rathling Phoenix Render 001.webp"
+    },
+    {
+      "name": "Rebel Stopper",
+      "file": "MHWilds-Rebel Stopper Render 001.webp"
+    },
+    {
+      "name": "Rebel Stopper",
+      "file": "MHWilds-Rebel Stopper Render 002.webp"
+    },
+    {
+      "name": "Rey Szelatya",
+      "file": "MHWilds-Rey Szelatya Render 001.webp"
+    },
+    {
+      "name": "Szelatya Clairgun",
+      "file": "MHWilds-Szelatya Clairgun Render 001.webp"
+    },
+    {
+      "name": "Tail Catapult",
+      "file": "MHWilds-Tail Catapult Render 001.webp"
+    },
+    {
+      "name": "Tail String",
+      "file": "MHWilds-Tail String Render 001.webp"
+    },
+    {
+      "name": "Thundacrus",
+      "file": "MHWilds-Thundacrus Render 001.webp"
+    },
+    {
+      "name": "Thundacrus",
+      "file": "MHWilds-Thundacrus Render 002.webp"
+    },
+    {
+      "name": "Thundacrus Rex",
+      "file": "MHWilds-Thundacrus Rex Render 001.webp"
+    },
+    {
+      "name": "Thundacrus Rex",
+      "file": "MHWilds-Thundacrus Rex Render 002.webp"
+    },
+    {
+      "name": "Titan Launcher",
+      "file": "MHWilds-Titan Launcher Render 001.webp"
+    },
+    {
+      "name": "Titan Panzer",
+      "file": "MHWilds-Titan Panzer Render 001.webp"
+    },
+    {
+      "name": "Valkyrie Fire",
+      "file": "MHWilds-Valkyrie Fire Render 001.webp"
+    },
+    {
+      "name": "Valkyrie Flame",
+      "file": "MHWilds-Valkyrie Flame Render 001.webp"
+    },
+    {
+      "name": "Veldian Impetum",
+      "file": "MHWilds-Veldian Impetum Render 001.webp"
+    },
+    {
+      "name": "Wahnschleuder",
+      "file": "MHWilds-Wahnschleuder Render 001.webp"
+    },
+    {
+      "name": "White Rathling Phoenix",
+      "file": "MHWilds-White Rathling Phoenix Render 001.webp"
+    },
+    {
+      "name": "Windshear Light",
+      "file": "MHWilds-Windshear Light Render 001.webp"
+    },
+    {
+      "name": "Windshear Uchibami",
+      "file": "MHWilds-Windshear Uchibami Render 001.webp"
+    },
+    {
+      "name": "Zoh Kaiah",
+      "file": "MHWilds-Zoh Kaiah Render 001.webp"
+    },
+    {
+      "name": "Zoh Kaiah",
+      "file": "MHWilds-Zoh Kaiah Render 002.webp"
+    }
+  ],
+  "heavy-bowgun": [
+    {
+      "name": "Abaddonian Muneo",
+      "file": "MHWilds-Abaddonian Muneo Render 001.webp"
+    },
+    {
+      "name": "Ableben Abzug",
+      "file": "MHWilds-Ableben Abzug Render 001.webp"
+    },
+    {
+      "name": "Aeternal Palamedes",
+      "file": "MHWilds-Aeternal Palamedes Render 001.webp"
+    },
+    {
+      "name": "Artian Sheller",
+      "file": "MHWilds-Artian Sheller Render 001.webp"
+    },
+    {
+      "name": "Artian Sheller",
+      "file": "MHWilds-Artian Sheller Render 002.webp"
+    },
+    {
+      "name": "Artian Sheller",
+      "file": "MHWilds-Artian Sheller Render 003.webp"
+    },
+    {
+      "name": "Blazing Mitran",
+      "file": "MHWilds-Blazing Mitran Render 001.webp"
+    },
+    {
+      "name": "Blazing Mitran",
+      "file": "MHWilds-Blazing Mitran Render 002.webp"
+    },
+    {
+      "name": "Bone Shooter",
+      "file": "MHWilds-Bone Shooter Render 001.webp"
+    },
+    {
+      "name": "Buster Blaster",
+      "file": "MHWilds-Buster Blaster Render 001.webp"
+    },
+    {
+      "name": "Chata Sheller",
+      "file": "MHWilds-Chata Sheller Render 001.webp"
+    },
+    {
+      "name": "Cirrus Blaster",
+      "file": "MHWilds-Cirrus Blaster Render 001.webp"
+    },
+    {
+      "name": "Cirrus Blaster",
+      "file": "MHWilds-Cirrus Blaster Render 002.webp"
+    },
+    {
+      "name": "Dalgap-of-the-Waves",
+      "file": "MHWilds-Dalgap-of-the-Waves Render 001.webp"
+    },
+    {
+      "name": "Esperanza Cannon",
+      "file": "MHWilds-Esperanza Cannon Render 001.webp"
+    },
+    {
+      "name": "Fulgurblast Guardiana",
+      "file": "MHWilds-Fulgurblast Guardiana Render 001.webp"
+    },
+    {
+      "name": "G. Aeternal Palamedes",
+      "file": "MHWilds-G. Aeternal Palamedes Render 001.webp"
+    },
+    {
+      "name": "G. Veldian Tormentum",
+      "file": "MHWilds-G. Veldian Tormentum Render 001.webp"
+    },
+    {
+      "name": "Gravios Gigahowl",
+      "file": "MHWilds-Gravios Gigahowl Render 001.webp"
+    },
+    {
+      "name": "Gravios Howl",
+      "file": "MHWilds-Gravios Howl Render 001.webp"
+    },
+    {
+      "name": "Greifen",
+      "file": "MHWilds-Greifen Render 001.webp"
+    },
+    {
+      "name": "Greifen",
+      "file": "MHWilds-Greifen Render 002.webp"
+    },
+    {
+      "name": "Greifen",
+      "file": "MHWilds-Greifen Render 003.webp"
+    },
+    {
+      "name": "Grounding Fulgur",
+      "file": "MHWilds-Grounding Fulgur Render 001.webp"
+    },
+    {
+      "name": "Heavy Shooter",
+      "file": "MHWilds-Heavy Shooter Render 001.webp"
+    },
+    {
+      "name": "Hope Cannon",
+      "file": "MHWilds-Hope Cannon Render 001.webp"
+    },
+    {
+      "name": "Insurrection Cannon",
+      "file": "MHWilds-Insurrection Cannon Render 001.webp"
+    },
+    {
+      "name": "Insurrection Cannon",
+      "file": "MHWilds-Insurrection Cannon Render 002.webp"
+    },
+    {
+      "name": "Iron Assault",
+      "file": "MHWilds-Iron Assault Render 001.webp"
+    },
+    {
+      "name": "Jin Dhaphal",
+      "file": "MHWilds-Jin Dhaphal Render 001.webp"
+    },
+    {
+      "name": "Lagia Blitz",
+      "file": "MHWilds-Lagia Blitz Render 001.webp"
+    },
+    {
+      "name": "Lagia Blitz",
+      "file": "MHWilds-Lagia Blitz Render 002.webp"
+    },
+    {
+      "name": "Mountainous Roar",
+      "file": "MHWilds-Mountainous Roar Render 001.webp"
+    },
+    {
+      "name": "Mountainous Roar",
+      "file": "MHWilds-Mountainous Roar Render 002.webp"
+    },
+    {
+      "name": "Ner Bustergun",
+      "file": "MHWilds-Ner Bustergun Render 001.webp"
+    },
+    {
+      "name": "Nu Muneo",
+      "file": "MHWilds-Nu Muneo Render 001.webp"
+    },
+    {
+      "name": "Power Stinger",
+      "file": "MHWilds-Power Stinger Render 001.webp"
+    },
+    {
+      "name": "Precipice Malmiam",
+      "file": "MHWilds-Precipice Malmiam Render 001.webp"
+    },
+    {
+      "name": "Queen's Farflier",
+      "file": "MHWilds-Queen's Farflier Render 001.webp"
+    },
+    {
+      "name": "Queen's Longfire",
+      "file": "MHWilds-Queen's Longfire Render 001.webp"
+    },
+    {
+      "name": "Rompo Latrotox",
+      "file": "MHWilds-Rompo Latrotox Render 001.webp"
+    },
+    {
+      "name": "Rompo Sniper",
+      "file": "MHWilds-Rompo Sniper Render 001.webp"
+    },
+    {
+      "name": "Sayyad Cannon",
+      "file": "MHWilds-Sayyad Cannon Render 001.webp"
+    },
+    {
+      "name": "Sayyad Cannon",
+      "file": "MHWilds-Sayyad Cannon Render 002.webp"
+    },
+    {
+      "name": "Shrouded Muktana",
+      "file": "MHWilds-Shrouded Muktana Render 001.webp"
+    },
+    {
+      "name": "Steel Assault",
+      "file": "MHWilds-Steel Assault Render 001.webp"
+    },
+    {
+      "name": "Super Kut-Ku Cannon",
+      "file": "MHWilds-Super Kut-Ku Cannon Render 001.webp"
+    },
+    {
+      "name": "Tankmage",
+      "file": "MHWilds-Tankmage Render 001.webp"
+    },
+    {
+      "name": "Tanksorcerer",
+      "file": "MHWilds-Tanksorcerer Render 001.webp"
+    },
+    {
+      "name": "Thunderblitz Cannon",
+      "file": "MHWilds-Thunderblitz Cannon Render 001.webp"
+    },
+    {
+      "name": "Thunderblitz Cannon",
+      "file": "MHWilds-Thunderblitz Cannon Render 002.webp"
+    },
+    {
+      "name": "Tödlicher Abzug",
+      "file": "MHWilds-Tödlicher Abzug Render 001.webp"
+    },
+    {
+      "name": "Uth Dalgap",
+      "file": "MHWilds-Uth Dalgap Render 001.webp"
+    },
+    {
+      "name": "Veldian Tormentum",
+      "file": "MHWilds-Veldian Tormentum Render 001.webp"
+    },
+    {
+      "name": "Wild Stinger",
+      "file": "MHWilds-Wild Stinger Render 001.webp"
+    },
+    {
+      "name": "Yian Kut-Ku Cannon",
+      "file": "MHWilds-Yian Kut-Ku Cannon Render 001.webp"
+    },
+    {
+      "name": "Zoh Mitran",
+      "file": "MHWilds-Zoh Mitran Render 001.webp"
+    },
+    {
+      "name": "Zoh Mitran",
+      "file": "MHWilds-Zoh Mitran Render 002.webp"
+    }
+  ]
+}
