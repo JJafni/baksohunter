@@ -43,8 +43,8 @@ function HuntLayout({
 
   return (
     <div className="grid h-full min-h-0 w-full grid-cols-1 gap-8 max-lg:flex max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col lg:grid-cols-2 lg:items-stretch lg:gap-0">
-      <section className="relative flex min-h-0 w-full max-lg:min-h-[min(58vh,500px)] max-lg:shrink-0 justify-center lg:items-stretch lg:border-r lg:border-wilds-gold/15">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <section className="relative flex min-h-0 w-full max-lg:min-h-[min(58vh,500px)] max-lg:flex-col max-lg:shrink-0 justify-center lg:items-stretch lg:border-r lg:border-wilds-gold/15">
+        <div className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
           <MonsterGalleryImage
             result={monsterHunt.result}
             visible={monsterHunt.phase === 'revealed'}
@@ -56,6 +56,20 @@ function HuntLayout({
             emphasized={monsterGalleryEmphasized}
           />
         </div>
+        {monsterHunt.phase !== 'idle' ? (
+          <div className="pointer-events-none absolute inset-0 overflow-hidden lg:hidden">
+            <MonsterGalleryImage
+              result={monsterHunt.result}
+              visible={monsterHunt.phase === 'revealed'}
+              emphasized={monsterGalleryEmphasized}
+              variant="backdrop"
+            />
+            <GalleryBackdropOverlay
+              revealed={monsterHunt.phase === 'revealed'}
+              emphasized={monsterGalleryEmphasized}
+            />
+          </div>
+        ) : null}
 
         <div className="relative z-10 flex h-full min-h-0 w-full flex-col overflow-visible lg:px-8">
           <PlayerCountToolbarSpacer />

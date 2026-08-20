@@ -539,6 +539,16 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
             >
               {overlaySpinnerPane}
             </div>
+          ) : isMobile ? (
+            <div
+              className="mx-auto flex h-full min-h-0 w-full flex-col py-2"
+              style={{ maxWidth: columnMaxWidth }}
+            >
+              <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden px-1">
+                {overlaySpinnerPane}
+              </div>
+              <div className="shrink-0">{overlayControls}</div>
+            </div>
           ) : (
             <div
               className="relative mx-auto h-full min-h-0 w-full py-2"
