@@ -107,7 +107,7 @@ function RevealPanel({
     const label = nameOverride ?? entry.name
     const isLongName = label.length >= 10
     if (isMobile) {
-      return isLongName ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
+      return isLongName ? 'text-4xl sm:text-5xl' : 'text-5xl sm:text-6xl'
     }
     return isLongName ? 'text-4xl sm:text-5xl lg:text-6xl' : 'text-5xl sm:text-6xl lg:text-7xl'
   }
@@ -159,7 +159,7 @@ function RevealPanel({
           aria-hidden="true"
           draggable={false}
           className={`shrink-0 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)] ${
-            isMobile ? 'size-10 sm:size-12' : 'size-12 sm:size-14 lg:size-16'
+            isMobile ? 'size-12 sm:size-14' : 'size-12 sm:size-14 lg:size-16'
           }`}
         />
       ) : null}
