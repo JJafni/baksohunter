@@ -220,14 +220,23 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     setHuntStar(nextHuntStar)
     setSequence(buildReelSequence(pool, target, REEL_LENGTH, CENTER_INDEX))
 
-    if (phase === 'idle') {
+    if (phase === 'idle' && !useCompactOverlayChrome) {
       setIsEntering(true)
     }
 
     await new Promise<void>((resolve) => {
       spinResolverRef.current = resolve
     })
-  }, [phase, pickRandom, pickRandomQuestType, pickRandomHuntStar, questTypeEnabled, pool, clearSpinnerFadeTimer])
+  }, [
+    phase,
+    pickRandom,
+    pickRandomQuestType,
+    pickRandomHuntStar,
+    questTypeEnabled,
+    pool,
+    clearSpinnerFadeTimer,
+    useCompactOverlayChrome,
+  ])
 
   useImperativeHandle(ref, () => ({ startSpin: startHunt }), [startHunt])
 
@@ -285,7 +294,8 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 
   const showSpinnerUi = spinnerFadeEnabled ? spinnerUiVisible : true
   const [spinnerHoldLayout, setSpinnerHoldLayout] = useState(
-    () => !(isRestoredReveal && revealNameAfterSpinnerFade),
+    () =>
+      useCompactOverlayChrome ? true : !(isRestoredReveal && revealNameAfterSpinnerFade),
   )
   const showOverlayRevealName =
     phase === 'revealed' &&
@@ -294,14 +304,14 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       (useCenterOverlayReveal ? !showSpinnerUi : !showSpinnerUi && !spinnerHoldLayout))
 
   useEffect(() => {
-    if (showSpinnerUi) {
+    if (useCompactOverlayChrome || showSpinnerUi) {
       setSpinnerHoldLayout(true)
       return
     }
 
     const timer = window.setTimeout(() => setSpinnerHoldLayout(false), SPINNER_UI_FADE_MS)
     return () => window.clearTimeout(timer)
-  }, [showSpinnerUi])
+  }, [showSpinnerUi, useCompactOverlayChrome])
 
   useEffect(() => {
     onHuntChange?.({ result, questType, huntStar, phase, spinnerUiVisible })
@@ -317,11 +327,12 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const nameColClass = reelOnLeft ? 'col-start-2' : 'col-start-1'
 
   const blockWidth = useStackedLayout ? '100%' : REEL_WIDTH
-  const stretchClass = isEntering
-    ? useStackedLayout
-      ? 'animate-hunt-reel-stretch-x'
-      : 'animate-hunt-reel-stretch-y'
-    : ''
+  const stretchClass =
+    isEntering && !useCompactOverlayChrome
+      ? useStackedLayout
+        ? 'animate-hunt-reel-stretch-x'
+        : 'animate-hunt-reel-stretch-y'
+      : ''
 
   const actionsPadding =
     phase === 'idle' ? 'pt-0' : useStackedLayout ? 'pt-2' : 'pt-4'

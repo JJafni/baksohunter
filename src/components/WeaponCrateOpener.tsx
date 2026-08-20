@@ -149,7 +149,7 @@ function MobileSoloWeaponCrateOpener({
 
         <div className="relative z-20 shrink-0 px-2 pb-2 pt-1 sm:px-3 sm:pb-3">
           <StatefulButton
-            layoutId="weapon-crate-button"
+            layout={false}
             loadingLabels={['Drawing']}
             icon="shield"
             surface="shiny"
