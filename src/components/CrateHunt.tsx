@@ -121,7 +121,7 @@ function SpinnerLayoutSlot({
 }) {
   return (
     <div
-      className="grid w-full overflow-hidden"
+      className={`grid w-full overflow-hidden ${holdLayout ? 'h-full' : ''}`}
       style={{
         gridTemplateRows: holdLayout ? '1fr' : '0fr',
         transitionProperty: 'grid-template-rows',
@@ -129,7 +129,7 @@ function SpinnerLayoutSlot({
         transitionTimingFunction: 'ease-in-out',
       }}
     >
-      <div className="min-h-0 overflow-hidden">{children}</div>
+      <div className="flex min-h-0 items-center justify-center overflow-hidden">{children}</div>
     </div>
   )
 }
@@ -477,8 +477,8 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 
     return (
       <div
-        className={`relative mx-auto w-full shrink-0 ${overlayMode ? 'flex h-full min-h-0 w-full flex-col' : ''}`}
-        style={{ maxWidth: columnMaxWidth }}
+        className={`relative flex h-full min-h-0 w-full flex-1 flex-col ${overlayMode ? '' : 'mx-auto shrink-0'}`}
+        style={overlayMode ? undefined : { maxWidth: columnMaxWidth }}
       >
         <div
           className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-1000"
@@ -497,11 +497,11 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
             }}
           >
             {phase === 'idle' ? (
-              <div aria-hidden="true" />
+              <div className="h-full min-h-0" aria-hidden="true" />
             ) : useCenterOverlayReveal ? (
-              <div className="relative min-h-0 flex-1 w-full">
+              <div className="relative h-full min-h-0 w-full">
                 <div
-                  className={`absolute flex items-center justify-center overflow-hidden ${
+                  className={`absolute flex h-full w-full items-center justify-center overflow-hidden ${
                     useCompactOverlayChrome ? 'inset-x-3 inset-y-2 sm:inset-x-4' : 'inset-0'
                   }`}
                 >
@@ -512,7 +512,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
                   </SpinnerLayoutSlot>
                 </div>
                 <motion.div
-                  className={`pointer-events-none absolute flex items-center justify-center ${
+                  className={`pointer-events-none absolute flex h-full w-full items-center justify-center ${
                     useCompactOverlayChrome ? 'inset-x-3 inset-y-2 sm:inset-x-4' : 'inset-0'
                   } px-4`}
                   initial={false}

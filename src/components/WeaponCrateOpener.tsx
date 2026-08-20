@@ -18,25 +18,27 @@ function WeaponCrateOpener({ initialContext = null, onHuntChange }: WeaponCrateO
   const overlayMode = Boolean(onHuntChange)
 
   return (
-    <CrateHunt
-      poolCountLabel=""
-      buttonLayoutId="weapon-crate-button"
-      buttonLabels={{ open: 'DRAW', again: 'DRAW' }}
-      rarityLabels={RARITY_LABELS}
-      pool={WEAPON_POOL}
-      pickRandom={pickRandomWeapon}
-      reelSide="right"
-      spinLabels={['Drawing']}
-      buttonIcon="shield"
-      buttonSurface="shiny"
-      externalGallery={overlayMode}
-      overlayMode={overlayMode}
-      overlaySpinnerCentered={overlayMode}
-      revealNameAfterSpinnerFade={overlayMode}
-      revealLayout="inline"
-      initialContext={initialContext}
-      onHuntChange={onHuntChange}
-    />
+    <div className="flex h-full min-h-0 w-full flex-1 flex-col">
+      <CrateHunt
+        poolCountLabel=""
+        buttonLayoutId="weapon-crate-button"
+        buttonLabels={{ open: 'DRAW', again: 'DRAW' }}
+        rarityLabels={RARITY_LABELS}
+        pool={WEAPON_POOL}
+        pickRandom={pickRandomWeapon}
+        reelSide="right"
+        spinLabels={['Drawing']}
+        buttonIcon="shield"
+        buttonSurface="shiny"
+        externalGallery={overlayMode}
+        overlayMode={overlayMode}
+        overlaySpinnerCentered={overlayMode}
+        revealNameAfterSpinnerFade={overlayMode}
+        revealLayout="inline"
+        initialContext={initialContext}
+        onHuntChange={onHuntChange}
+      />
+    </div>
   )
 }
 
