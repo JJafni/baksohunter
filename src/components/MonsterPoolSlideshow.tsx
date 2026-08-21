@@ -11,28 +11,70 @@ type MonsterPoolSlideshowProps = {
   className?: string
 }
 
-function MonsterPoolSlideImage({ entry }: { entry: CrateEntry }) {
-  const [useIconFallback, setUseIconFallback] = useState(false)
+function getSlideImageUrl(entry: CrateEntry, useIconFallback: boolean) {
   const galleryUrl = getMonsterGalleryImageUrl(entry.slug)
   const showHd = Boolean(galleryUrl) && !useIconFallback
-  const imageUrl = showHd ? galleryUrl! : entry.icon
+  return showHd ? galleryUrl! : entry.icon
+}
+
+function preloadSlideImage(entry: CrateEntry) {
+  const galleryUrl = getMonsterGalleryImageUrl(entry.slug)
+  const primaryUrl = galleryUrl ?? entry.icon
+
+  const primary = new Image()
+  primary.decoding = 'async'
+  primary.src = primaryUrl
+
+  if (galleryUrl) {
+    const fallback = new Image()
+    fallback.decoding = 'async'
+    fallback.src = entry.icon
+  }
+}
+
+function MonsterPoolSlideSkeleton() {
+  return (
+    <div className="monster-pool-slide-skeleton" aria-hidden="true">
+      <div className="monster-pool-slide-skeleton-body skeleton" />
+      <div className="monster-pool-slide-skeleton-head skeleton" />
+    </div>
+  )
+}
+
+function MonsterPoolSlideImage({ entry }: { entry: CrateEntry }) {
+  const [useIconFallback, setUseIconFallback] = useState(false)
+  const [loaded, setLoaded] = useState(false)
+  const imageUrl = getSlideImageUrl(entry, useIconFallback)
 
   useEffect(() => {
     setUseIconFallback(false)
+    setLoaded(false)
   }, [entry.slug])
 
+  useEffect(() => {
+    setLoaded(false)
+  }, [imageUrl])
+
   return (
-    <img
-      src={imageUrl}
-      alt=""
-      loading="lazy"
-      decoding="async"
-      draggable={false}
-      onError={() => {
-        if (showHd) setUseIconFallback(true)
-      }}
-      className="monster-pool-slide-image"
-    />
+    <div className="monster-pool-slide-frame">
+      {!loaded ? <MonsterPoolSlideSkeleton /> : null}
+      <img
+        src={imageUrl}
+        alt=""
+        loading="eager"
+        decoding="async"
+        draggable={false}
+        onLoad={() => setLoaded(true)}
+        onError={() => {
+          if (!useIconFallback && getMonsterGalleryImageUrl(entry.slug)) {
+            setUseIconFallback(true)
+            return
+          }
+          setLoaded(true)
+        }}
+        className={`monster-pool-slide-image ${loaded ? 'monster-pool-slide-image--loaded' : 'monster-pool-slide-image--loading'}`}
+      />
+    </div>
   )
 }
 
@@ -53,6 +95,17 @@ function MonsterPoolSlideshow({ pool, className = '' }: MonsterPoolSlideshowProp
     setActivationCounts(deck.map((_, index) => (index === 0 ? 1 : 0)))
     skipInitialActivationRef.current = true
   }, [deck])
+
+  useEffect(() => {
+    deck.forEach(preloadSlideImage)
+  }, [deck])
+
+  useEffect(() => {
+    if (deck.length === 0) return
+
+    preloadSlideImage(deck[activeIndex]!)
+    preloadSlideImage(deck[(activeIndex + 1) % deck.length]!)
+  }, [activeIndex, deck])
 
   useEffect(() => {
     if (deck.length <= 1) return
@@ -105,7 +158,8 @@ function MonsterPoolSlideshow({ pool, className = '' }: MonsterPoolSlideshowProp
       {deck.map((entry, index) => {
         const isActive = index === activeIndex
         const isExiting = index === exitingIndex
-        const hasPlayed = activationCounts[index] > 0
+        const isNext = index === (activeIndex + 1) % deck.length
+        const hasPlayed = activationCounts[index] > 0 || isNext
 
         let layerState: 'active' | 'exiting' | 'hidden' = 'hidden'
         if (isActive) layerState = 'active'
