@@ -1,6 +1,12 @@
+import { motion } from 'motion/react'
 import hunterFemale from '../assets/landing/hunter-female.webp'
 import hunterMale from '../assets/landing/hunter-male.webp'
 import { useMouseParallax } from '../hooks/useMouseParallax'
+
+const ENTRANCE_TRANSITION = {
+  duration: 0.9,
+  ease: [0.22, 1, 0.36, 1] as const,
+}
 
 function LandingCharacters() {
   const { x, y } = useMouseParallax(0.05)
@@ -8,7 +14,13 @@ function LandingCharacters() {
   const offsetY = y * 4
 
   return (
-    <div className="landing-characters" aria-hidden="true">
+    <motion.div
+      className="landing-characters"
+      aria-hidden="true"
+      initial={{ opacity: 0, y: 56 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ ...ENTRANCE_TRANSITION, delay: 0.2 }}
+    >
       <div
         className="landing-characters-inner"
         style={{ transform: `translate3d(${offsetX}px, ${offsetY}px, 0)` }}
@@ -32,7 +44,7 @@ function LandingCharacters() {
           />
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
