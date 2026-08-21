@@ -446,6 +446,7 @@
 .key-art-slide-layer {
   position: absolute;
   inset: 0;
+  z-index: 0;
   opacity: 0;
   transition-property: opacity;
   transition-timing-function: ease-in-out;
@@ -454,6 +455,7 @@
 
 .key-art-slide-layer[data-active='true'] {
   opacity: 1;
+  z-index: 1;
 }
 
 .key-art-slide-image {
@@ -461,22 +463,36 @@
   width: 100%;
   object-fit: cover;
   object-position: center;
-  transform: scale(1.14) translateX(-7%);
   will-change: transform;
 }
 
-.key-art-slide-image--pan {
-  animation-name: key-art-pan;
+.key-art-slide-image--pan-ltr {
+  animation-name: key-art-pan-ltr;
   animation-timing-function: linear;
-  animation-fill-mode: forwards;
+  animation-fill-mode: both;
 }
 
-@keyframes key-art-pan {
+.key-art-slide-image--pan-rtl {
+  animation-name: key-art-pan-rtl;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+}
+
+@keyframes key-art-pan-ltr {
   from {
     transform: scale(1.14) translateX(-7%);
   }
   to {
     transform: scale(1.14) translateX(7%);
+  }
+}
+
+@keyframes key-art-pan-rtl {
+  from {
+    transform: scale(1.14) translateX(7%);
+  }
+  to {
+    transform: scale(1.14) translateX(-7%);
   }
 }
 

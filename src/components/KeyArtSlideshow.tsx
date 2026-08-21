@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { KEY_ART_SLIDES } from '../data/keyArtUrls'
 
 const SLIDE_DURATION_MS = 11_000
@@ -10,6 +10,10 @@ type KeyArtSlideshowProps = {
 
 function KeyArtSlideshow({ className = '' }: KeyArtSlideshowProps) {
   const [activeIndex, setActiveIndex] = useState(0)
+  const [activationCounts, setActivationCounts] = useState<number[]>(() =>
+    KEY_ART_SLIDES.map((_, index) => (index === 0 ? 1 : 0)),
+  )
+  const skipInitialActivationRef = useRef(true)
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -19,10 +23,25 @@ function KeyArtSlideshow({ className = '' }: KeyArtSlideshowProps) {
     return () => window.clearInterval(timer)
   }, [])
 
+  useEffect(() => {
+    if (skipInitialActivationRef.current) {
+      skipInitialActivationRef.current = false
+      return
+    }
+
+    setActivationCounts((counts) => {
+      const next = [...counts]
+      next[activeIndex] += 1
+      return next
+    })
+  }, [activeIndex])
+
   return (
     <div className={`key-art-slideshow ${className}`.trim()} aria-hidden="true">
       {KEY_ART_SLIDES.map((slide, index) => {
         const isActive = index === activeIndex
+        const hasPlayed = activationCounts[index] > 0
+        const panDirection = index % 2 === 0 ? 'ltr' : 'rtl'
 
         return (
           <div
@@ -31,15 +50,21 @@ function KeyArtSlideshow({ className = '' }: KeyArtSlideshowProps) {
             data-active={isActive ? 'true' : 'false'}
             style={{ transitionDuration: `${FADE_DURATION_MS}ms` }}
           >
-            <img
-              src={slide.url}
-              alt=""
-              referrerPolicy="no-referrer"
-              className={`key-art-slide-image ${isActive ? 'key-art-slide-image--pan' : ''}`}
-              style={{ animationDuration: `${SLIDE_DURATION_MS}ms` }}
-              decoding="async"
-              draggable={false}
-            />
+            {hasPlayed ? (
+              <img
+                key={`${index}-${activationCounts[index]}`}
+                src={slide.url}
+                alt=""
+                referrerPolicy="no-referrer"
+                className={`key-art-slide-image key-art-slide-image--pan-${panDirection}`}
+                style={{
+                  animationDuration: `${SLIDE_DURATION_MS}ms`,
+                  animationPlayState: isActive ? 'running' : 'paused',
+                }}
+                decoding="async"
+                draggable={false}
+              />
+            ) : null}
           </div>
         )
       })}
