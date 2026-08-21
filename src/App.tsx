@@ -10,7 +10,9 @@ import LandingPage from './components/LandingPage'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
 import MonsterPoolSlideshow from './components/MonsterPoolSlideshow'
 import WeaponGalleryImage from './components/WeaponGalleryImage'
+import WeaponPoolSlideshow from './components/WeaponPoolSlideshow'
 import type { CrateEntry } from './data/types'
+import { WEAPON_POOL } from './data/weapons'
 import { useAppReady } from './hooks/useAppReady'
 import { useHeaderVisibility } from './hooks/useHeaderVisibility'
 
@@ -49,6 +51,8 @@ function HuntLayout({
   const weaponGalleryEmphasized = weaponHunt.phase === 'revealed' && weaponHunt.spinnerUiVisible
   const [monsterPreviewPool, setMonsterPreviewPool] = useState<CrateEntry[]>([])
   const showMonsterPreviewSlideshow = monsterHunt.phase === 'idle' && monsterPreviewPool.length > 0
+  const showWeaponPreviewSlideshow =
+    !weaponCoopMode && weaponHunt.phase === 'idle' && WEAPON_POOL.length > 0
 
   const monsterBackdrop =
     showMonsterPreviewSlideshow ? (
@@ -65,6 +69,24 @@ function HuntLayout({
           revealed={monsterHunt.phase === 'revealed'}
           emphasized={monsterGalleryEmphasized}
           immersive={monsterGalleryImmersive}
+        />
+      </>
+    )
+
+  const weaponBackdrop =
+    showWeaponPreviewSlideshow ? (
+      <WeaponPoolSlideshow pool={WEAPON_POOL} />
+    ) : (
+      <>
+        <WeaponGalleryImage
+          result={weaponHunt.result}
+          visible={weaponHunt.phase === 'revealed'}
+          emphasized={weaponGalleryEmphasized}
+          variant="backdrop"
+        />
+        <GalleryBackdropOverlay
+          revealed={weaponHunt.phase === 'revealed'}
+          emphasized={weaponGalleryEmphasized}
         />
       </>
     )
@@ -94,18 +116,7 @@ function HuntLayout({
 
       <section className="relative flex min-h-0 w-full max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col lg:items-stretch lg:overflow-hidden">
         {!weaponCoopMode ? (
-          <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <WeaponGalleryImage
-              result={weaponHunt.result}
-              visible={weaponHunt.phase === 'revealed'}
-              emphasized={weaponGalleryEmphasized}
-              variant="backdrop"
-            />
-            <GalleryBackdropOverlay
-              revealed={weaponHunt.phase === 'revealed'}
-              emphasized={weaponGalleryEmphasized}
-            />
-          </div>
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">{weaponBackdrop}</div>
         ) : null}
 
         <div className="relative z-10 flex h-full min-h-0 w-full flex-col max-lg:flex-1 max-lg:self-stretch lg:p-0">

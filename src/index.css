@@ -541,8 +541,8 @@
     radial-gradient(circle at 88% 15%, rgba(184, 101, 58, 0.1), transparent 38%);
 }
 
-/* Idle hunt preview — monsters crossfade slide in from right, out to left */
-.monster-pool-slideshow {
+/* Idle hunt preview — pool items crossfade slide in from right, out to left */
+.pool-slideshow {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -552,7 +552,7 @@
   overflow: hidden;
 }
 
-.monster-pool-slide-layer {
+.pool-slide-layer {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -563,19 +563,19 @@
   pointer-events: none;
 }
 
-.monster-pool-slide-layer[data-state='active'] {
+.pool-slide-layer[data-state='active'] {
   opacity: 1;
   transform: translateX(0);
   z-index: 2;
 }
 
-.monster-pool-slide-layer[data-state='exiting'] {
+.pool-slide-layer[data-state='exiting'] {
   opacity: 0;
   transform: translateX(-8%);
   z-index: 1;
 }
 
-.monster-pool-slide-image {
+.pool-slide-image {
   height: 100%;
   width: 100%;
   object-fit: contain;
@@ -586,7 +586,7 @@
     drop-shadow(0 0 48px rgb(201 162 77 / 0.12));
 }
 
-.monster-pool-slideshow-dim {
+.pool-slideshow-dim {
   pointer-events: none;
   position: absolute;
   inset: 0;
@@ -594,7 +594,7 @@
   background: rgb(15 13 10 / 0.18);
 }
 
-.monster-pool-slideshow-vignette {
+.pool-slideshow-vignette {
   pointer-events: none;
   position: absolute;
   inset: 0;
