@@ -551,11 +551,10 @@
 
 .landing-characters {
   position: absolute;
-  left: clamp(0.75rem, 2.5vw, 2.5rem);
-  top: 50%;
+  left: clamp(0.25rem, 1.5vw, 1.5rem);
+  bottom: clamp(3.5rem, 9vh, 5.5rem);
   z-index: 1;
   pointer-events: none;
-  transform: translateY(-36%);
 }
 
 .landing-characters-inner {
@@ -566,8 +565,8 @@
 }
 
 .landing-character-frame {
-  flex: 0 0 clamp(150px, 11vw, 210px);
-  height: clamp(360px, 44vh, 500px);
+  flex: 0 0 clamp(280px, 22vw, 400px);
+  height: clamp(620px, 82vh, 900px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -575,7 +574,7 @@
 }
 
 .landing-character-frame--female {
-  margin-left: clamp(-2.75rem, -3.5vw, -1.75rem);
+  margin-left: clamp(-4.5rem, -5.5vw, -3rem);
 }
 
 .landing-character {
@@ -589,11 +588,11 @@
 }
 
 .landing-character--male {
-  transform: scale(0.96);
+  transform: scale(1);
 }
 
 .landing-character--female {
-  transform: scale(0.82);
+  transform: scale(0.88);
 }
 
 @media (max-width: 767px) {
@@ -603,31 +602,27 @@
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
-  .landing-characters {
-    transform: translateY(-34%);
-  }
-
   .landing-character-frame {
-    flex-basis: clamp(120px, 14vw, 170px);
-    height: clamp(300px, 40vh, 420px);
+    flex-basis: clamp(220px, 24vw, 300px);
+    height: clamp(520px, 76vh, 720px);
   }
 
   .landing-character-frame--female {
-    margin-left: clamp(-2.25rem, -4vw, -1.5rem);
+    margin-left: clamp(-3.5rem, -5vw, -2.25rem);
   }
 
   .landing-character--male {
-    transform: scale(0.94);
+    transform: scale(1);
   }
 
   .landing-character--female {
-    transform: scale(0.8);
+    transform: scale(0.86);
   }
 }
 
 @media (min-width: 1024px) {
   .landing-character-frame {
-    flex-basis: clamp(150px, 11vw, 210px);
-    height: clamp(360px, 44vh, 500px);
+    flex-basis: clamp(280px, 22vw, 400px);
+    height: clamp(620px, 82vh, 900px);
   }
 }
