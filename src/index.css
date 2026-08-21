@@ -432,3 +432,68 @@
   background-color: color-mix(in srgb, var(--color-wilds-gold) 12%, transparent);
   animation: skeleton-pulse 1.8s ease-in-out infinite;
 }
+
+/* Landing page Key Art slideshow — crossfade + slow left-to-right pan */
+.key-art-slideshow {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.key-art-slide-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition-property: opacity;
+  transition-timing-function: ease-in-out;
+  will-change: opacity;
+}
+
+.key-art-slide-layer--visible {
+  opacity: 1;
+}
+
+.key-art-slide-layer--hidden {
+  opacity: 0;
+}
+
+.key-art-slide-image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.14) translateX(-7%);
+  will-change: transform;
+}
+
+.key-art-slide-image--pan {
+  animation-name: key-art-pan;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes key-art-pan {
+  from {
+    transform: scale(1.14) translateX(-7%);
+  }
+  to {
+    transform: scale(1.14) translateX(7%);
+  }
+}
+
+.key-art-slideshow-vignette {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 35%, transparent 0%, rgb(15 13 10 / 0.35) 55%, rgb(15 13 10 / 0.82) 100%),
+    linear-gradient(to bottom, rgb(15 13 10 / 0.55) 0%, transparent 28%, transparent 62%, rgb(15 13 10 / 0.88) 100%);
+}
+
+.key-art-slideshow-scrim {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% -5%, rgba(107, 127, 82, 0.18), transparent 42%),
+    radial-gradient(circle at 88% 15%, rgba(184, 101, 58, 0.14), transparent 38%);
+}

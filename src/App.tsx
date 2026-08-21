@@ -6,6 +6,7 @@ import type { CrateHuntContext } from './components/CrateHunt'
 import CoopWeaponPanel, { PlayerCountToolbarSpacer } from './components/CoopWeaponPanel'
 import GalleryBackdropOverlay from './components/GalleryBackdropOverlay'
 import HeaderNav from './components/HeaderNav'
+import LandingPage from './components/LandingPage'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
 import WeaponGalleryImage from './components/WeaponGalleryImage'
 import { useAppReady } from './hooks/useAppReady'
@@ -164,6 +165,7 @@ function AppContent() {
 
 function App() {
   const { ready, progress } = useAppReady()
+  const [entered, setEntered] = useState(false)
 
   return (
     <div className="relative flex min-h-svh flex-col bg-wilds-950 text-wilds-parchment max-lg:overflow-x-hidden lg:h-svh lg:min-h-0 lg:overflow-hidden">
@@ -177,6 +179,17 @@ function App() {
             className="absolute inset-0 bg-wilds-950"
           >
             <AppSkeleton progress={progress} />
+          </motion.div>
+        ) : !entered ? (
+          <motion.div
+            key="landing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
+            className="absolute inset-0"
+          >
+            <LandingPage onEnter={() => setEntered(true)} />
           </motion.div>
         ) : (
           <motion.div

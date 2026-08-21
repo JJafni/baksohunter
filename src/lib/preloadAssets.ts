@@ -1,9 +1,10 @@
+import { getKeyArtUrls } from '../data/keyArtUrls'
 import { MONSTER_POOL } from '../data/monsters'
 import { getQuestTypeIconUrls } from '../data/questTypes'
 import { WEAPON_POOL } from '../data/weapons'
 
 export function getAppAssetUrls(): string[] {
-  const urls = new Set<string>()
+  const urls = new Set<string>(getKeyArtUrls())
 
   for (const entry of MONSTER_POOL) {
     urls.add(entry.icon)
