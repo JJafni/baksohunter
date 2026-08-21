@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import KeyArtSlideshow from './KeyArtSlideshow'
+import LandingAlma from './LandingAlma'
 import LandingCharacters from './LandingCharacters'
 
 type LandingPageProps = {
@@ -25,6 +26,7 @@ function LandingPage({ onEnter }: LandingPageProps) {
 
         <main className="landing-hero">
           <LandingCharacters />
+          <LandingAlma />
 
           <motion.div
             initial={{ opacity: 0, y: 24 }}

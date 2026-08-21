@@ -1,12 +1,13 @@
 import { getKeyArtUrls } from '../data/keyArtUrls'
 import hunterFemale from '../assets/landing/hunter-female.webp'
 import hunterMale from '../assets/landing/hunter-male.webp'
+import almaRender from '../assets/landing/alma.webp'
 import { MONSTER_POOL } from '../data/monsters'
 import { getQuestTypeIconUrls } from '../data/questTypes'
 import { WEAPON_POOL } from '../data/weapons'
 
 export function getAppAssetUrls(): string[] {
-  const urls = new Set<string>([...getKeyArtUrls(), hunterMale, hunterFemale])
+  const urls = new Set<string>([...getKeyArtUrls(), hunterMale, hunterFemale, almaRender])
 
   for (const entry of MONSTER_POOL) {
     urls.add(entry.icon)
