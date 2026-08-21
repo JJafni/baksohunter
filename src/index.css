@@ -657,8 +657,8 @@
 
 .landing-alma-frame {
   display: flex;
-  height: clamp(700px, 88vh, 980px);
-  width: clamp(285px, 22vw, 390px);
+  height: clamp(820px, 94vh, 1120px);
+  width: clamp(480px, 34vw, 640px);
   align-items: flex-end;
   justify-content: center;
   overflow: visible;
@@ -667,7 +667,7 @@
 .landing-alma-image {
   height: 100%;
   width: 100%;
-  transform: scale(0.9);
+  transform: scale(1.22);
   transform-origin: bottom center;
   object-fit: contain;
   object-position: bottom center;
@@ -683,12 +683,12 @@
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .landing-alma-frame {
-    height: clamp(580px, 82vh, 800px);
-    width: clamp(225px, 23vw, 300px);
+    height: clamp(680px, 88vh, 920px);
+    width: clamp(360px, 34vw, 480px);
   }
 
   .landing-alma-image {
-    transform: scale(0.88);
+    transform: scale(1.16);
   }
 }
 
@@ -704,7 +704,7 @@
   .landing-alma {
     right: max(
       clamp(0.25rem, 1.5vw, 1.5rem),
-      calc(50% - 21rem - 400px - 2.5rem)
+      calc(50% - 21rem - 780px - 2.5rem)
     );
   }
 }
