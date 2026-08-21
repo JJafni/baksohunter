@@ -6,10 +6,6 @@ export type KeyArtSlide = {
 
 export const KEY_ART_SLIDES: KeyArtSlide[] = [
   {
-    url: 'https://monsterhunterwiki.org/images/f/fa/MHWilds-Box_Art.jpg',
-    label: 'Arkveld Game Cover Art',
-  },
-  {
     url: 'https://monsterhunterwiki.org/images/2/27/MHWilds-Key_Art_001.webp',
     label: 'Key Art',
   },
