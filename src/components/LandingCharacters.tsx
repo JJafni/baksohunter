@@ -1,30 +1,30 @@
-import almaRender from '../assets/landing/alma.webp'
-import roveRender from '../assets/landing/rove.webp'
+import hunterFemale from '../assets/landing/hunter-female.webp'
+import hunterMale from '../assets/landing/hunter-male.webp'
 import { useMouseParallax } from '../hooks/useMouseParallax'
 
 function LandingCharacters() {
   const { x, y } = useMouseParallax(0.11)
 
-  const roveX = x * 22
-  const roveY = y * 14
-  const almaX = x * 18
-  const almaY = y * 12
+  const maleX = x * 22
+  const maleY = y * 14
+  const femaleX = x * 18
+  const femaleY = y * 12
 
   return (
     <div className="landing-characters" aria-hidden="true">
       <img
-        src={roveRender}
+        src={hunterMale}
         alt=""
         className="landing-character landing-character--left"
-        style={{ transform: `translate3d(${roveX}px, ${roveY}px, 0)` }}
+        style={{ transform: `translate3d(${maleX}px, ${maleY}px, 0)` }}
         decoding="async"
         draggable={false}
       />
       <img
-        src={almaRender}
+        src={hunterFemale}
         alt=""
         className="landing-character landing-character--right"
-        style={{ transform: `translate3d(${almaX}px, ${almaY}px, 0)` }}
+        style={{ transform: `translate3d(${femaleX}px, ${femaleY}px, 0)` }}
         decoding="async"
         draggable={false}
       />
