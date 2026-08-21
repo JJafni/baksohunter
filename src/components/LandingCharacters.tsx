@@ -3,31 +3,32 @@ import hunterMale from '../assets/landing/hunter-male.webp'
 import { useMouseParallax } from '../hooks/useMouseParallax'
 
 function LandingCharacters() {
-  const { x, y } = useMouseParallax(0.11)
-
-  const maleX = x * 22
-  const maleY = y * 14
-  const femaleX = x * 18
-  const femaleY = y * 12
+  const { x, y } = useMouseParallax(0.05)
+  const offsetX = x * 7
+  const offsetY = y * 4
 
   return (
     <div className="landing-characters" aria-hidden="true">
-      <img
-        src={hunterMale}
-        alt=""
-        className="landing-character landing-character--left"
-        style={{ transform: `translate3d(${maleX}px, ${maleY}px, 0)` }}
-        decoding="async"
-        draggable={false}
-      />
-      <img
-        src={hunterFemale}
-        alt=""
-        className="landing-character landing-character--right"
-        style={{ transform: `translate3d(${femaleX}px, ${femaleY}px, 0)` }}
-        decoding="async"
-        draggable={false}
-      />
+      <div className="landing-character-wrap landing-character-wrap--left">
+        <img
+          src={hunterMale}
+          alt=""
+          className="landing-character"
+          style={{ transform: `translate3d(${offsetX}px, ${offsetY}px, 0)` }}
+          decoding="async"
+          draggable={false}
+        />
+      </div>
+      <div className="landing-character-wrap landing-character-wrap--right">
+        <img
+          src={hunterFemale}
+          alt=""
+          className="landing-character"
+          style={{ transform: `translate3d(${offsetX}px, ${offsetY}px, 0)` }}
+          decoding="async"
+          draggable={false}
+        />
+      </div>
     </div>
   )
 }

@@ -10,7 +10,6 @@ function LandingPage({ onEnter }: LandingPageProps) {
   return (
     <div className="relative flex min-h-svh flex-col overflow-hidden bg-wilds-950 text-wilds-parchment">
       <KeyArtSlideshow className="absolute inset-0" />
-      <LandingCharacters />
 
       <div className="relative z-10 flex min-h-svh flex-col">
         <header className="flex shrink-0 items-center justify-between px-6 py-6 sm:px-10">
@@ -24,12 +23,14 @@ function LandingPage({ onEnter }: LandingPageProps) {
           </div>
         </header>
 
-        <main className="flex flex-1 flex-col items-center justify-center px-6 pb-16 pt-8 text-center sm:px-10">
+        <main className="landing-hero">
+          <LandingCharacters />
+
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: 'easeOut', delay: 0.15 }}
-            className="mx-auto flex max-w-3xl flex-col items-center gap-6"
+            className="landing-hero-content mx-auto flex w-full max-w-3xl flex-col items-center gap-6 text-center"
           >
             <p className="text-[11px] font-bold uppercase tracking-[0.45em] text-wilds-gold-light wilds-legibility-text">
               Random Hunt Generator
