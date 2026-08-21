@@ -551,19 +551,18 @@
 
 .landing-characters {
   position: absolute;
-  left: 50%;
+  left: clamp(0.75rem, 2.5vw, 2.5rem);
   top: 50%;
   z-index: 1;
-  width: min(920px, 92vw);
   pointer-events: none;
-  transform: translate(-50%, -36%);
+  transform: translateY(-36%);
 }
 
 .landing-characters-inner {
   display: flex;
   align-items: flex-end;
-  justify-content: center;
-  gap: clamp(0.5rem, 2.5vw, 2rem);
+  justify-content: flex-start;
+  gap: clamp(0.25rem, 1.5vw, 1.25rem);
 }
 
 .landing-character {
@@ -584,12 +583,18 @@
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .landing-characters {
-    width: min(760px, 94vw);
-    transform: translate(-50%, -34%);
+    transform: translateY(-34%);
   }
 
   .landing-character {
     height: clamp(300px, 40vh, 420px);
-    width: clamp(160px, 24vw, 240px);
+    width: clamp(140px, 18vw, 220px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .landing-character {
+    height: clamp(360px, 44vh, 500px);
+    width: clamp(180px, 14vw, 260px);
   }
 }
