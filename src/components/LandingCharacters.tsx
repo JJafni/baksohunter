@@ -13,20 +13,24 @@ function LandingCharacters() {
         className="landing-characters-inner"
         style={{ transform: `translate3d(${offsetX}px, ${offsetY}px, 0)` }}
       >
-        <img
-          src={hunterMale}
-          alt=""
-          className="landing-character"
-          decoding="async"
-          draggable={false}
-        />
-        <img
-          src={hunterFemale}
-          alt=""
-          className="landing-character"
-          decoding="async"
-          draggable={false}
-        />
+        <div className="landing-character-frame landing-character-frame--male">
+          <img
+            src={hunterMale}
+            alt=""
+            className="landing-character landing-character--male"
+            decoding="async"
+            draggable={false}
+          />
+        </div>
+        <div className="landing-character-frame landing-character-frame--female">
+          <img
+            src={hunterFemale}
+            alt=""
+            className="landing-character landing-character--female"
+            decoding="async"
+            draggable={false}
+          />
+        </div>
       </div>
     </div>
   )
