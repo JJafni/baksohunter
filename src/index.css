@@ -578,7 +578,7 @@
 
 .landing-character-frame--female {
   flex: 0 0 clamp(285px, 22vw, 390px);
-  margin-left: clamp(-8rem, -9.5vw, -5.75rem);
+  margin-left: clamp(-10rem, -12vw, -7.5rem);
 }
 
 .landing-character {
@@ -616,7 +616,7 @@
 
   .landing-character-frame--female {
     flex-basis: clamp(225px, 23vw, 300px);
-    margin-left: clamp(-6.25rem, -8vw, -4.5rem);
+    margin-left: clamp(-8rem, -10vw, -6rem);
   }
 
   .landing-character--male {
