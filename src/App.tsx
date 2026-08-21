@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import AppSkeleton from './components/AppSkeleton'
 import CrateOpener from './components/CrateOpener'
@@ -144,7 +144,7 @@ function AppContent() {
         <HeaderNav activeMode="normal" />
       </header>
 
-      <main className="relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-x-hidden max-lg:min-h-0 max-lg:px-0 max-lg:py-0 lg:overflow-hidden lg:px-0 lg:py-0">
+      <main className="relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-x-hidden max-lg:min-h-0 max-lg:px-0 max-lg:py-0 lg:min-h-0 lg:overflow-hidden lg:px-0 lg:py-0">
         <HuntLayout
           monsterHunt={monsterHunt}
           onMonsterHuntChange={setMonsterHunt}
@@ -165,10 +165,14 @@ function AppContent() {
 
 function App() {
   const { ready, progress } = useAppReady()
-  const [entered, setEntered] = useState(false)
+  const huntSectionRef = useRef<HTMLElement>(null)
+
+  const scrollToHunt = useCallback(() => {
+    huntSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [])
 
   return (
-    <div className="relative flex min-h-svh flex-col bg-wilds-950 text-wilds-parchment max-lg:overflow-x-hidden lg:h-svh lg:min-h-0 lg:overflow-hidden">
+    <div className="relative h-svh min-h-svh overflow-y-auto overflow-x-hidden scroll-smooth bg-wilds-950 text-wilds-parchment">
       <AnimatePresence mode="wait">
         {!ready ? (
           <motion.div
@@ -176,34 +180,29 @@ function App() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: 'easeInOut' }}
-            className="absolute inset-0 bg-wilds-950"
+            className="fixed inset-0 z-50 bg-wilds-950"
           >
             <AppSkeleton progress={progress} />
           </motion.div>
-        ) : !entered ? (
-          <motion.div
-            key="landing"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: 'easeInOut' }}
-            className="absolute inset-0"
-          >
-            <LandingPage onEnter={() => setEntered(true)} />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="content"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.45, ease: 'easeOut' }}
-            className="relative flex min-h-svh flex-col max-lg:min-h-svh lg:h-full lg:min-h-0 lg:overflow-hidden"
+        ) : null}
+      </AnimatePresence>
+
+      {ready ? (
+        <>
+          <LandingPage onEnter={scrollToHunt} />
+
+          <section
+            ref={huntSectionRef}
+            id="hunt-section"
+            className="relative flex min-h-svh flex-col lg:h-svh"
           >
             <AppBackground />
-            <AppContent />
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <div className="relative flex min-h-svh flex-col lg:h-full lg:min-h-0">
+              <AppContent />
+            </div>
+          </section>
+        </>
+      ) : null}
     </div>
   )
 }
