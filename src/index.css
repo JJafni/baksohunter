@@ -439,6 +439,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
+  background-color: var(--color-wilds-950);
   isolation: isolate;
   overflow: hidden;
 }
@@ -453,14 +454,21 @@
   pointer-events: none;
 }
 
-.key-art-slide-layer[data-active='true'] {
+.key-art-slide-layer[data-state='active'] {
   opacity: 1;
+  z-index: 2;
+}
+
+.key-art-slide-layer[data-state='exiting'] {
+  opacity: 0;
   z-index: 1;
 }
 
 .key-art-slide-image {
   height: 100%;
   width: 100%;
+  min-width: 100%;
+  min-height: 100%;
   object-fit: cover;
   object-position: center;
   will-change: transform;
@@ -480,38 +488,46 @@
 
 @keyframes key-art-pan-ltr {
   from {
-    transform: scale(1.14) translateX(-7%);
+    transform: scale(1.24) translateX(-5%);
   }
   to {
-    transform: scale(1.14) translateX(7%);
+    transform: scale(1.24) translateX(5%);
   }
 }
 
 @keyframes key-art-pan-rtl {
   from {
-    transform: scale(1.14) translateX(7%);
+    transform: scale(1.24) translateX(5%);
   }
   to {
-    transform: scale(1.14) translateX(-7%);
+    transform: scale(1.24) translateX(-5%);
   }
+}
+
+.key-art-slideshow-dim {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: rgb(15 13 10 / 0.42);
 }
 
 .key-art-slideshow-vignette {
   pointer-events: none;
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 4;
   background:
-    radial-gradient(circle at 50% 35%, transparent 0%, rgb(15 13 10 / 0.35) 55%, rgb(15 13 10 / 0.82) 100%),
-    linear-gradient(to bottom, rgb(15 13 10 / 0.55) 0%, transparent 28%, transparent 62%, rgb(15 13 10 / 0.88) 100%);
+    radial-gradient(circle at 50% 35%, transparent 0%, rgb(15 13 10 / 0.5) 52%, rgb(15 13 10 / 0.92) 100%),
+    linear-gradient(to bottom, rgb(15 13 10 / 0.72) 0%, transparent 24%, transparent 58%, rgb(15 13 10 / 0.94) 100%);
 }
 
 .key-art-slideshow-scrim {
   pointer-events: none;
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 4;
   background:
-    radial-gradient(circle at 12% -5%, rgba(107, 127, 82, 0.18), transparent 42%),
-    radial-gradient(circle at 88% 15%, rgba(184, 101, 58, 0.14), transparent 38%);
+    radial-gradient(circle at 12% -5%, rgba(107, 127, 82, 0.12), transparent 42%),
+    radial-gradient(circle at 88% 15%, rgba(184, 101, 58, 0.1), transparent 38%);
 }

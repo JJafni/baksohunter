@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { KEY_ART_SLIDES } from '../data/keyArtUrls'
 
-const SLIDE_DURATION_MS = 11_000
-const FADE_DURATION_MS = 2_800
+/** Total time each slide is the primary focus (pan + overlap fade). */
+const SLIDE_CYCLE_MS = 11_000
+/** Crossfade overlap — begins this long before the cycle ends. */
+const FADE_DURATION_MS = 3_400
+/** Pan animation runs the full cycle so movement continues through the fade. */
+const PAN_DURATION_MS = SLIDE_CYCLE_MS
 
 type KeyArtSlideshowProps = {
   className?: string
@@ -10,17 +14,41 @@ type KeyArtSlideshowProps = {
 
 function KeyArtSlideshow({ className = '' }: KeyArtSlideshowProps) {
   const [activeIndex, setActiveIndex] = useState(0)
+  const [exitingIndex, setExitingIndex] = useState<number | null>(null)
   const [activationCounts, setActivationCounts] = useState<number[]>(() =>
     KEY_ART_SLIDES.map((_, index) => (index === 0 ? 1 : 0)),
   )
   const skipInitialActivationRef = useRef(true)
+  const cycleTimerRef = useRef<number | null>(null)
+  const fadeTimerRef = useRef<number | null>(null)
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % KEY_ART_SLIDES.length)
-    }, SLIDE_DURATION_MS)
+    const scheduleCycle = () => {
+      cycleTimerRef.current = window.setTimeout(() => {
+        setActiveIndex((current) => {
+          setExitingIndex(current)
+          const next = (current + 1) % KEY_ART_SLIDES.length
 
-    return () => window.clearInterval(timer)
+          if (fadeTimerRef.current !== null) {
+            window.clearTimeout(fadeTimerRef.current)
+          }
+          fadeTimerRef.current = window.setTimeout(() => {
+            setExitingIndex(null)
+          }, FADE_DURATION_MS)
+
+          return next
+        })
+
+        scheduleCycle()
+      }, SLIDE_CYCLE_MS - FADE_DURATION_MS)
+    }
+
+    scheduleCycle()
+
+    return () => {
+      if (cycleTimerRef.current !== null) window.clearTimeout(cycleTimerRef.current)
+      if (fadeTimerRef.current !== null) window.clearTimeout(fadeTimerRef.current)
+    }
   }, [])
 
   useEffect(() => {
@@ -40,14 +68,20 @@ function KeyArtSlideshow({ className = '' }: KeyArtSlideshowProps) {
     <div className={`key-art-slideshow ${className}`.trim()} aria-hidden="true">
       {KEY_ART_SLIDES.map((slide, index) => {
         const isActive = index === activeIndex
+        const isExiting = index === exitingIndex
+        const isVisible = isActive || isExiting
         const hasPlayed = activationCounts[index] > 0
         const panDirection = index % 2 === 0 ? 'ltr' : 'rtl'
+
+        let layerState: 'active' | 'exiting' | 'hidden' = 'hidden'
+        if (isActive) layerState = 'active'
+        else if (isExiting) layerState = 'exiting'
 
         return (
           <div
             key={slide.url}
             className="key-art-slide-layer"
-            data-active={isActive ? 'true' : 'false'}
+            data-state={layerState}
             style={{ transitionDuration: `${FADE_DURATION_MS}ms` }}
           >
             {hasPlayed ? (
@@ -58,8 +92,8 @@ function KeyArtSlideshow({ className = '' }: KeyArtSlideshowProps) {
                 referrerPolicy="no-referrer"
                 className={`key-art-slide-image key-art-slide-image--pan-${panDirection}`}
                 style={{
-                  animationDuration: `${SLIDE_DURATION_MS}ms`,
-                  animationPlayState: isActive ? 'running' : 'paused',
+                  animationDuration: `${PAN_DURATION_MS}ms`,
+                  animationPlayState: isVisible ? 'running' : 'paused',
                 }}
                 decoding="async"
                 draggable={false}
@@ -68,6 +102,7 @@ function KeyArtSlideshow({ className = '' }: KeyArtSlideshowProps) {
           </div>
         )
       })}
+      <div className="key-art-slideshow-dim" />
       <div className="key-art-slideshow-vignette" />
       <div className="key-art-slideshow-scrim" />
     </div>
