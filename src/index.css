@@ -565,7 +565,6 @@
 }
 
 .landing-character-frame {
-  flex: 0 0 clamp(280px, 22vw, 400px);
   height: clamp(620px, 82vh, 900px);
   display: flex;
   align-items: flex-end;
@@ -573,8 +572,13 @@
   overflow: visible;
 }
 
+.landing-character-frame--male {
+  flex: 0 0 clamp(300px, 24vw, 420px);
+}
+
 .landing-character-frame--female {
-  margin-left: clamp(-4.5rem, -5.5vw, -3rem);
+  flex: 0 0 clamp(250px, 19vw, 340px);
+  margin-left: clamp(-7rem, -8.5vw, -5rem);
 }
 
 .landing-character {
@@ -588,11 +592,11 @@
 }
 
 .landing-character--male {
-  transform: scale(1);
+  transform: scale(1.08);
 }
 
 .landing-character--female {
-  transform: scale(0.88);
+  transform: scale(0.78);
 }
 
 @media (max-width: 767px) {
@@ -603,26 +607,33 @@
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .landing-character-frame {
-    flex-basis: clamp(220px, 24vw, 300px);
     height: clamp(520px, 76vh, 720px);
   }
 
+  .landing-character-frame--male {
+    flex-basis: clamp(240px, 26vw, 320px);
+  }
+
   .landing-character-frame--female {
-    margin-left: clamp(-3.5rem, -5vw, -2.25rem);
+    flex-basis: clamp(200px, 20vw, 260px);
+    margin-left: clamp(-5.5rem, -7vw, -4rem);
   }
 
   .landing-character--male {
-    transform: scale(1);
+    transform: scale(1.06);
   }
 
   .landing-character--female {
-    transform: scale(0.86);
+    transform: scale(0.76);
   }
 }
 
 @media (min-width: 1024px) {
-  .landing-character-frame {
-    flex-basis: clamp(280px, 22vw, 400px);
-    height: clamp(620px, 82vh, 900px);
+  .landing-character-frame--male {
+    flex-basis: clamp(300px, 24vw, 420px);
+  }
+
+  .landing-character-frame--female {
+    flex-basis: clamp(250px, 19vw, 340px);
   }
 }
