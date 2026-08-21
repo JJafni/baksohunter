@@ -1,10 +1,12 @@
 import { getKeyArtUrls } from '../data/keyArtUrls'
+import almaRender from '../assets/landing/alma.webp'
+import roveRender from '../assets/landing/rove.webp'
 import { MONSTER_POOL } from '../data/monsters'
 import { getQuestTypeIconUrls } from '../data/questTypes'
 import { WEAPON_POOL } from '../data/weapons'
 
 export function getAppAssetUrls(): string[] {
-  const urls = new Set<string>(getKeyArtUrls())
+  const urls = new Set<string>([...getKeyArtUrls(), almaRender, roveRender])
 
   for (const entry of MONSTER_POOL) {
     urls.add(entry.icon)

@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import KeyArtSlideshow from './KeyArtSlideshow'
+import LandingCharacters from './LandingCharacters'
 
 type LandingPageProps = {
   onEnter: () => void
@@ -9,6 +10,7 @@ function LandingPage({ onEnter }: LandingPageProps) {
   return (
     <div className="relative flex min-h-svh flex-col overflow-hidden bg-wilds-950 text-wilds-parchment">
       <KeyArtSlideshow className="absolute inset-0" />
+      <LandingCharacters />
 
       <div className="relative z-10 flex min-h-svh flex-col">
         <header className="flex shrink-0 items-center justify-between px-6 py-6 sm:px-10">

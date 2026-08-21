@@ -531,3 +531,46 @@
     radial-gradient(circle at 12% -5%, rgba(107, 127, 82, 0.12), transparent 42%),
     radial-gradient(circle at 88% 15%, rgba(184, 101, 58, 0.1), transparent 38%);
 }
+
+.landing-characters {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.landing-character {
+  position: absolute;
+  bottom: 0;
+  height: min(86vh, 900px);
+  width: auto;
+  max-width: min(38vw, 480px);
+  object-fit: contain;
+  object-position: bottom;
+  will-change: transform;
+  filter: drop-shadow(0 10px 36px rgb(0 0 0 / 0.55));
+}
+
+.landing-character--left {
+  left: max(-2vw, -24px);
+  transform-origin: bottom left;
+}
+
+.landing-character--right {
+  right: max(-2vw, -24px);
+  transform-origin: bottom right;
+}
+
+@media (max-width: 767px) {
+  .landing-characters {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .landing-character {
+    height: min(72vh, 720px);
+    max-width: min(34vw, 360px);
+  }
+}
