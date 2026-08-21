@@ -575,56 +575,15 @@
   z-index: 1;
 }
 
-.monster-pool-slide-frame {
-  position: relative;
-  height: 100%;
-  width: 100%;
-}
-
-.monster-pool-slide-skeleton {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding-bottom: 8%;
-  pointer-events: none;
-}
-
-.monster-pool-slide-skeleton-body {
-  width: min(38vw, 300px);
-  height: min(48vh, 420px);
-  border-radius: 42% 42% 14% 14% / 48% 48% 16% 16%;
-  border: 1px solid color-mix(in srgb, var(--color-wilds-gold) 10%, transparent);
-}
-
-.monster-pool-slide-skeleton-head {
-  width: min(16vw, 120px);
-  height: min(12vh, 96px);
-  margin-bottom: -1.5rem;
-  border-radius: 9999px;
-  border: 1px solid color-mix(in srgb, var(--color-wilds-gold) 10%, transparent);
-}
-
 .monster-pool-slide-image {
   height: 100%;
   width: 100%;
   object-fit: contain;
   object-position: center;
   transform: scale(1.05);
-  opacity: 0;
-  transition: opacity 0.45s ease-in-out;
+  opacity: 0.82;
   filter: brightness(0) sepia(1) hue-rotate(358deg) saturate(2.4) brightness(0.38)
     drop-shadow(0 0 48px rgb(201 162 77 / 0.12));
-}
-
-.monster-pool-slide-image--loaded {
-  opacity: 0.82;
-}
-
-.monster-pool-slide-image--loading {
-  opacity: 0;
 }
 
 .monster-pool-slideshow-dim {
