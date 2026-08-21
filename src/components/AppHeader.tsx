@@ -31,10 +31,10 @@ function AppHeader({ visible, onShow, chromeSolid }: AppHeaderProps) {
       >
         <div
           aria-hidden="true"
-          className={`pointer-events-none absolute inset-0 border-b backdrop-blur-sm transition-colors duration-300 ${
+          className={`pointer-events-none absolute inset-0 border-b transition-[background-color,border-color,backdrop-filter] duration-300 ${
             chromeSolid
-              ? 'border-wilds-gold/10 bg-wilds-950/60'
-              : 'border-transparent bg-transparent'
+              ? 'border-wilds-gold/10 bg-wilds-950/60 backdrop-blur-sm'
+              : 'border-transparent bg-transparent backdrop-blur-none'
           }`}
         />
         <div className="relative flex w-full items-center justify-between">
@@ -54,7 +54,7 @@ function AppHeader({ visible, onShow, chromeSolid }: AppHeaderProps) {
               Faith Hunt
             </span>
           </div>
-          <HeaderNav activeMode="normal" />
+          <HeaderNav activeMode="normal" transparent={!chromeSolid} />
         </div>
       </header>
 

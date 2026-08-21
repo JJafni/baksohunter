@@ -1,12 +1,17 @@
 type HeaderNavProps = {
   activeMode?: 'normal'
+  transparent?: boolean
 }
 
-function HeaderNav({ activeMode = 'normal' }: HeaderNavProps) {
+function HeaderNav({ activeMode = 'normal', transparent = false }: HeaderNavProps) {
   return (
     <nav
       aria-label="Game mode"
-      className="flex items-center gap-1.5 rounded-lg border border-wilds-gold/25 bg-wilds-900/70 p-1.5 shadow-[inset_0_1px_0_rgba(228,200,120,0.06)] sm:gap-2"
+      className={`flex items-center gap-1.5 rounded-lg p-1.5 sm:gap-2 ${
+        transparent
+          ? 'border border-transparent bg-transparent shadow-none'
+          : 'border border-wilds-gold/25 bg-wilds-900/70 shadow-[inset_0_1px_0_rgba(228,200,120,0.06)]'
+      }`}
     >
       <button
         type="button"
