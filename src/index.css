@@ -435,7 +435,10 @@
 
 /* Landing page Key Art slideshow — crossfade + slow left-to-right pan */
 .key-art-slideshow {
-  position: relative;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   isolation: isolate;
   overflow: hidden;
 }
@@ -443,6 +446,14 @@
 .key-art-slide-layer {
   position: absolute;
   inset: 0;
+  opacity: 0;
+  transition-property: opacity;
+  transition-timing-function: ease-in-out;
+  pointer-events: none;
+}
+
+.key-art-slide-layer[data-active='true'] {
+  opacity: 1;
 }
 
 .key-art-slide-image {

@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
 import { KEY_ART_SLIDES } from '../data/keyArtUrls'
 
 const SLIDE_DURATION_MS = 11_000
-const FADE_DURATION_S = 2.8
+const FADE_DURATION_MS = 2_800
 
 type KeyArtSlideshowProps = {
   className?: string
@@ -20,29 +19,30 @@ function KeyArtSlideshow({ className = '' }: KeyArtSlideshowProps) {
     return () => window.clearInterval(timer)
   }, [])
 
-  const slide = KEY_ART_SLIDES[activeIndex]
-
   return (
     <div className={`key-art-slideshow ${className}`.trim()} aria-hidden="true">
-      <AnimatePresence initial={false}>
-        <motion.div
-          key={slide.url}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: FADE_DURATION_S, ease: 'easeInOut' }}
-          className="key-art-slide-layer"
-        >
-          <img
-            src={slide.url}
-            alt=""
-            className="key-art-slide-image key-art-slide-image--pan"
-            style={{ animationDuration: `${SLIDE_DURATION_MS}ms` }}
-            decoding="async"
-            draggable={false}
-          />
-        </motion.div>
-      </AnimatePresence>
+      {KEY_ART_SLIDES.map((slide, index) => {
+        const isActive = index === activeIndex
+
+        return (
+          <div
+            key={slide.url}
+            className="key-art-slide-layer"
+            data-active={isActive ? 'true' : 'false'}
+            style={{ transitionDuration: `${FADE_DURATION_MS}ms` }}
+          >
+            <img
+              src={slide.url}
+              alt=""
+              referrerPolicy="no-referrer"
+              className={`key-art-slide-image ${isActive ? 'key-art-slide-image--pan' : ''}`}
+              style={{ animationDuration: `${SLIDE_DURATION_MS}ms` }}
+              decoding="async"
+              draggable={false}
+            />
+          </div>
+        )
+      })}
       <div className="key-art-slideshow-vignette" />
       <div className="key-art-slideshow-scrim" />
     </div>
