@@ -8,7 +8,9 @@ import CoopWeaponPanel, { PlayerCountToolbarSpacer } from './components/CoopWeap
 import GalleryBackdropOverlay from './components/GalleryBackdropOverlay'
 import LandingPage from './components/LandingPage'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
+import MonsterPoolSlideshow from './components/MonsterPoolSlideshow'
 import WeaponGalleryImage from './components/WeaponGalleryImage'
+import type { CrateEntry } from './data/types'
 import { useAppReady } from './hooks/useAppReady'
 import { useHeaderVisibility } from './hooks/useHeaderVisibility'
 
@@ -45,43 +47,47 @@ function HuntLayout({
     !monsterHunt.immersiveView
   const monsterGalleryImmersive = monsterHunt.phase === 'revealed' && Boolean(monsterHunt.immersiveView)
   const weaponGalleryEmphasized = weaponHunt.phase === 'revealed' && weaponHunt.spinnerUiVisible
+  const [monsterPreviewPool, setMonsterPreviewPool] = useState<CrateEntry[]>([])
+  const showMonsterPreviewSlideshow = monsterHunt.phase === 'idle' && monsterPreviewPool.length > 0
+
+  const monsterBackdrop =
+    showMonsterPreviewSlideshow ? (
+      <MonsterPoolSlideshow pool={monsterPreviewPool} />
+    ) : (
+      <>
+        <MonsterGalleryImage
+          result={monsterHunt.result}
+          visible={monsterHunt.phase === 'revealed'}
+          emphasized={monsterGalleryEmphasized}
+          variant="backdrop"
+        />
+        <GalleryBackdropOverlay
+          revealed={monsterHunt.phase === 'revealed'}
+          emphasized={monsterGalleryEmphasized}
+          immersive={monsterGalleryImmersive}
+        />
+      </>
+    )
 
   return (
     <div className="grid h-full min-h-0 w-full grid-cols-1 gap-8 max-lg:flex max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:gap-0 lg:grid-cols-2 lg:items-stretch lg:gap-0">
       <section className="relative flex min-h-0 w-full max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:border-b max-lg:border-wilds-gold/15 lg:items-stretch lg:justify-center lg:border-r lg:border-wilds-gold/15">
         <div className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
-          <MonsterGalleryImage
-            result={monsterHunt.result}
-            visible={monsterHunt.phase === 'revealed'}
-            emphasized={monsterGalleryEmphasized}
-            variant="backdrop"
-          />
-          <GalleryBackdropOverlay
-            revealed={monsterHunt.phase === 'revealed'}
-            emphasized={monsterGalleryEmphasized}
-            immersive={monsterGalleryImmersive}
-          />
+          {monsterBackdrop}
         </div>
-        {monsterHunt.phase !== 'idle' ? (
-          <div className="pointer-events-none absolute inset-0 overflow-hidden lg:hidden">
-            <MonsterGalleryImage
-              result={monsterHunt.result}
-              visible={monsterHunt.phase === 'revealed'}
-              emphasized={monsterGalleryEmphasized}
-              variant="backdrop"
-            />
-            <GalleryBackdropOverlay
-              revealed={monsterHunt.phase === 'revealed'}
-              emphasized={monsterGalleryEmphasized}
-              immersive={monsterGalleryImmersive}
-            />
-          </div>
-        ) : null}
+        <div
+          className={`pointer-events-none absolute inset-0 overflow-hidden lg:hidden ${showMonsterPreviewSlideshow || monsterHunt.phase !== 'idle' ? '' : 'hidden'}`}
+        >
+          {showMonsterPreviewSlideshow || monsterHunt.phase !== 'idle' ? monsterBackdrop : null}
+        </div>
 
         <div className="relative z-10 flex h-full min-h-0 w-full flex-col overflow-visible lg:px-8">
           <PlayerCountToolbarSpacer />
           <div className="flex h-full min-h-0 w-full flex-1 flex-col self-stretch">
-            <CrateOpener onHuntChange={onMonsterHuntChange} />
+            <CrateOpener
+              onHuntChange={onMonsterHuntChange}
+              onFilteredPoolChange={setMonsterPreviewPool}
+            />
           </div>
         </div>
       </section>

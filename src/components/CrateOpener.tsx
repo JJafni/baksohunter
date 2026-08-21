@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { CrateHuntContext } from './CrateHunt'
 import CrateHunt from './CrateHunt'
 import HuntStarFilter from './HuntStarFilter'
@@ -7,7 +7,7 @@ import MonsterRarityFilter from './MonsterRarityFilter'
 import MonstersPickerButton from './MonstersPickerButton'
 import { pickQuestTypeForMonster } from '../data/questTypes'
 import { MONSTER_POOL } from '../data/monsters'
-import type { Rarity } from '../data/types'
+import type { CrateEntry, Rarity } from '../data/types'
 import { SPIN_LABELS } from '../lib/spinLabels'
 import {
   filterPoolByExcluded,
@@ -36,9 +36,10 @@ const RARITY_LABELS: Record<Rarity, string> = {
 
 type CrateOpenerProps = {
   onHuntChange?: (ctx: CrateHuntContext) => void
+  onFilteredPoolChange?: (pool: CrateEntry[]) => void
 }
 
-function CrateOpener({ onHuntChange }: CrateOpenerProps) {
+function CrateOpener({ onHuntChange, onFilteredPoolChange }: CrateOpenerProps) {
   const [poolFilter, setPoolFilter] = useState<MonsterPoolFilterState>(DEFAULT_MONSTER_POOL_FILTER)
   const [starFilter, setStarFilter] = useState<HuntStarFilterState>(DEFAULT_HUNT_STAR_FILTER)
   const [questTypeEnabled, setQuestTypeEnabled] = useState(true)
@@ -52,6 +53,10 @@ function CrateOpener({ onHuntChange }: CrateOpenerProps) {
     const byExclusion = filterPoolByExcluded(byRarity, excludedMonsters)
     return filterPoolByStars(byExclusion, starFilter)
   }, [poolFilter, starFilter, excludedMonsters])
+
+  useEffect(() => {
+    onFilteredPoolChange?.(filteredPool)
+  }, [filteredPool, onFilteredPoolChange])
 
   const pickRandom = useCallback(() => pickRandomFromPool(filteredPool), [filteredPool])
 
