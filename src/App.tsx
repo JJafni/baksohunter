@@ -10,7 +10,7 @@ import LandingPage from './components/LandingPage'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
 import WeaponGalleryImage from './components/WeaponGalleryImage'
 import { useAppReady } from './hooks/useAppReady'
-import { useHuntSectionInView } from './hooks/useHuntSectionInView'
+import { useHeaderChromeOpacity } from './hooks/useHeaderChromeOpacity'
 
 function AppBackground() {
   return (
@@ -156,7 +156,7 @@ function App() {
   const { ready, progress } = useAppReady()
   const scrollRootRef = useRef<HTMLDivElement>(null)
   const huntSectionRef = useRef<HTMLElement>(null)
-  const huntChromeVisible = useHuntSectionInView(scrollRootRef, huntSectionRef, ready)
+  const headerChromeOpacity = useHeaderChromeOpacity(scrollRootRef, huntSectionRef, ready)
 
   const scrollToHunt = useCallback(() => {
     huntSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -183,7 +183,7 @@ function App() {
 
       {ready ? (
         <>
-          <AppHeader huntChromeVisible={huntChromeVisible} />
+          <AppHeader chromeOpacity={headerChromeOpacity} />
 
           <LandingPage onEnter={scrollToHunt} />
 
