@@ -13,18 +13,7 @@ function LandingPage({ onEnter }: LandingPageProps) {
       <KeyArtSlideshow className="absolute inset-0" />
 
       <div className="relative z-10 flex min-h-svh flex-col">
-        <header className="flex shrink-0 items-center justify-between px-6 py-6 sm:px-10">
-          <div className="flex items-center gap-3">
-            <span className="text-lg font-black uppercase tracking-widest text-wilds-parchment wilds-legibility-text">
-              MH<span className="text-wilds-gold-light">Wilds</span>
-            </span>
-            <span className="hidden text-xs uppercase tracking-[0.3em] text-wilds-parchment/80 wilds-legibility-text sm:inline">
-              Faith Hunt
-            </span>
-          </div>
-        </header>
-
-        <main className="landing-hero">
+        <main className="landing-hero flex-1">
           <LandingCharacters />
           <LandingAlma />
 

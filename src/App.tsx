@@ -1,15 +1,16 @@
 import { useCallback, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
+import AppHeader from './components/AppHeader'
 import AppSkeleton from './components/AppSkeleton'
 import CrateOpener from './components/CrateOpener'
 import type { CrateHuntContext } from './components/CrateHunt'
 import CoopWeaponPanel, { PlayerCountToolbarSpacer } from './components/CoopWeaponPanel'
 import GalleryBackdropOverlay from './components/GalleryBackdropOverlay'
-import HeaderNav from './components/HeaderNav'
 import LandingPage from './components/LandingPage'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
 import WeaponGalleryImage from './components/WeaponGalleryImage'
 import { useAppReady } from './hooks/useAppReady'
+import { useHuntSectionInView } from './hooks/useHuntSectionInView'
 
 function AppBackground() {
   return (
@@ -132,18 +133,6 @@ function AppContent() {
 
   return (
     <>
-      <header className="relative z-10 flex shrink-0 items-center justify-between border-b border-wilds-gold/10 bg-wilds-950/60 px-6 py-6 backdrop-blur-sm sm:px-10 lg:py-4">
-        <div className="flex items-center gap-3">
-          <span className="text-lg font-black uppercase tracking-widest text-wilds-parchment">
-            MH<span className="text-wilds-gold-light">Wilds</span>
-          </span>
-          <span className="hidden text-xs uppercase tracking-[0.3em] text-wilds-muted sm:inline">
-            Faith Hunt
-          </span>
-        </div>
-        <HeaderNav activeMode="normal" />
-      </header>
-
       <main className="relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-x-hidden max-lg:min-h-0 max-lg:px-0 max-lg:py-0 lg:min-h-0 lg:overflow-hidden lg:px-0 lg:py-0">
         <HuntLayout
           monsterHunt={monsterHunt}
@@ -165,14 +154,19 @@ function AppContent() {
 
 function App() {
   const { ready, progress } = useAppReady()
+  const scrollRootRef = useRef<HTMLDivElement>(null)
   const huntSectionRef = useRef<HTMLElement>(null)
+  const huntChromeVisible = useHuntSectionInView(scrollRootRef, huntSectionRef, ready)
 
   const scrollToHunt = useCallback(() => {
     huntSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
 
   return (
-    <div className="relative h-svh min-h-svh overflow-y-auto overflow-x-hidden scroll-smooth bg-wilds-950 text-wilds-parchment">
+    <div
+      ref={scrollRootRef}
+      className="wilds-scrollbar-hidden relative h-svh min-h-svh overflow-y-auto overflow-x-hidden scroll-smooth bg-wilds-950 text-wilds-parchment"
+    >
       <AnimatePresence mode="wait">
         {!ready ? (
           <motion.div
@@ -189,12 +183,14 @@ function App() {
 
       {ready ? (
         <>
+          <AppHeader huntChromeVisible={huntChromeVisible} />
+
           <LandingPage onEnter={scrollToHunt} />
 
           <section
             ref={huntSectionRef}
             id="hunt-section"
-            className="relative flex min-h-svh flex-col lg:h-svh"
+            className="relative flex min-h-svh scroll-mt-[4.5rem] flex-col border-t border-wilds-gold/10 lg:h-svh lg:scroll-mt-16"
           >
             <AppBackground />
             <div className="relative flex min-h-svh flex-col lg:h-full lg:min-h-0">

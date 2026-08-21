@@ -140,6 +140,15 @@
     background: var(--color-wilds-gold-light);
   }
 
+  .wilds-scrollbar-hidden {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .wilds-scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Hunt spin button — sandblasted matte surface (dark red). */
   .wilds-spin-matte {
     position: relative;
