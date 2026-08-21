@@ -9,22 +9,21 @@ function LandingCharacters() {
 
   return (
     <div className="landing-characters" aria-hidden="true">
-      <div className="landing-character-wrap landing-character-wrap--left">
+      <div
+        className="landing-characters-inner"
+        style={{ transform: `translate3d(${offsetX}px, ${offsetY}px, 0)` }}
+      >
         <img
           src={hunterMale}
           alt=""
           className="landing-character"
-          style={{ transform: `translate3d(${offsetX}px, ${offsetY}px, 0)` }}
           decoding="async"
           draggable={false}
         />
-      </div>
-      <div className="landing-character-wrap landing-character-wrap--right">
         <img
           src={hunterFemale}
           alt=""
           className="landing-character"
-          style={{ transform: `translate3d(${offsetX}px, ${offsetY}px, 0)` }}
           decoding="async"
           draggable={false}
         />

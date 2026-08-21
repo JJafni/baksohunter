@@ -534,68 +534,62 @@
 
 .landing-hero {
   position: relative;
-  display: grid;
+  display: flex;
   flex: 1;
   align-items: center;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 42rem) minmax(0, 1fr);
-  gap: clamp(0.75rem, 2vw, 2rem);
+  justify-content: center;
+  overflow: hidden;
   padding: 1.5rem clamp(1rem, 3vw, 2.5rem) 4rem;
 }
 
 .landing-hero-content {
-  grid-column: 2;
-  grid-row: 1;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 42rem;
 }
 
 .landing-characters {
-  display: contents;
-}
-
-.landing-character-wrap {
-  display: flex;
-  align-items: center;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: min(920px, 92vw);
   pointer-events: none;
+  transform: translate(-50%, -36%);
 }
 
-.landing-character-wrap--left {
-  grid-column: 1;
-  grid-row: 1;
-  justify-content: flex-end;
-}
-
-.landing-character-wrap--right {
-  grid-column: 3;
-  grid-row: 1;
-  justify-content: flex-start;
+.landing-characters-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(0.5rem, 2.5vw, 2rem);
 }
 
 .landing-character {
-  height: clamp(380px, 52vh, 540px);
-  width: clamp(180px, 16vw, 280px);
+  flex: 0 0 auto;
+  height: clamp(360px, 44vh, 500px);
+  width: clamp(200px, 22vw, 300px);
   object-fit: contain;
-  object-position: center;
+  object-position: bottom center;
   will-change: transform;
   filter: drop-shadow(0 10px 36px rgb(0 0 0 / 0.55));
 }
 
 @media (max-width: 767px) {
-  .landing-hero {
-    grid-template-columns: 1fr;
-    padding-inline: 1.5rem;
-  }
-
-  .landing-hero-content {
-    grid-column: 1;
-  }
-
-  .landing-character-wrap {
+  .landing-characters {
     display: none;
   }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
+  .landing-characters {
+    width: min(760px, 94vw);
+    transform: translate(-50%, -34%);
+  }
+
   .landing-character {
-    height: clamp(320px, 46vh, 460px);
-    width: clamp(160px, 18vw, 240px);
+    height: clamp(300px, 40vh, 420px);
+    width: clamp(160px, 24vw, 240px);
   }
 }
