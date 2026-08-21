@@ -682,3 +682,34 @@
     transform: scale(0.88);
   }
 }
+
+/* Pull side characters toward the title when extra horizontal space is available. */
+@media (min-width: 1200px) {
+  .landing-characters {
+    left: clamp(3rem, calc((100vw - 70rem) / 2.8), 18rem);
+  }
+
+  .landing-alma {
+    right: clamp(3rem, calc((100vw - 70rem) / 2.8), 18rem);
+  }
+}
+
+@media (min-width: 1440px) {
+  .landing-characters {
+    left: clamp(5rem, calc((100vw - 70rem) / 2.2), 22rem);
+  }
+
+  .landing-alma {
+    right: clamp(5rem, calc((100vw - 70rem) / 2.2), 22rem);
+  }
+}
+
+@media (min-width: 1680px) {
+  .landing-characters {
+    left: clamp(7rem, calc((100vw - 70rem) / 1.9), 28rem);
+  }
+
+  .landing-alma {
+    right: clamp(7rem, calc((100vw - 70rem) / 1.9), 28rem);
+  }
+}
