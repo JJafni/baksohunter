@@ -308,7 +308,7 @@ function MonsterRarityFilter({
           aria-haspopup="dialog"
           aria-expanded={modalOpen}
           onClick={() => setModalOpen(true)}
-          className={`flex h-full min-h-[100px] w-full items-center justify-center rounded-lg border px-2 py-7 text-[10px] font-bold uppercase leading-tight tracking-[0.08em] transition enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 sm:text-xs sm:tracking-[0.1em] ${
+          className={`flex h-full min-h-[100px] w-full items-center justify-center rounded-lg border px-2 py-7 text-base font-bold uppercase leading-tight tracking-[0.1em] transition enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 sm:text-lg ${
             filtersCustomized
               ? 'border-wilds-gold/50 bg-wilds-gold/10 text-wilds-gold-light enabled:hover:border-wilds-gold/60 enabled:hover:bg-wilds-gold/15'
               : 'border-wilds-gold/25 bg-wilds-950/75 text-wilds-muted enabled:hover:border-wilds-gold/40 enabled:hover:bg-wilds-900/90 enabled:hover:text-wilds-parchment'
