@@ -115,6 +115,42 @@
     }
   }
 
+  .mobile-hunt-controls {
+    padding-top: 0.625rem;
+    padding-bottom: 0.375rem;
+  }
+
+  .mobile-hunt-controls .filter-chip {
+    min-height: 2.35rem;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.625rem;
+  }
+
+  .mobile-hunt-controls-grid {
+    align-items: stretch;
+  }
+
+  .mobile-hunt-controls-grid .filter-chip,
+  .mobile-hunt-controls .filter-chip {
+    height: 100%;
+    min-height: 0;
+    width: 100%;
+  }
+
+  .mobile-hunt-controls-stacked > button {
+    width: 100%;
+    min-height: 100px;
+    height: auto;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+  }
+
+  @media (min-width: 640px) {
+    .mobile-hunt-controls-stacked > button {
+      font-size: 1.125rem;
+    }
+  }
+
   /* Gold scrollbars — matches the loading bar (wilds-gold/10 track, wilds-gold/80 thumb). */
   .wilds-scrollbar {
     scrollbar-width: thin;

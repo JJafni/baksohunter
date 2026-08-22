@@ -65,7 +65,7 @@ type StarFilterPanelProps = {
   layout?: 'dropdown' | 'modal'
 }
 
-function StarFilterPanel({ value, onChange, large = false, layout = 'dropdown' }: StarFilterPanelProps) {
+export function StarFilterPanel({ value, onChange, large = false, layout = 'dropdown' }: StarFilterPanelProps) {
   const toggleStar = (star: SelectableStar) => {
     onChange({ ...value, stars: { ...value.stars, [star]: !value.stars[star] } })
   }

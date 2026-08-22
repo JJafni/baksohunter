@@ -20,6 +20,8 @@ type PlayerSlot = { id: number }
 type CoopWeaponPanelProps = {
   onHuntChange?: (ctx: CrateHuntContext) => void
   onCoopModeChange?: (coopMode: boolean) => void
+  initialPlayerCount?: number
+  onPlayerCountChange?: (count: number) => void
 }
 
 /** Min weapon-panel width before 2-player co-op sits side-by-side (~450px per cell). */
@@ -195,12 +197,21 @@ function CoopPanelShell({
   )
 }
 
-function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProps) {
+function CoopWeaponPanel({
+  onHuntChange,
+  onCoopModeChange,
+  initialPlayerCount = 1,
+  onPlayerCountChange,
+}: CoopWeaponPanelProps) {
   const isMobile = useIsMobileLayout()
   const splitMinWidth = isMobile ? COOP_TWO_PLAYER_SPLIT_MIN_WIDTH_MOBILE : COOP_TWO_PLAYER_SPLIT_MIN_WIDTH
   const { ref: panelRef, canSplit: splitTwoPlayers } = useCoopPanelSplit(splitMinWidth)
-  const [players, setPlayers] = useState<PlayerSlot[]>([{ id: 1 }])
-  const nextIdRef = useRef(2)
+  const [players, setPlayers] = useState<PlayerSlot[]>(() =>
+    Array.from({ length: Math.min(Math.max(initialPlayerCount, 1), MAX_PLAYERS) }, (_, index) => ({
+      id: index + 1,
+    })),
+  )
+  const nextIdRef = useRef(initialPlayerCount + 1)
   const [draws, setDraws] = useState<Record<number, PlayerDraw>>({})
 
   const coopMode = players.length > 1
@@ -259,6 +270,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
   )
 
   const handlePlayerCountChange = useCallback((count: number) => {
+    onPlayerCountChange?.(count)
     setPlayers((current) => {
       if (count > current.length) {
         const added: PlayerSlot[] = []
@@ -275,7 +287,7 @@ function CoopWeaponPanel({ onHuntChange, onCoopModeChange }: CoopWeaponPanelProp
       )
       return remaining
     })
-  }, [])
+  }, [onPlayerCountChange])
 
   const handleDrawChange = useCallback((playerId: number, draw: PlayerDraw | null) => {
     setDraws((prev) => {

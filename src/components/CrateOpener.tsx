@@ -102,6 +102,8 @@ function CrateOpener({ onHuntChange, onFilteredPoolChange }: CrateOpenerProps) {
               onQuestTypeChange={setQuestTypeEnabled}
               disabled={disabled}
               variant={layout}
+              starFilter={starFilter}
+              onStarFilterChange={setStarFilter}
               trailing={
                 <HuntStarFilter
                   value={starFilter}

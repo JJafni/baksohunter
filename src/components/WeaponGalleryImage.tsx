@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import type { CrateEntry } from '../data/types'
 import { useGalleryDisplayResult } from '../hooks/useGalleryDisplayResult'
+import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import { getWeaponGalleryImageUrl, hasBundledWeaponGallery, WEAPON_GALLERY_SOURCE_URL } from '../lib/weaponGalleryImages'
 import { WIKI_WEAPON_RENDER_SOURCE_URL } from '../lib/weaponRenderImages'
 
@@ -30,6 +31,7 @@ function WeaponGalleryImage({
   fillSection = false,
   wikiSource = false,
 }: WeaponGalleryImageProps) {
+  const isMobile = useIsMobileLayout()
   const [useIconFallback, setUseIconFallback] = useState(false)
   const displayedResult = useGalleryDisplayResult(result, visible)
   const isHero = variant === 'hero'
@@ -40,13 +42,18 @@ function WeaponGalleryImage({
   }, [displayedResult?.slug, imageUrlOverride])
 
   if (isBackdrop) {
-    const galleryUrl =
-      imageUrlOverride ?? (displayedResult ? getWeaponGalleryImageUrl(displayedResult.slug) : undefined)
+    const galleryUrl = isMobile
+      ? undefined
+      : imageUrlOverride ?? (displayedResult ? getWeaponGalleryImageUrl(displayedResult.slug) : undefined)
     const showHd = Boolean(galleryUrl) && !useIconFallback
     const imageUrl = displayedResult && showHd ? galleryUrl! : displayedResult?.icon
-    const backdropImageClass = fillSection
-      ? 'h-full w-full scale-110 object-contain object-center'
-      : 'h-full w-full scale-105 object-contain object-center'
+    const backdropImageClass = showHd
+      ? fillSection
+        ? 'h-full w-full scale-110 object-contain object-center'
+        : 'h-full w-full scale-105 object-contain object-center'
+      : fillSection
+        ? 'h-full w-full object-contain object-center p-[10%] opacity-90'
+        : 'h-full w-full object-contain object-center p-[12%] opacity-90'
 
     return (
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden={!visible || !result}>
@@ -87,7 +94,9 @@ function WeaponGalleryImage({
     return null
   }
 
-  const galleryUrl = imageUrlOverride ?? getWeaponGalleryImageUrl(displayedResult.slug)
+  const galleryUrl = isMobile
+    ? undefined
+    : imageUrlOverride ?? getWeaponGalleryImageUrl(displayedResult.slug)
   const showHd = Boolean(galleryUrl) && !useIconFallback
   const imageUrl = showHd ? galleryUrl! : displayedResult.icon
   const isLocalGallery = hasBundledWeaponGallery(displayedResult.slug) && !imageUrlOverride
@@ -157,6 +166,8 @@ function WeaponGalleryImage({
               </a>
             </>
           )
+        ) : isMobile ? (
+          <span className="text-wilds-muted">Weapon icon</span>
         ) : (
           <span className="text-wilds-muted">Showcase not available — showing weapon icon</span>
         )}

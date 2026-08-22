@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import type { CrateEntry } from '../data/types'
 import { useGalleryDisplayResult } from '../hooks/useGalleryDisplayResult'
+import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 import { getMonsterGalleryImageUrl, MONSTER_GALLERY_SOURCE_URL } from '../lib/monsterGalleryImages'
 import { hasLocalMonsterGallery } from '../lib/localGalleryAssets'
 
@@ -21,6 +22,7 @@ function MonsterGalleryImage({
   emphasized = true,
   variant = 'inline',
 }: MonsterGalleryImageProps) {
+  const isMobile = useIsMobileLayout()
   const [useIconFallback, setUseIconFallback] = useState(false)
   const displayedResult = useGalleryDisplayResult(result, visible)
   const isHero = variant === 'hero'
@@ -31,7 +33,8 @@ function MonsterGalleryImage({
   }, [displayedResult?.slug])
 
   if (isBackdrop) {
-    const galleryUrl = displayedResult ? getMonsterGalleryImageUrl(displayedResult.slug) : undefined
+    const galleryUrl =
+      !isMobile && displayedResult ? getMonsterGalleryImageUrl(displayedResult.slug) : undefined
     const showHd = Boolean(galleryUrl) && !useIconFallback
     const imageUrl = displayedResult && showHd ? galleryUrl! : displayedResult?.icon
 
@@ -52,7 +55,11 @@ function MonsterGalleryImage({
             onError={() => {
               if (showHd) setUseIconFallback(true)
             }}
-            className="h-full w-full scale-105 object-contain object-center max-lg:object-cover"
+            className={
+              showHd
+                ? 'h-full w-full scale-105 object-contain object-center max-lg:object-cover'
+                : 'h-full w-full object-contain object-center p-[12%] opacity-90'
+            }
           />
         ) : (
           <div className="h-full w-full bg-wilds-950/80" />
@@ -74,7 +81,7 @@ function MonsterGalleryImage({
     return null
   }
 
-  const galleryUrl = getMonsterGalleryImageUrl(displayedResult.slug)
+  const galleryUrl = !isMobile ? getMonsterGalleryImageUrl(displayedResult.slug) : undefined
   const showHd = Boolean(galleryUrl) && !useIconFallback
   const imageUrl = showHd ? galleryUrl! : displayedResult.icon
   const isLocalGallery = hasLocalMonsterGallery(displayedResult.slug)
@@ -131,6 +138,8 @@ function MonsterGalleryImage({
               </a>
             </>
           )
+        ) : isMobile ? (
+          <span className="text-wilds-muted">Hunt icon</span>
         ) : (
           <span className="text-wilds-muted">HD render not available — showing hunt icon</span>
         )}

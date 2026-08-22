@@ -7,6 +7,8 @@ import type { CrateHuntContext } from './components/CrateHunt'
 import CoopWeaponPanel, { PlayerCountToolbarSpacer } from './components/CoopWeaponPanel'
 import GalleryBackdropOverlay from './components/GalleryBackdropOverlay'
 import LandingPage from './components/LandingPage'
+import MobileCoopHuntLayout from './components/MobileCoopHuntLayout'
+import MobileSoloHuntLayout from './components/MobileSoloHuntLayout'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
 import MonsterPoolSlideshow from './components/MonsterPoolSlideshow'
 import WeaponGalleryImage from './components/WeaponGalleryImage'
@@ -15,6 +17,7 @@ import type { CrateEntry } from './data/types'
 import { WEAPON_POOL } from './data/weapons'
 import { useAppReady } from './hooks/useAppReady'
 import { useHeaderVisibility } from './hooks/useHeaderVisibility'
+import { useIsMobileLayout } from './hooks/useIsMobileLayout'
 
 function AppBackground() {
   return (
@@ -33,15 +36,15 @@ function HuntLayout({
   onMonsterHuntChange,
   weaponHunt,
   onWeaponHuntChange,
-  weaponCoopMode,
-  onWeaponCoopModeChange,
+  weaponPlayerCount,
+  onWeaponPlayerCountChange,
 }: {
   monsterHunt: CrateHuntContext
   onMonsterHuntChange: (ctx: CrateHuntContext) => void
   weaponHunt: CrateHuntContext
   onWeaponHuntChange: (ctx: CrateHuntContext) => void
-  weaponCoopMode: boolean
-  onWeaponCoopModeChange: (coopMode: boolean) => void
+  weaponPlayerCount: number
+  onWeaponPlayerCountChange: (count: number) => void
 }) {
   const monsterGalleryEmphasized =
     monsterHunt.phase === 'revealed' &&
@@ -49,15 +52,21 @@ function HuntLayout({
     !monsterHunt.immersiveView
   const monsterGalleryImmersive = monsterHunt.phase === 'revealed' && Boolean(monsterHunt.immersiveView)
   const weaponGalleryEmphasized = weaponHunt.phase === 'revealed' && weaponHunt.spinnerUiVisible
+  const isMobile = useIsMobileLayout()
+  const weaponCoopMode = weaponPlayerCount > 1
+  const useMobileCoopLayout = isMobile && weaponCoopMode
+  const useUnifiedMobileLayout = isMobile && !weaponCoopMode
   const [monsterPreviewPool, setMonsterPreviewPool] = useState<CrateEntry[]>([])
   const showMonsterPreviewSlideshow = monsterHunt.phase === 'idle' && monsterPreviewPool.length > 0
   const showWeaponPreviewSlideshow =
     !weaponCoopMode && weaponHunt.phase === 'idle' && WEAPON_POOL.length > 0
+  const showMonsterBackdropGallery = !isMobile && monsterHunt.phase === 'revealed'
+  const showWeaponBackdropGallery = !isMobile && weaponHunt.phase === 'revealed'
 
   const monsterBackdrop =
     showMonsterPreviewSlideshow ? (
       <MonsterPoolSlideshow pool={monsterPreviewPool} />
-    ) : (
+    ) : showMonsterBackdropGallery ? (
       <>
         <MonsterGalleryImage
           result={monsterHunt.result}
@@ -71,12 +80,14 @@ function HuntLayout({
           immersive={monsterGalleryImmersive}
         />
       </>
+    ) : (
+      <div className="h-full w-full bg-wilds-950" aria-hidden="true" />
     )
 
   const weaponBackdrop =
     showWeaponPreviewSlideshow ? (
       <WeaponPoolSlideshow pool={WEAPON_POOL} />
-    ) : (
+    ) : showWeaponBackdropGallery ? (
       <>
         <WeaponGalleryImage
           result={weaponHunt.result}
@@ -89,7 +100,31 @@ function HuntLayout({
           emphasized={weaponGalleryEmphasized}
         />
       </>
+    ) : (
+      <div className="h-full w-full bg-wilds-950" aria-hidden="true" />
     )
+
+  if (useMobileCoopLayout) {
+    return (
+      <MobileCoopHuntLayout
+        playerCount={weaponPlayerCount}
+        onPlayerCountChange={onWeaponPlayerCountChange}
+        onMonsterHuntChange={onMonsterHuntChange}
+        onWeaponHuntChange={onWeaponHuntChange}
+      />
+    )
+  }
+
+  if (useUnifiedMobileLayout) {
+    return (
+      <MobileSoloHuntLayout
+        onMonsterHuntChange={onMonsterHuntChange}
+        onWeaponHuntChange={onWeaponHuntChange}
+        playerCount={weaponPlayerCount}
+        onPlayerCountChange={onWeaponPlayerCountChange}
+      />
+    )
+  }
 
   return (
     <div className="grid h-full min-h-0 w-full grid-cols-1 gap-8 max-lg:flex max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:gap-0 lg:grid-cols-2 lg:items-stretch lg:gap-0">
@@ -122,7 +157,8 @@ function HuntLayout({
         <div className="relative z-10 flex h-full min-h-0 w-full flex-col max-lg:flex-1 max-lg:self-stretch lg:p-0">
           <CoopWeaponPanel
             onHuntChange={onWeaponHuntChange}
-            onCoopModeChange={onWeaponCoopModeChange}
+            initialPlayerCount={weaponPlayerCount}
+            onPlayerCountChange={onWeaponPlayerCountChange}
           />
         </div>
       </section>
@@ -146,7 +182,7 @@ function AppContent() {
     phase: 'idle',
     spinnerUiVisible: true,
   })
-  const [weaponCoopMode, setWeaponCoopMode] = useState(false)
+  const [weaponPlayerCount, setWeaponPlayerCount] = useState(1)
 
   return (
     <>
@@ -156,8 +192,8 @@ function AppContent() {
           onMonsterHuntChange={setMonsterHunt}
           weaponHunt={weaponHunt}
           onWeaponHuntChange={setWeaponHunt}
-          weaponCoopMode={weaponCoopMode}
-          onWeaponCoopModeChange={setWeaponCoopMode}
+          weaponPlayerCount={weaponPlayerCount}
+          onWeaponPlayerCountChange={setWeaponPlayerCount}
         />
       </main>
 

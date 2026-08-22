@@ -11,6 +11,10 @@ type QuestTypeBadgeProps = {
   visible: boolean
   revealKey?: number
   variant?: 'overlay' | 'inline'
+  /** When true, show only the quest icon (mobile space saving). */
+  iconOnly?: boolean
+  /** Overlay corner placement (mobile full-section hunts). */
+  corner?: 'left' | 'right'
 }
 
 function QuestTypeBadge({
@@ -18,6 +22,8 @@ function QuestTypeBadge({
   visible,
   revealKey = 0,
   variant = 'overlay',
+  iconOnly = false,
+  corner = 'right',
 }: QuestTypeBadgeProps) {
   const [showBadge, setShowBadge] = useState(false)
   const quest = questType ? QUEST_TYPE_BY_ID[questType] : null
@@ -58,29 +64,33 @@ function QuestTypeBadge({
           className={
             isInline
               ? 'inline-flex shrink-0 overflow-hidden'
-              : 'pointer-events-none absolute top-0 right-0 z-20'
+              : `pointer-events-none absolute top-2 z-20 ${corner === 'left' ? 'left-2' : 'right-2'}`
           }
         >
           <div
-            className={`flex items-center gap-1.5 whitespace-nowrap rounded-sm border border-wilds-gold/20 bg-wilds-950/75 backdrop-blur-sm ${
-              isInline ? 'px-2 py-1 sm:px-2.5 sm:py-1' : 'px-1.5 py-1 sm:px-2 sm:py-1.5'
+            className={`flex items-center whitespace-nowrap rounded-sm border border-wilds-gold/20 bg-wilds-950/75 backdrop-blur-sm ${
+              iconOnly
+                ? 'p-1'
+                : `gap-1.5 ${isInline ? 'px-2 py-1 sm:px-2.5 sm:py-1' : 'px-1.5 py-1 sm:px-2 sm:py-1.5'}`
             }`}
           >
             <img
               src={quest.icon}
-              alt=""
+              alt={iconOnly ? quest.label : ''}
               width={20}
               height={20}
-              className={`shrink-0 object-contain ${isInline ? 'size-[18px] sm:size-5' : 'size-5 sm:size-[22px]'}`}
+              className={`shrink-0 object-contain ${iconOnly ? 'size-5' : isInline ? 'size-[18px] sm:size-5' : 'size-5 sm:size-[22px]'}`}
               draggable={false}
             />
-            <p
-              className={`font-bold uppercase tracking-[0.16em] text-wilds-gold-light ${
-                isInline ? 'text-[11px] sm:text-xs' : 'text-[11px] sm:text-xs'
-              }`}
-            >
-              {quest.label}
-            </p>
+            {iconOnly ? null : (
+              <p
+                className={`font-bold uppercase tracking-[0.16em] text-wilds-gold-light ${
+                  isInline ? 'text-[11px] sm:text-xs' : 'text-[11px] sm:text-xs'
+                }`}
+              >
+                {quest.label}
+              </p>
+            )}
           </div>
         </motion.div>
       ) : null}

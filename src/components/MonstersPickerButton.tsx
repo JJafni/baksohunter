@@ -2,16 +2,27 @@ type MonstersPickerButtonProps = {
   onClick: () => void
   disabled?: boolean
   excludedCount?: number
+  /** Taller touch target for mobile stacked footer controls. */
+  large?: boolean
 }
 
-function MonstersPickerButton({ onClick, disabled = false, excludedCount = 0 }: MonstersPickerButtonProps) {
+function MonstersPickerButton({
+  onClick,
+  disabled = false,
+  excludedCount = 0,
+  large = false,
+}: MonstersPickerButtonProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
       aria-haspopup="dialog"
-      className="flex h-full min-h-[50px] w-full items-center justify-center rounded-lg border border-wilds-gold/25 bg-wilds-950/75 px-2 py-3.5 text-[10px] font-bold uppercase leading-tight tracking-[0.08em] text-wilds-muted transition enabled:cursor-pointer enabled:hover:border-wilds-gold/40 enabled:hover:bg-wilds-900/90 enabled:hover:text-wilds-parchment disabled:cursor-not-allowed disabled:border-wilds-gold/10 disabled:bg-wilds-950/50 disabled:text-wilds-muted/50 sm:text-xs sm:tracking-[0.1em]"
+      className={`flex h-full w-full items-center justify-center rounded-lg border border-wilds-gold/25 bg-wilds-950/75 px-2 font-bold uppercase leading-tight text-wilds-muted transition enabled:cursor-pointer enabled:hover:border-wilds-gold/40 enabled:hover:bg-wilds-900/90 enabled:hover:text-wilds-parchment disabled:cursor-not-allowed disabled:border-wilds-gold/10 disabled:bg-wilds-950/50 disabled:text-wilds-muted/50 ${
+        large
+          ? 'min-h-[100px] py-7 text-base tracking-[0.1em] sm:text-lg'
+          : 'min-h-[50px] py-3.5 text-[10px] tracking-[0.08em] sm:text-xs sm:tracking-[0.1em]'
+      }`}
     >
       <span className="relative">
         Monsters
