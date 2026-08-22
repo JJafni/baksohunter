@@ -30,7 +30,7 @@ import {
   pickStarForMonsterWithFilter,
   type HuntStarFilterState,
 } from '../lib/starFilter'
-import { StatefulButton } from './ui/stateful-button'
+import MobileTapSpinSection from './MobileTapSpinSection'
 
 const MAX_PLAYERS = 4
 
@@ -157,8 +157,6 @@ function MobileCoopHuntLayout({
   const poolCountLabel = formatPoolCountLabel(filteredPool.length)
   const monsterSpinning = monsterPhase === 'spinning'
   const filtersDisabled = monsterSpinning
-  const drawButtonClass =
-    players.length > 2 ? 'min-h-[3rem] py-2 text-sm' : 'min-h-[4rem] py-3 text-sm'
 
   const handlePlayerCountChange = useCallback(
     (count: number) => {
@@ -240,7 +238,10 @@ function MobileCoopHuntLayout({
           className="grid min-h-0 flex-1 grid-cols-2"
           style={{ gridTemplateRows: `repeat(${players.length}, minmax(0, 1fr))` }}
         >
-          <section
+          <MobileTapSpinSection
+            ariaLabel="Hunt for monster"
+            disabled={monsterSpinning || filteredPool.length === 0}
+            onSpin={() => monsterRef.current?.startSpin()}
             className={`relative flex min-h-0 flex-col border-r ${SECTION_BORDER}`}
             style={{ gridRow: `1 / span ${players.length}` }}
           >
@@ -280,7 +281,7 @@ function MobileCoopHuntLayout({
                 onHuntChange={handleMonsterHuntChange}
               />
             </div>
-          </section>
+          </MobileTapSpinSection>
 
           {players.map((player, rowIndex) => {
             const weaponPhase = weaponPhases[player.id] ?? 'idle'
@@ -302,8 +303,11 @@ function MobileCoopHuntLayout({
               : null
 
             return (
-              <section
+              <MobileTapSpinSection
                 key={player.id}
+                ariaLabel={`Draw weapon for player ${rowIndex + 1}`}
+                disabled={weaponPhase === 'spinning'}
+                onSpin={() => weaponRefs.current[player.id]?.startSpin()}
                 className={`relative flex min-h-0 flex-col ${rowBorder}`}
                 style={{ gridColumn: 2, gridRow: rowIndex + 1 }}
               >
@@ -345,7 +349,7 @@ function MobileCoopHuntLayout({
                     onHuntChange={(ctx) => handleWeaponHuntChange(player.id, ctx)}
                   />
                 </div>
-              </section>
+              </MobileTapSpinSection>
             )
           })}
         </div>
@@ -368,44 +372,6 @@ function MobileCoopHuntLayout({
                 starFilter={starFilter}
                 onStarFilterChange={setStarFilter}
               />
-            </div>
-
-            <div
-              className="grid gap-2"
-              style={{ gridTemplateColumns: '1fr 1fr', gridTemplateRows: `repeat(${players.length}, minmax(0, auto))` }}
-            >
-              <StatefulButton
-                layoutId="coop-monster-crate-button"
-                loadingLabels={SPIN_LABELS}
-                icon="sword"
-                surface="matte"
-                disabled={monsterSpinning || filteredPool.length === 0}
-                onClick={() => monsterRef.current?.startSpin()}
-                className="min-h-[6rem] py-4 text-base"
-                style={{ gridRow: `1 / span ${players.length}`, gridColumn: 1 }}
-              >
-                Hunt
-              </StatefulButton>
-
-              {players.map((player, index) => {
-                const weaponSpinning = weaponPhases[player.id] === 'spinning'
-
-                return (
-                  <StatefulButton
-                    key={player.id}
-                    layout={false}
-                    loadingLabels={['Drawing']}
-                    icon="shield"
-                    surface="shiny"
-                    disabled={weaponSpinning}
-                    onClick={() => weaponRefs.current[player.id]?.startSpin()}
-                    className={drawButtonClass}
-                    style={{ gridColumn: 2, gridRow: index + 1 }}
-                  >
-                    P{index + 1} Draw
-                  </StatefulButton>
-                )
-              })}
             </div>
 
             <p className="flex min-h-[1.75rem] items-center justify-center text-center text-[9px] uppercase tracking-[0.18em] text-wilds-muted">

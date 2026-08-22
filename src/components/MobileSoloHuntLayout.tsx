@@ -29,7 +29,7 @@ import {
   pickStarForMonsterWithFilter,
   type HuntStarFilterState,
 } from '../lib/starFilter'
-import { StatefulButton } from './ui/stateful-button'
+import MobileTapSpinSection from './MobileTapSpinSection'
 
 const RARITY_LABELS: Record<Rarity, string> = {
   normal: 'Large Monster',
@@ -157,7 +157,12 @@ function MobileSoloHuntLayout({
         </div>
 
         <div className="grid min-h-0 flex-1 grid-cols-2">
-          <section className={`relative flex min-h-0 flex-col border-r ${SECTION_BORDER}`}>
+          <MobileTapSpinSection
+            ariaLabel="Hunt for monster"
+            disabled={monsterSpinning || filteredPool.length === 0}
+            onSpin={() => monsterRef.current?.startSpin()}
+            className={`relative flex min-h-0 flex-col border-r ${SECTION_BORDER}`}
+          >
             <div
               className={`pointer-events-none absolute inset-0 overflow-hidden ${showMonsterPreviewSlideshow || monsterPhase !== 'idle' ? '' : 'hidden'}`}
             >
@@ -191,9 +196,14 @@ function MobileSoloHuntLayout({
                 onHuntChange={handleMonsterHuntChange}
               />
             </div>
-          </section>
+          </MobileTapSpinSection>
 
-          <section className="relative flex min-h-0 flex-col">
+          <MobileTapSpinSection
+            ariaLabel="Draw weapon"
+            disabled={weaponSpinning}
+            onSpin={() => weaponRef.current?.startSpin()}
+            className="relative flex min-h-0 flex-col"
+          >
             <div className="pointer-events-none absolute inset-0 overflow-hidden">
               {showWeaponPreviewSlideshow ? (
                 <WeaponPoolSlideshow pool={WEAPON_POOL} />
@@ -224,7 +234,7 @@ function MobileSoloHuntLayout({
                 onHuntChange={handleWeaponHuntChange}
               />
             </div>
-          </section>
+          </MobileTapSpinSection>
         </div>
 
         <div className="mobile-hunt-controls shrink-0 border-t border-wilds-gold/10 bg-wilds-950/92 px-3 py-2 backdrop-blur-md">
@@ -245,31 +255,6 @@ function MobileSoloHuntLayout({
                 starFilter={starFilter}
                 onStarFilterChange={setStarFilter}
               />
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <StatefulButton
-                layoutId="monster-crate-button"
-                loadingLabels={SPIN_LABELS}
-                icon="sword"
-                surface="matte"
-                disabled={monsterSpinning || filteredPool.length === 0}
-                onClick={() => monsterRef.current?.startSpin()}
-                className="min-h-[6rem] py-4 text-base"
-              >
-                Hunt
-              </StatefulButton>
-              <StatefulButton
-                layout={false}
-                loadingLabels={['Drawing']}
-                icon="shield"
-                surface="shiny"
-                disabled={weaponSpinning}
-                onClick={() => weaponRef.current?.startSpin()}
-                className="min-h-[6rem] py-4 text-base"
-              >
-                Draw
-              </StatefulButton>
             </div>
 
             <p className="flex min-h-[1.75rem] items-center justify-center text-center text-[9px] uppercase tracking-[0.18em] text-wilds-muted">
