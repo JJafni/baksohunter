@@ -255,7 +255,7 @@ function MobileSoloHuntLayout({
                 surface="matte"
                 disabled={monsterSpinning || filteredPool.length === 0}
                 onClick={() => monsterRef.current?.startSpin()}
-                className="min-h-[3rem] py-2.5"
+                className="min-h-[6rem] py-4 text-base"
               >
                 Hunt
               </StatefulButton>
@@ -266,7 +266,7 @@ function MobileSoloHuntLayout({
                 surface="shiny"
                 disabled={weaponSpinning}
                 onClick={() => weaponRef.current?.startSpin()}
-                className="min-h-[3rem] py-2.5"
+                className="min-h-[6rem] py-4 text-base"
               >
                 Draw
               </StatefulButton>
