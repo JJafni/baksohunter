@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { motion } from 'motion/react'
+import { motion, AnimatePresence } from 'motion/react'
 import type { QuestType } from '../data/questTypes'
 import type { HuntStar } from '../data/huntStars'
 import type { CrateEntry, Rarity } from '../data/types'
@@ -108,6 +108,7 @@ const MOBILE_REVEAL_ROW_H = '4.25rem'
 const SPINNER_UI_FADE = { duration: 0.7, ease: 'easeInOut' as const }
 const SPINNER_UI_FADE_MS = SPINNER_UI_FADE.duration * 1000
 const OPEN_TRANSITION = { duration: OPEN_MS / 1000, ease: [0.22, 1, 0.36, 1] as const }
+const MOBILE_APPEAR_TRANSITION = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
 
 function SpinnerUiFade({ visible, children }: { visible: boolean; children: ReactNode }) {
   return (
@@ -700,15 +701,28 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       </div>
       )
     ) : useMobileOverlayLayout && unifiedMobileColumn ? (
-      <div className="relative flex h-full min-h-0 w-full flex-col items-center px-1 py-1">
+      <motion.div
+        key={`unified-${spinKey}`}
+        initial={{ opacity: 0, scale: 0.94 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={MOBILE_APPEAR_TRANSITION}
+        className="relative flex h-full min-h-0 w-full flex-col items-center px-1 py-1"
+      >
         {questTypeCornerBadge}
         <div className="relative flex min-h-0 w-full flex-1 items-center justify-center">
-          {showMobileResultIcon && result ? (
-            <MobileHuntResultIcon entry={result} visible visualRarity={visualRarity} />
-          ) : null}
+          <AnimatePresence mode="wait">
+            {showMobileResultIcon && result ? (
+              <MobileHuntResultIcon
+                key={`icon-${result.slug}-${spinKey}`}
+                entry={result}
+                visible
+                visualRarity={visualRarity}
+              />
+            ) : null}
+          </AnimatePresence>
           <div
-            className={`absolute inset-0 flex items-center justify-center overflow-hidden ${
-              showMobileResultIcon ? 'pointer-events-none opacity-0' : ''
+            className={`absolute inset-0 flex items-center justify-center overflow-hidden transition-opacity duration-700 ease-in-out ${
+              showMobileResultIcon ? 'pointer-events-none opacity-0' : 'opacity-100'
             }`}
             aria-hidden={showMobileResultIcon}
           >
@@ -721,10 +735,21 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
             </SpinnerLayoutSlot>
           </div>
         </div>
-        {phase === 'revealed' && showOverlayRevealName ? (
-          <div className="w-full shrink-0 px-0.5">{namePanel}</div>
-        ) : null}
-      </div>
+        <AnimatePresence>
+          {phase === 'revealed' && showOverlayRevealName ? (
+            <motion.div
+              key={`name-${spinKey}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 6 }}
+              transition={MOBILE_APPEAR_TRANSITION}
+              className="w-full shrink-0 px-0.5"
+            >
+              {namePanel}
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+      </motion.div>
     ) : useMobileOverlayLayout ? (
       <div className="relative flex h-full min-h-0 w-full flex-col items-center justify-center gap-2 px-3 py-2">
         {questTypeCornerBadge}

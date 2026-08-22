@@ -302,14 +302,14 @@ function MonsterRarityFilter({
   if (useMobileModal) {
     return (
       <>
-        <div className="wilds-legibility-text flex h-full min-h-0 w-full flex-col">
+        <div className="wilds-legibility-text flex w-full flex-col">
           <button
             type="button"
             disabled={disabled}
             aria-haspopup="dialog"
             aria-expanded={modalOpen}
             onClick={() => setModalOpen(true)}
-            className={`filter-chip h-full min-h-0 w-full ${
+            className={`filter-chip min-h-[2.35rem] w-full ${
               filtersCustomized
                 ? 'border-wilds-gold/50 bg-wilds-gold/10 text-wilds-gold-light'
                 : 'border-wilds-gold/25 bg-wilds-950/75 text-wilds-parchment/85 hover:border-wilds-gold/40 hover:text-wilds-parchment'

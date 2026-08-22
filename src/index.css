@@ -120,6 +120,13 @@
     padding-bottom: 0.375rem;
   }
 
+  .mobile-hunt-controls-stacked > button,
+  .mobile-hunt-controls-stacked .filter-chip {
+    width: 100%;
+    min-height: 2.35rem;
+    height: auto;
+  }
+
   .mobile-hunt-controls-grid {
     align-items: stretch;
   }

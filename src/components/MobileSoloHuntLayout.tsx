@@ -217,8 +217,6 @@ function MobileSoloHuntLayout({
                 buttonSurface="shiny"
                 externalGallery
                 overlayMode
-                overlaySpinnerCentered
-                revealNameAfterSpinnerFade
                 revealLayout="inline"
                 unifiedMobileColumn
                 hidePrimaryButton
@@ -231,7 +229,7 @@ function MobileSoloHuntLayout({
 
         <div className="mobile-hunt-controls shrink-0 border-t border-wilds-gold/10 bg-wilds-950/92 px-3 py-2 backdrop-blur-md">
           <div className="mx-auto flex w-full max-w-lg flex-col gap-2">
-            <div className="grid grid-cols-2 gap-2">
+            <div className="mobile-hunt-controls-stacked flex flex-col gap-2">
               <MonstersPickerButton
                 excludedCount={excludedMonsters.size}
                 disabled={filtersDisabled}

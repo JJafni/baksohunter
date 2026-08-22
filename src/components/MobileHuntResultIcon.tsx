@@ -8,12 +8,15 @@ type MobileHuntResultIconProps = {
   visualRarity?: VisualRarity
 }
 
+const APPEAR_TRANSITION = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
+
 function MobileHuntResultIcon({ entry, visible, visualRarity = 'normal' }: MobileHuntResultIconProps) {
   return (
     <motion.div
-      initial={false}
+      initial={{ opacity: 0, scale: 0.85 }}
       animate={{ opacity: visible ? 1 : 0, scale: visible ? 1 : 0.92 }}
-      transition={{ duration: 0.45, ease: 'easeOut' }}
+      exit={{ opacity: 0, scale: 0.92 }}
+      transition={APPEAR_TRANSITION}
       className="relative flex items-center justify-center"
       aria-hidden={!visible}
     >
