@@ -154,13 +154,12 @@ function RevealPanel({
       transition={METADATA_LAYOUT_MOTION}
       className={`inline-flex max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 ${nameRowClass}`}
     >
-      {questType ? (
+      {questType && !isMobile ? (
         <QuestTypeBadge
           questType={questType}
           visible={questTypeVisible}
           revealKey={revealKey}
           variant="inline"
-          iconOnly={isMobile}
         />
       ) : null}
       <motion.span layout transition={METADATA_LAYOUT_MOTION} className="inline-flex items-center gap-x-1.5">
@@ -221,7 +220,7 @@ function RevealPanel({
     const titleUpdateLabel = showMonsterInfo ? getMonsterTitleUpdateLabel(entry.slug) : null
     const rarityLabel = rarityLabelFor(entry, rarityLabels)
     const visualRarity = getVisualRarity(entry)
-    const hasMetadata = Boolean(questType || huntStar || rarityLabel)
+    const hasMetadata = Boolean((questType && !isMobile) || huntStar || rarityLabel)
 
     if (useInlineLayout) {
       return (

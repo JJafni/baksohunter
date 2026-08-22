@@ -61,7 +61,7 @@ function QuestTypeBadge({
           className={
             isInline
               ? 'inline-flex shrink-0 overflow-hidden'
-              : 'pointer-events-none absolute top-0 right-0 z-20'
+              : 'pointer-events-none absolute top-2 right-2 z-20'
           }
         >
           <div

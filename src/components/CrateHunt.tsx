@@ -26,6 +26,7 @@ import {
 import { buildReelSequence } from '../lib/reelSequence'
 import Reel from './Reel'
 import RevealPanel from './RevealPanel'
+import QuestTypeBadge from './QuestTypeBadge'
 import MobileHuntResultIcon from './MobileHuntResultIcon'
 import { StatefulButton } from './ui/stateful-button'
 
@@ -629,6 +630,25 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       namePanel
     )
 
+  const showQuestTypeCornerBadge =
+    isMobile &&
+    overlayMode &&
+    Boolean(pickRandomQuestType) &&
+    questTypeEnabled &&
+    Boolean(questType) &&
+    phase === 'revealed' &&
+    showOverlayRevealName
+
+  const questTypeCornerBadge = showQuestTypeCornerBadge ? (
+    <QuestTypeBadge
+      questType={questType}
+      visible
+      revealKey={spinKey}
+      variant="overlay"
+      iconOnly
+    />
+  ) : null
+
   const overlaySpinnerInset = useCompactOverlayChrome ? 'inset-x-3 inset-y-2 sm:inset-x-4' : 'inset-0'
 
   const overlaySpinnerPane =
@@ -681,6 +701,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       )
     ) : useMobileOverlayLayout && unifiedMobileColumn ? (
       <div className="relative flex h-full min-h-0 w-full flex-col items-center px-1 py-1">
+        {questTypeCornerBadge}
         <div className="relative flex min-h-0 w-full flex-1 items-center justify-center">
           {showMobileResultIcon && result ? (
             <MobileHuntResultIcon entry={result} visible visualRarity={visualRarity} />
@@ -706,6 +727,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       </div>
     ) : useMobileOverlayLayout ? (
       <div className="relative flex h-full min-h-0 w-full flex-col items-center justify-center gap-2 px-3 py-2">
+        {questTypeCornerBadge}
         <div className="relative flex min-h-[180px] w-full flex-1 items-center justify-center">
           {showMobileResultIcon && result ? (
             <MobileHuntResultIcon entry={result} visible visualRarity={visualRarity} />
