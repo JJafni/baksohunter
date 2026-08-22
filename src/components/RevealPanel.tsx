@@ -160,6 +160,7 @@ function RevealPanel({
           visible={questTypeVisible}
           revealKey={revealKey}
           variant="inline"
+          iconOnly={isMobile}
         />
       ) : null}
       <motion.span layout transition={METADATA_LAYOUT_MOTION} className="inline-flex items-center gap-x-1.5">

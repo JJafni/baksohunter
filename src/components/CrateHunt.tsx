@@ -80,6 +80,10 @@ type CrateHuntProps = {
   companionButton?: (ctx: { disabled: boolean }) => ReactNode
   /** Hide the built-in DRAW button (co-op uses external player buttons). */
   hidePrimaryButton?: boolean
+  /** Hide mobile overlay chrome (filters, buttons, pool count) for unified mobile layout. */
+  hideMobileChrome?: boolean
+  /** Compact side-by-side mobile column — vertical reel fills column height. */
+  unifiedMobileColumn?: boolean
   /** Override the revealed entry name (e.g. specific monster weapon). */
   nameOverride?: string | null
   /** Restore a previous hunt session (e.g. solo after co-op). */
@@ -220,6 +224,8 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     revealLayout = 'stacked',
     companionButton,
     hidePrimaryButton = false,
+    hideMobileChrome = false,
+    unifiedMobileColumn = false,
     nameOverride = null,
     initialContext = null,
     overlaySpinnerCentered = false,
@@ -392,10 +398,15 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const reelColClass = reelOnLeft ? 'col-start-1' : 'col-start-2'
   const nameColClass = reelOnLeft ? 'col-start-2' : 'col-start-1'
 
-  const blockWidth = useStackedLayout ? '100%' : REEL_WIDTH
+  const blockWidth =
+    unifiedMobileColumn && reelOrientation === 'vertical'
+      ? '100%'
+      : useStackedLayout
+        ? '100%'
+        : REEL_WIDTH
   const stretchClass =
     phase !== 'idle' && !useCompactOverlayChrome
-      ? useStackedLayout
+      ? reelOrientation === 'horizontal'
         ? 'animate-hunt-reel-stretch-x'
         : 'animate-hunt-reel-stretch-y'
       : ''
@@ -404,7 +415,8 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     phase === 'idle' ? 'pt-0' : useStackedLayout ? 'pt-2' : 'pt-4'
 
   const useMobileOverlayLayout = isMobile && overlayMode
-  const useMobileOverlayChromeSheet = useMobileOverlayLayout && !useCompactOverlayChrome
+  const useMobileOverlayChromeSheet =
+    useMobileOverlayLayout && !useCompactOverlayChrome && !hideMobileChrome
 
   const poolLine = (
     <p
@@ -440,17 +452,20 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     </div>
   ) : null
 
-  const actions = (
-    <div
-      className={`mx-auto flex w-full flex-col items-center ${actionsPadding}`}
-      style={huntColumnWidthStyle}
-    >
-      {filterRow}
-      <div className="flex w-full gap-2">
+  const mobileChromeButtonGrid = useMobileOverlayChromeSheet ? (
+    <div className="mobile-hunt-controls-grid flex min-h-[10.5rem] w-full gap-2">
+      <div className="flex min-h-0 w-[30%] max-w-[7.5rem] shrink-0 flex-col gap-2">
         {companionButton ? (
-          <div className="w-1/4 min-w-0 shrink-0">{companionButton({ disabled: filtersDisabled })}</div>
+          <div className="flex min-h-0 flex-1">{companionButton({ disabled: filtersDisabled })}</div>
         ) : null}
-        {hidePrimaryButton ? null : (
+        {filters ? (
+          <div className="flex min-h-0 flex-1">
+            {filters({ disabled: filtersDisabled, layout: 'bar' })}
+          </div>
+        ) : null}
+      </div>
+      {hidePrimaryButton ? null : (
+        <div className="flex min-h-0 min-w-0 flex-1">
           <StatefulButton
             layoutId={buttonLayoutId}
             loadingLabels={spinLabels}
@@ -458,13 +473,50 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
             surface={buttonSurface}
             onClick={startHunt}
             disabled={phase === 'spinning' || !canSpin}
-            className={companionButton ? 'min-w-0 flex-[3]' : 'w-full'}
+            className="h-full min-h-0 self-stretch py-0"
           >
             {buttonLabel}
           </StatefulButton>
-        )}
-      </div>
-      {poolLine}
+        </div>
+      )}
+    </div>
+  ) : null
+
+  const actions =
+    hideMobileChrome && useMobileOverlayLayout ? null : (
+    <div
+      className={`mx-auto flex w-full flex-col items-center ${actionsPadding}`}
+      style={huntColumnWidthStyle}
+    >
+      {useMobileOverlayChromeSheet ? (
+        <>
+          {mobileChromeButtonGrid}
+          {poolLine}
+        </>
+      ) : (
+        <>
+          {filterRow}
+          <div className="flex w-full gap-2">
+            {companionButton ? (
+              <div className="w-1/4 min-w-0 shrink-0">{companionButton({ disabled: filtersDisabled })}</div>
+            ) : null}
+            {hidePrimaryButton ? null : (
+              <StatefulButton
+                layoutId={buttonLayoutId}
+                loadingLabels={spinLabels}
+                icon={buttonIcon}
+                surface={buttonSurface}
+                onClick={startHunt}
+                disabled={phase === 'spinning' || !canSpin}
+                className={companionButton ? 'min-w-0 flex-[3]' : 'w-full'}
+              >
+                {buttonLabel}
+              </StatefulButton>
+            )}
+          </div>
+          {poolLine}
+        </>
+      )}
     </div>
   )
 
@@ -544,10 +596,16 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
         initial={{ opacity: 0, scale: 0.88 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={OPEN_TRANSITION}
-        className={`w-full ${stretchClass}`}
+        className={`w-full ${unifiedMobileColumn && reelOrientation === 'vertical' ? 'h-full' : ''} ${stretchClass}`}
         style={{
           width: blockWidth,
-          maxWidth: isMobile && overlayMode ? undefined : columnMaxWidth,
+          height: unifiedMobileColumn && reelOrientation === 'vertical' ? '100%' : undefined,
+          maxWidth:
+            unifiedMobileColumn && reelOrientation === 'vertical'
+              ? REEL_WIDTH
+              : isMobile && overlayMode
+                ? undefined
+                : columnMaxWidth,
         }}
       >
         <Reel
@@ -557,6 +615,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
           landed={phase === 'revealed'}
           rarity={visualRarity}
           orientation={reelOrientation}
+          compactVertical={unifiedMobileColumn && reelOrientation === 'vertical'}
         />
       </motion.div>
     )
@@ -620,6 +679,31 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
         </motion.div>
       </div>
       )
+    ) : useMobileOverlayLayout && unifiedMobileColumn ? (
+      <div className="relative flex h-full min-h-0 w-full flex-col items-center px-1 py-1">
+        <div className="relative flex min-h-0 w-full flex-1 items-center justify-center">
+          {showMobileResultIcon && result ? (
+            <MobileHuntResultIcon entry={result} visible visualRarity={visualRarity} />
+          ) : null}
+          <div
+            className={`absolute inset-0 flex items-center justify-center overflow-hidden ${
+              showMobileResultIcon ? 'pointer-events-none opacity-0' : ''
+            }`}
+            aria-hidden={showMobileResultIcon}
+          >
+            <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
+              <SpinnerUiFade visible={showSpinnerUi}>
+                {reelSlot ? (
+                  <div className="flex h-full w-full items-center justify-center">{reelSlot}</div>
+                ) : null}
+              </SpinnerUiFade>
+            </SpinnerLayoutSlot>
+          </div>
+        </div>
+        {phase === 'revealed' && showOverlayRevealName ? (
+          <div className="w-full shrink-0 px-0.5">{namePanel}</div>
+        ) : null}
+      </div>
     ) : useMobileOverlayLayout ? (
       <div className="relative flex h-full min-h-0 w-full flex-col items-center justify-center gap-2 px-3 py-2">
         <div className="relative flex min-h-[180px] w-full flex-1 items-center justify-center">
@@ -708,6 +792,12 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
               {overlaySpinnerPane}
             </div>
           ) : isMobile ? (
+            unifiedMobileColumn ? (
+              <div className="relative mx-auto flex h-full min-h-0 w-full flex-col">
+                {overlaySpinnerPane}
+                {immersiveRestoreButton}
+              </div>
+            ) : (
             <div className="relative mx-auto flex h-full min-h-0 w-full flex-col">
               <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
                 {overlaySpinnerPane}
@@ -717,6 +807,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
               </div>
               {immersiveRestoreButton}
             </div>
+            )
           ) : (
             <div
               className="relative mx-auto h-full min-h-0 w-full py-2"

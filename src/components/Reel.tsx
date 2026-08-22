@@ -10,6 +10,7 @@ import {
   CENTER_INDEX,
   MOBILE_REEL_HEIGHT,
   MOBILE_REEL_MAX_WIDTH,
+  MOBILE_VERTICAL_REEL_MIN_HEIGHT,
   SLOT,
   SPIN_MS,
   VIEWPORT_HEIGHT,
@@ -23,33 +24,42 @@ type ReelProps = {
   landed: boolean
   rarity: VisualRarity
   orientation?: ReelOrientation
+  /** Fill parent height instead of using the full desktop vertical viewport. */
+  compactVertical?: boolean
 }
 
-function Reel({ sequence, onDone, landed, rarity, orientation = 'vertical' }: ReelProps) {
+function Reel({
+  sequence,
+  onDone,
+  landed,
+  rarity,
+  orientation = 'vertical',
+  compactVertical = false,
+}: ReelProps) {
   const isHorizontal = orientation === 'horizontal'
   const containerRef = useRef<HTMLDivElement>(null)
   const [translate, setTranslate] = useState(0)
   const [spinning, setSpinning] = useState(false)
-  const [viewportSize, setViewportSize] = useState(isHorizontal ? MOBILE_REEL_MAX_WIDTH : VIEWPORT_HEIGHT)
+  const [viewportSize, setViewportSize] = useState(
+    isHorizontal ? MOBILE_REEL_MAX_WIDTH : compactVertical ? MOBILE_VERTICAL_REEL_MIN_HEIGHT : VIEWPORT_HEIGHT,
+  )
   const doneRef = useRef(onDone)
   doneRef.current = onDone
 
   useEffect(() => {
-    if (!isHorizontal) {
-      setViewportSize(VIEWPORT_HEIGHT)
-      return
-    }
-
     const el = containerRef.current
     if (!el) return
 
-    const updateSize = () => setViewportSize(el.clientWidth)
+    const updateSize = () => {
+      const measured = isHorizontal ? el.clientWidth : el.clientHeight
+      setViewportSize(Math.max(measured, isHorizontal ? 0 : MOBILE_VERTICAL_REEL_MIN_HEIGHT))
+    }
     updateSize()
 
     const observer = new ResizeObserver(updateSize)
     observer.observe(el)
     return () => observer.disconnect()
-  }, [isHorizontal])
+  }, [isHorizontal, compactVertical])
 
   useEffect(() => {
     const finalOffset = viewportSize / 2 - (CENTER_INDEX * SLOT + CARD_SIZE / 2)
@@ -99,7 +109,9 @@ function Reel({ sequence, onDone, landed, rarity, orientation = 'vertical' }: Re
       style={
         isHorizontal
           ? { height: MOBILE_REEL_HEIGHT }
-          : { height: VIEWPORT_HEIGHT, width: CARD_SIZE + 40 }
+          : compactVertical
+            ? { height: '100%', width: '100%', minHeight: MOBILE_VERTICAL_REEL_MIN_HEIGHT, maxWidth: CARD_SIZE + 40 }
+            : { height: VIEWPORT_HEIGHT, width: CARD_SIZE + 40 }
       }
     >
       <CenterMarkerGlow active={landed} rarity={rarity} orientation={orientation} />

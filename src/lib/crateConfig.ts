@@ -15,6 +15,8 @@ export const QUEST_TYPE_REVEAL_DELAY_MS = 1000
 export const REEL_WIDTH = CARD_SIZE + 40
 /** Horizontal reel frame height on mobile. */
 export const MOBILE_REEL_HEIGHT = CARD_SIZE + 40
+/** Minimum height for compact vertical reels in side-by-side mobile columns. */
+export const MOBILE_VERTICAL_REEL_MIN_HEIGHT = 200
 /** Horizontal reel viewport cap (mobile and desktop overlay). */
 export const MOBILE_REEL_MAX_WIDTH = 620
 /** Max width for stacked hunt columns (mobile and desktop overlay). */
