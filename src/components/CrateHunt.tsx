@@ -551,6 +551,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       showImmersiveToggle={showImmersiveToggle && !overlayChromeHidden}
       onHideOverlayChrome={hideOverlayChrome}
       overlayInfoButton={useFullSectionReel && showMonsterInfo}
+      mobilePairedFooter={useFullSectionReel}
     />
   )
 

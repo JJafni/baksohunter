@@ -61,6 +61,8 @@ type RevealPanelProps = {
   compact?: boolean
   /** Info button renders elsewhere (e.g. over the result icon). */
   overlayInfoButton?: boolean
+  /** Match footer height/vertical centering with the paired hunt column on mobile. */
+  mobilePairedFooter?: boolean
 }
 
 const RARITY_TEXT = RARITY_TEXT_CLASS
@@ -111,6 +113,7 @@ function RevealPanel({
   onHideOverlayChrome,
   compact = false,
   overlayInfoButton = false,
+  mobilePairedFooter = false,
 }: RevealPanelProps) {
   const [infoOpen, setInfoOpen] = useState(false)
   const isMobile = variant === 'mobile'
@@ -163,6 +166,9 @@ function RevealPanel({
     const label = nameOverride ?? entry.name
     const isLongName = label.length >= 10
     if (compact && showMonsterInfo) {
+      return isLongName ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'
+    }
+    if (compact && (showMonsterInfo || mobilePairedFooter)) {
       return isLongName ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'
     }
     if (compact) {
@@ -336,7 +342,7 @@ function RevealPanel({
     <div
       className={`flex shrink-0 flex-col justify-center ${
         isMobile
-          ? `w-full px-2 ${compact ? 'py-0' : 'h-full px-2'} ${alignClass}`
+          ? `w-full px-2 ${compact ? 'py-0' : 'h-full px-2'} ${mobilePairedFooter ? 'min-h-[4.75rem] sm:min-h-[5.25rem]' : ''} ${alignClass}`
           : `min-h-[4rem] sm:min-h-[6rem] ${align === 'center' ? 'w-full max-w-[620px]' : 'w-[150px] sm:w-[185px]'} ${alignClass}`
       }`}
     >
