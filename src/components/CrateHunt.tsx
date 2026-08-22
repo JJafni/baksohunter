@@ -28,6 +28,7 @@ import Reel from './Reel'
 import RevealPanel from './RevealPanel'
 import QuestTypeBadge from './QuestTypeBadge'
 import MobileHuntResultIcon from './MobileHuntResultIcon'
+import MonsterInfoTrigger from './MonsterInfoTrigger'
 import { StatefulButton } from './ui/stateful-button'
 
 type Phase = 'idle' | 'spinning' | 'revealed'
@@ -549,6 +550,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       nameOverride={nameOverride}
       showImmersiveToggle={showImmersiveToggle && !overlayChromeHidden}
       onHideOverlayChrome={hideOverlayChrome}
+      overlayInfoButton={useFullSectionReel && showMonsterInfo}
     />
   )
 
@@ -732,17 +734,28 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
         >
           {questTypeCornerBadge}
           <div className="absolute inset-0 flex items-center justify-center pb-24">
-            <AnimatePresence mode="wait">
-              {showMobileResultIcon && result ? (
-                <MobileHuntResultIcon
-                  key={`icon-${result.slug}-${spinKey}`}
-                  entry={result}
-                  visible
-                  visualRarity={visualRarity}
-                  large
+            <div className="relative flex items-center justify-center">
+              {showMonsterInfo && showMobileResultIcon && result ? (
+                <MonsterInfoTrigger
+                  slug={result.slug}
+                  icon={result.icon}
+                  visible={showOverlayRevealName}
+                  revealKey={spinKey}
+                  className="pointer-events-auto absolute -right-1 top-1 z-30 translate-x-1/3 sm:-right-2 sm:top-2"
                 />
               ) : null}
-            </AnimatePresence>
+              <AnimatePresence mode="wait">
+                {showMobileResultIcon && result ? (
+                  <MobileHuntResultIcon
+                    key={`icon-${result.slug}-${spinKey}`}
+                    entry={result}
+                    visible
+                    visualRarity={visualRarity}
+                    large
+                  />
+                ) : null}
+              </AnimatePresence>
+            </div>
           </div>
           <div
             className={`absolute inset-0 overflow-hidden transition-opacity duration-700 ease-in-out ${
