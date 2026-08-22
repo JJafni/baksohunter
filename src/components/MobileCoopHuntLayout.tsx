@@ -66,11 +66,6 @@ const PLAYER_LABEL_COLORS_ACTIVE = [
 
 type PlayerSlot = { id: number }
 
-type PlayerPhaseState = {
-  monster: CrateHuntContext['phase']
-  weapon: CrateHuntContext['phase']
-}
-
 type MobileCoopHuntLayoutProps = {
   playerCount: number
   onPlayerCountChange: (count: number) => void
@@ -112,10 +107,6 @@ function PlayerCountControls({
   )
 }
 
-function coopRowBorderClass(rowIndex: number, rowCount: number) {
-  return rowIndex < rowCount - 1 ? `border-b ${SECTION_BORDER}` : ''
-}
-
 function MobileCoopHuntLayout({
   playerCount,
   onPlayerCountChange,
@@ -136,11 +127,12 @@ function MobileCoopHuntLayout({
   const [monsterModalOpen, setMonsterModalOpen] = useState(false)
   const [monsterPreviewPool, setMonsterPreviewPool] = useState<CrateEntry[]>([])
 
-  const [monsterContexts, setMonsterContexts] = useState<Record<number, CrateHuntContext>>({})
+  const [monsterPhase, setMonsterPhase] = useState<CrateHuntContext['phase']>('idle')
+  const [monsterContext, setMonsterContext] = useState<CrateHuntContext | null>(null)
   const [weaponDraws, setWeaponDraws] = useState<Record<number, PlayerDraw>>({})
-  const [playerPhases, setPlayerPhases] = useState<Record<number, PlayerPhaseState>>({})
+  const [weaponPhases, setWeaponPhases] = useState<Record<number, CrateHuntContext['phase']>>({})
 
-  const monsterRefs = useRef<Record<number, CrateHuntHandle | null>>({})
+  const monsterRef = useRef<CrateHuntHandle>(null)
   const weaponRefs = useRef<Record<number, CrateHuntHandle | null>>({})
 
   const monsterSpecies = useMemo(() => uniqueMonsterSpecies(MONSTER_POOL), [])
@@ -163,10 +155,10 @@ function MobileCoopHuntLayout({
   )
 
   const poolCountLabel = formatPoolCountLabel(filteredPool.length)
-  const anyMonsterSpinning = players.some((p) => playerPhases[p.id]?.monster === 'spinning')
-  const filtersDisabled = anyMonsterSpinning
-  const actionButtonClass =
-    players.length > 2 ? 'min-h-[3.5rem] py-2.5 text-sm' : 'min-h-[6rem] py-4 text-base'
+  const monsterSpinning = monsterPhase === 'spinning'
+  const filtersDisabled = monsterSpinning
+  const drawButtonClass =
+    players.length > 2 ? 'min-h-[3rem] py-2 text-sm' : 'min-h-[4rem] py-3 text-sm'
 
   const handlePlayerCountChange = useCallback(
     (count: number) => {
@@ -185,10 +177,7 @@ function MobileCoopHuntLayout({
         setWeaponDraws((prev) =>
           Object.fromEntries(Object.entries(prev).filter(([id]) => keptIds.has(Number(id)))),
         )
-        setMonsterContexts((prev) =>
-          Object.fromEntries(Object.entries(prev).filter(([id]) => keptIds.has(Number(id)))),
-        )
-        setPlayerPhases((prev) =>
+        setWeaponPhases((prev) =>
           Object.fromEntries(Object.entries(prev).filter(([id]) => keptIds.has(Number(id)))),
         )
         return remaining
@@ -198,35 +187,19 @@ function MobileCoopHuntLayout({
   )
 
   const handleMonsterHuntChange = useCallback(
-    (playerId: number, ctx: CrateHuntContext) => {
-      setPlayerPhases((prev) => ({
-        ...prev,
-        [playerId]: {
-          monster: ctx.phase,
-          weapon: prev[playerId]?.weapon ?? 'idle',
-        },
-      }))
-
+    (ctx: CrateHuntContext) => {
+      setMonsterPhase(ctx.phase)
       if (ctx.phase === 'revealed' && ctx.result) {
-        setMonsterContexts((prev) => ({ ...prev, [playerId]: ctx }))
+        setMonsterContext(ctx)
       }
-
-      if (playerId === players[0]?.id) {
-        onMonsterHuntChange?.(ctx)
-      }
+      onMonsterHuntChange?.(ctx)
     },
-    [onMonsterHuntChange, players],
+    [onMonsterHuntChange],
   )
 
   const handleWeaponHuntChange = useCallback(
     (playerId: number, ctx: CrateHuntContext) => {
-      setPlayerPhases((prev) => ({
-        ...prev,
-        [playerId]: {
-          monster: prev[playerId]?.monster ?? 'idle',
-          weapon: ctx.phase,
-        },
-      }))
+      setWeaponPhases((prev) => ({ ...prev, [playerId]: ctx.phase }))
 
       if (ctx.phase === 'revealed' && ctx.result) {
         setWeaponDraws((prev) => ({
@@ -245,10 +218,16 @@ function MobileCoopHuntLayout({
     [onWeaponHuntChange, players],
   )
 
-  const allIdle = players.every((p) => {
-    const phases = playerPhases[p.id]
-    return (phases?.monster ?? 'idle') === 'idle' && (phases?.weapon ?? 'idle') === 'idle'
-  })
+  const allIdle =
+    monsterPhase === 'idle' && players.every((p) => (weaponPhases[p.id] ?? 'idle') === 'idle')
+
+  const monsterInitialContext: CrateHuntContext | null =
+    monsterContext?.phase === 'revealed'
+      ? { ...monsterContext, spinnerUiVisible: false }
+      : null
+
+  const showMonsterSlideshow = allIdle && monsterPreviewPool.length > 0
+  const showWeaponSlideshow = allIdle && WEAPON_POOL.length > 0
 
   return (
     <>
@@ -261,26 +240,56 @@ function MobileCoopHuntLayout({
           className="grid min-h-0 flex-1 grid-cols-2"
           style={{ gridTemplateRows: `repeat(${players.length}, minmax(0, 1fr))` }}
         >
+          <section
+            className={`relative flex min-h-0 flex-col border-r ${SECTION_BORDER}`}
+            style={{ gridRow: `1 / span ${players.length}` }}
+          >
+            <div
+              className={`pointer-events-none absolute inset-0 overflow-hidden ${
+                showMonsterSlideshow || monsterPhase !== 'idle' ? '' : 'hidden'
+              }`}
+            >
+              {showMonsterSlideshow ? (
+                <MonsterPoolSlideshow pool={monsterPreviewPool} />
+              ) : monsterPhase !== 'idle' ? (
+                <div className="h-full w-full bg-wilds-950" aria-hidden="true" />
+              ) : null}
+            </div>
+            <div className="relative z-10 flex min-h-0 flex-1 flex-col">
+              <CrateHunt
+                ref={monsterRef}
+                poolCountLabel=""
+                buttonLayoutId="coop-monster-crate-button"
+                buttonLabels={{ open: 'Hunt', again: 'Hunt' }}
+                rarityLabels={RARITY_LABELS}
+                pool={filteredPool}
+                pickRandom={pickRandom}
+                pickRandomQuestType={pickQuestTypeForMonster}
+                pickRandomHuntStar={pickHuntStar}
+                questTypeEnabled={questTypeEnabled}
+                reelSide="left"
+                reelOrientation="vertical"
+                spinLabels={SPIN_LABELS}
+                externalGallery
+                overlayMode
+                unifiedMobileColumn
+                hidePrimaryButton
+                hideMobileChrome
+                showMonsterInfo
+                initialContext={monsterInitialContext}
+                onHuntChange={handleMonsterHuntChange}
+              />
+            </div>
+          </section>
+
           {players.map((player, rowIndex) => {
-            const phases = playerPhases[player.id]
-            const monsterPhase = phases?.monster ?? 'idle'
-            const weaponPhase = phases?.weapon ?? 'idle'
-            const monsterContext = monsterContexts[player.id]
+            const weaponPhase = weaponPhases[player.id] ?? 'idle'
             const weaponDraw = weaponDraws[player.id]
-            const rowBorder = coopRowBorderClass(rowIndex, players.length)
-            const isActive =
-              monsterPhase !== 'idle' ||
-              weaponPhase !== 'idle' ||
-              Boolean(monsterContext) ||
-              Boolean(weaponDraw)
+            const rowBorder = rowIndex < players.length - 1 ? `border-b ${SECTION_BORDER}` : ''
+            const isActive = weaponPhase !== 'idle' || Boolean(weaponDraw)
             const labelColorClass = isActive
               ? (PLAYER_LABEL_COLORS_ACTIVE[rowIndex] ?? PLAYER_LABEL_COLORS_ACTIVE[0])
               : (PLAYER_LABEL_COLORS[rowIndex] ?? PLAYER_LABEL_COLORS[0])
-
-            const monsterInitialContext: CrateHuntContext | null =
-              monsterContext?.phase === 'revealed'
-                ? { ...monsterContext, spinnerUiVisible: false }
-                : null
 
             const weaponInitialContext: CrateHuntContext | null = weaponDraw
               ? {
@@ -292,96 +301,51 @@ function MobileCoopHuntLayout({
                 }
               : null
 
-            const showMonsterSlideshow =
-              allIdle && monsterPhase === 'idle' && monsterPreviewPool.length > 0
-            const showWeaponSlideshow = allIdle && weaponPhase === 'idle' && WEAPON_POOL.length > 0
-
             return (
-              <div key={player.id} className="contents">
-                <section
-                  className={`relative flex min-h-0 flex-col ${rowBorder} border-r ${SECTION_BORDER}`}
+              <section
+                key={player.id}
+                className={`relative flex min-h-0 flex-col ${rowBorder}`}
+                style={{ gridColumn: 2, gridRow: rowIndex + 1 }}
+              >
+                <span
+                  className={`wilds-legibility-text pointer-events-none absolute left-0 top-0 z-20 px-1.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] ${labelColorClass}`}
                 >
-                  <span
-                    className={`wilds-legibility-text pointer-events-none absolute left-0 top-0 z-20 px-1.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] ${labelColorClass}`}
-                  >
-                    P{rowIndex + 1}
-                  </span>
-                  <div
-                    className={`pointer-events-none absolute inset-0 overflow-hidden ${
-                      showMonsterSlideshow || monsterPhase !== 'idle' ? '' : 'hidden'
-                    }`}
-                  >
-                    {showMonsterSlideshow ? (
-                      <MonsterPoolSlideshow pool={monsterPreviewPool} />
-                    ) : monsterPhase !== 'idle' ? (
-                      <div className="h-full w-full bg-wilds-950" aria-hidden="true" />
-                    ) : null}
-                  </div>
-                  <div className="relative z-10 flex min-h-0 flex-1 flex-col">
-                    <CrateHunt
-                      ref={(handle) => {
-                        monsterRefs.current[player.id] = handle
-                      }}
-                      poolCountLabel=""
-                      buttonLayoutId={`coop-p${player.id}-monster`}
-                      buttonLabels={{ open: 'Hunt', again: 'Hunt' }}
-                      rarityLabels={RARITY_LABELS}
-                      pool={filteredPool}
-                      pickRandom={pickRandom}
-                      pickRandomQuestType={pickQuestTypeForMonster}
-                      pickRandomHuntStar={pickHuntStar}
-                      questTypeEnabled={questTypeEnabled}
-                      reelSide="left"
-                      reelOrientation="vertical"
-                      spinLabels={SPIN_LABELS}
-                      externalGallery
-                      overlayMode
-                      unifiedMobileColumn
-                      hidePrimaryButton
-                      hideMobileChrome
-                      showMonsterInfo
-                      initialContext={monsterInitialContext}
-                      onHuntChange={(ctx) => handleMonsterHuntChange(player.id, ctx)}
-                    />
-                  </div>
-                </section>
-
-                <section className={`relative flex min-h-0 flex-col ${rowBorder}`}>
-                  <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                    {showWeaponSlideshow ? (
-                      <WeaponPoolSlideshow pool={WEAPON_POOL} />
-                    ) : (
-                      <div className="h-full w-full bg-wilds-950" aria-hidden="true" />
-                    )}
-                  </div>
-                  <div className="relative z-10 flex min-h-0 flex-1 flex-col">
-                    <CrateHunt
-                      ref={(handle) => {
-                        weaponRefs.current[player.id] = handle
-                      }}
-                      poolCountLabel=""
-                      buttonLayoutId={`coop-p${player.id}-weapon`}
-                      buttonLabels={{ open: 'Draw', again: 'Draw' }}
-                      rarityLabels={WEAPON_RARITY_LABELS}
-                      pool={WEAPON_POOL}
-                      pickRandom={pickRandomWeapon}
-                      reelSide="right"
-                      reelOrientation="vertical"
-                      spinLabels={['Drawing']}
-                      buttonIcon="shield"
-                      buttonSurface="shiny"
-                      externalGallery
-                      overlayMode
-                      revealLayout="inline"
-                      unifiedMobileColumn
-                      hidePrimaryButton
-                      hideMobileChrome
-                      initialContext={weaponInitialContext}
-                      onHuntChange={(ctx) => handleWeaponHuntChange(player.id, ctx)}
-                    />
-                  </div>
-                </section>
-              </div>
+                  P{rowIndex + 1}
+                </span>
+                <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                  {showWeaponSlideshow ? (
+                    <WeaponPoolSlideshow pool={WEAPON_POOL} />
+                  ) : (
+                    <div className="h-full w-full bg-wilds-950" aria-hidden="true" />
+                  )}
+                </div>
+                <div className="relative z-10 flex min-h-0 flex-1 flex-col">
+                  <CrateHunt
+                    ref={(handle) => {
+                      weaponRefs.current[player.id] = handle
+                    }}
+                    poolCountLabel=""
+                    buttonLayoutId={`coop-p${player.id}-weapon`}
+                    buttonLabels={{ open: 'Draw', again: 'Draw' }}
+                    rarityLabels={WEAPON_RARITY_LABELS}
+                    pool={WEAPON_POOL}
+                    pickRandom={pickRandomWeapon}
+                    reelSide="right"
+                    reelOrientation="vertical"
+                    spinLabels={['Drawing']}
+                    buttonIcon="shield"
+                    buttonSurface="shiny"
+                    externalGallery
+                    overlayMode
+                    revealLayout="inline"
+                    unifiedMobileColumn
+                    hidePrimaryButton
+                    hideMobileChrome
+                    initialContext={weaponInitialContext}
+                    onHuntChange={(ctx) => handleWeaponHuntChange(player.id, ctx)}
+                  />
+                </div>
+              </section>
             )
           })}
         </div>
@@ -406,37 +370,40 @@ function MobileCoopHuntLayout({
               />
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div
+              className="grid gap-2"
+              style={{ gridTemplateColumns: '1fr 1fr', gridTemplateRows: `repeat(${players.length}, minmax(0, auto))` }}
+            >
+              <StatefulButton
+                layoutId="coop-monster-crate-button"
+                loadingLabels={SPIN_LABELS}
+                icon="sword"
+                surface="matte"
+                disabled={monsterSpinning || filteredPool.length === 0}
+                onClick={() => monsterRef.current?.startSpin()}
+                className="min-h-[6rem] py-4 text-base"
+                style={{ gridRow: `1 / span ${players.length}`, gridColumn: 1 }}
+              >
+                Hunt
+              </StatefulButton>
+
               {players.map((player, index) => {
-                const phases = playerPhases[player.id]
-                const monsterSpinning = phases?.monster === 'spinning'
-                const weaponSpinning = phases?.weapon === 'spinning'
+                const weaponSpinning = weaponPhases[player.id] === 'spinning'
 
                 return (
-                  <div key={player.id} className="grid grid-cols-2 gap-2">
-                    <StatefulButton
-                      layout={false}
-                      loadingLabels={SPIN_LABELS}
-                      icon="sword"
-                      surface="matte"
-                      disabled={monsterSpinning || filteredPool.length === 0}
-                      onClick={() => monsterRefs.current[player.id]?.startSpin()}
-                      className={actionButtonClass}
-                    >
-                      P{index + 1} Hunt
-                    </StatefulButton>
-                    <StatefulButton
-                      layout={false}
-                      loadingLabels={['Drawing']}
-                      icon="shield"
-                      surface="shiny"
-                      disabled={weaponSpinning}
-                      onClick={() => weaponRefs.current[player.id]?.startSpin()}
-                      className={actionButtonClass}
-                    >
-                      P{index + 1} Draw
-                    </StatefulButton>
-                  </div>
+                  <StatefulButton
+                    key={player.id}
+                    layout={false}
+                    loadingLabels={['Drawing']}
+                    icon="shield"
+                    surface="shiny"
+                    disabled={weaponSpinning}
+                    onClick={() => weaponRefs.current[player.id]?.startSpin()}
+                    className={drawButtonClass}
+                    style={{ gridColumn: 2, gridRow: index + 1 }}
+                  >
+                    P{index + 1} Draw
+                  </StatefulButton>
                 )
               })}
             </div>
