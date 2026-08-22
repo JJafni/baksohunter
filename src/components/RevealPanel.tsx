@@ -10,8 +10,34 @@ import MonsterInfoModal from './MonsterInfoModal'
 import QuestTypeBadge from './QuestTypeBadge'
 import type { QuestType } from '../data/questTypes'
 
-const REVEAL_MOTION = { duration: 0.42, ease: [0.22, 1, 0.36, 1] as const }
 const METADATA_LAYOUT_MOTION = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
+const MOBILE_NAME_REVEAL_EASE = [0.22, 1, 0.36, 1] as const
+
+const mobileRevealVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.06,
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.25, ease: MOBILE_NAME_REVEAL_EASE },
+  },
+}
+
+const mobileRevealItemVariants = {
+  hidden: { opacity: 0, y: 16, scale: 0.94, filter: 'blur(4px)' },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: 'blur(0px)',
+    transition: { duration: 0.52, ease: MOBILE_NAME_REVEAL_EASE },
+  },
+}
 
 type RevealPanelProps = {
   result: CrateEntry | null
@@ -148,72 +174,94 @@ function RevealPanel({
     return isLongName ? 'text-4xl sm:text-5xl lg:text-6xl' : 'text-5xl sm:text-6xl lg:text-7xl'
   }
 
-  const metadataRow = (visualRarity: ReturnType<typeof getVisualRarity>, rarityLabel: string) => (
-    <motion.div
-      layout
-      transition={METADATA_LAYOUT_MOTION}
-      className={`inline-flex max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 ${nameRowClass}`}
-    >
-      {questType && !isMobile ? (
-        <QuestTypeBadge
-          questType={questType}
-          visible={questTypeVisible}
-          revealKey={revealKey}
-          variant="inline"
-        />
-      ) : null}
-      <motion.span layout transition={METADATA_LAYOUT_MOTION} className="inline-flex items-center gap-x-1.5">
-        {rarityLabel ? (
-          <span
-            className={`font-bold uppercase tracking-[0.14em] ${isMobile ? 'text-[10px] sm:text-xs' : 'text-sm sm:text-base'} ${RARITY_TEXT[visualRarity]}`}
-          >
-            {rarityLabel}
-          </span>
-        ) : null}
-        {huntStar ? (
-          <span
-            className={`font-black tracking-[0.08em] text-wilds-gold-light ${isMobile ? 'text-sm sm:text-base' : 'text-base sm:text-lg'}`}
-          >
-            {formatHuntStar(huntStar)}
-          </span>
-        ) : null}
-        {showImmersiveToggle && onHideOverlayChrome ? (
-          <ImmersiveHideButton onClick={onHideOverlayChrome} />
-        ) : null}
-      </motion.span>
-    </motion.div>
-  )
-
   const nameRow = (entry: CrateEntry, titleUpdateLabel: string | null, nameClass: string) => {
     const displayName = nameOverride ?? entry.name
     const showWeaponIcon = useInlineLayout && !showMonsterInfo
-
-    return (
-    <div className={`inline-flex max-w-full items-center gap-2 sm:gap-3 ${nameRowClass}`}>
-      {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
-      {showWeaponIcon ? (
-        <img
-          src={entry.icon}
-          alt=""
-          aria-hidden="true"
-          draggable={false}
-          className={`shrink-0 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)] ${
-            isMobile ? 'size-12 sm:size-14' : 'size-12 sm:size-14 lg:size-16'
-          }`}
-        />
-      ) : null}
-      <h2
-        className={`font-black uppercase leading-[0.95] tracking-tight text-wilds-parchment ${nameClass}`}
-      >
-        {displayName}
-      </h2>
-      {titleUpdateLabel ? (
-        <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.24em] text-wilds-gold-light/90 sm:text-[10px]">
-          {titleUpdateLabel}
-        </span>
-      ) : null}
-    </div>
+    const rowClass = `inline-flex max-w-full items-center gap-2 sm:gap-3 ${nameRowClass}`
+    const content = (
+      <>
+        {monsterInfo ? <MonsterInfoButton onClick={() => setInfoOpen(true)} /> : null}
+        {showWeaponIcon ? (
+          <img
+            src={entry.icon}
+            alt=""
+            aria-hidden="true"
+            draggable={false}
+            className={`shrink-0 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)] ${
+              isMobile ? 'size-12 sm:size-14' : 'size-12 sm:size-14 lg:size-16'
+            }`}
+          />
+        ) : null}
+        <h2
+          className={`font-black uppercase leading-[0.95] tracking-tight text-wilds-parchment ${nameClass}`}
+        >
+          {displayName}
+        </h2>
+        {titleUpdateLabel ? (
+          <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.24em] text-wilds-gold-light/90 sm:text-[10px]">
+            {titleUpdateLabel}
+          </span>
+        ) : null}
+      </>
     )
+
+    if (isMobile && visible) {
+      return (
+        <motion.div variants={mobileRevealItemVariants} className={rowClass}>
+          {content}
+        </motion.div>
+      )
+    }
+
+    return <div className={rowClass}>{content}</div>
+  }
+
+  const metadataRow = (visualRarity: ReturnType<typeof getVisualRarity>, rarityLabel: string) => {
+    const row = (
+      <motion.div
+        layout={!isMobile}
+        transition={METADATA_LAYOUT_MOTION}
+        className={`inline-flex max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 ${nameRowClass}`}
+      >
+        {questType && !isMobile ? (
+          <QuestTypeBadge
+            questType={questType}
+            visible={questTypeVisible}
+            revealKey={revealKey}
+            variant="inline"
+          />
+        ) : null}
+        <motion.span layout={!isMobile} transition={METADATA_LAYOUT_MOTION} className="inline-flex items-center gap-x-1.5">
+          {rarityLabel ? (
+            <span
+              className={`font-bold uppercase tracking-[0.14em] ${isMobile ? 'text-[10px] sm:text-xs' : 'text-sm sm:text-base'} ${RARITY_TEXT[visualRarity]}`}
+            >
+              {rarityLabel}
+            </span>
+          ) : null}
+          {huntStar ? (
+            <span
+              className={`font-black tracking-[0.08em] text-wilds-gold-light ${isMobile ? 'text-sm sm:text-base' : 'text-base sm:text-lg'}`}
+            >
+              {formatHuntStar(huntStar)}
+            </span>
+          ) : null}
+          {showImmersiveToggle && onHideOverlayChrome ? (
+            <ImmersiveHideButton onClick={onHideOverlayChrome} />
+          ) : null}
+        </motion.span>
+      </motion.div>
+    )
+
+    if (isMobile && visible) {
+      return (
+        <motion.div variants={mobileRevealItemVariants}>
+          {row}
+        </motion.div>
+      )
+    }
+
+    return row
   }
 
   const revealContent = (entry: CrateEntry) => {
@@ -285,10 +333,10 @@ function RevealPanel({
           {visible && result ? (
             <motion.div
               key={`${result.slug}-${revealKey}`}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={REVEAL_MOTION}
+              variants={mobileRevealVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
               className={`w-full ${alignClass}`}
             >
               {revealContent(result)}

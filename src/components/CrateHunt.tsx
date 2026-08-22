@@ -650,6 +650,23 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     />
   ) : null
 
+  const mobileNameRevealSlot = (
+    <AnimatePresence>
+      {phase === 'revealed' && showOverlayRevealName ? (
+        <motion.div
+          key={`name-${spinKey}`}
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={MOBILE_APPEAR_TRANSITION}
+          className="w-full shrink-0 overflow-hidden px-0.5"
+        >
+          {namePanel}
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
+  )
+
   const overlaySpinnerInset = useCompactOverlayChrome ? 'inset-x-3 inset-y-2 sm:inset-x-4' : 'inset-0'
 
   const overlaySpinnerPane =
@@ -675,9 +692,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
               </SpinnerLayoutSlot>
             </div>
           </div>
-          {phase === 'revealed' && showOverlayRevealName ? (
-            <div className="w-full shrink-0 px-1">{namePanel}</div>
-          ) : null}
+          {mobileNameRevealSlot}
         </div>
       ) : (
       <div className="relative h-full min-h-0 w-full">
@@ -735,20 +750,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
             </SpinnerLayoutSlot>
           </div>
         </div>
-        <AnimatePresence>
-          {phase === 'revealed' && showOverlayRevealName ? (
-            <motion.div
-              key={`name-${spinKey}`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 6 }}
-              transition={MOBILE_APPEAR_TRANSITION}
-              className="w-full shrink-0 px-0.5"
-            >
-              {namePanel}
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
+        {mobileNameRevealSlot}
       </motion.div>
     ) : useMobileOverlayLayout ? (
       <div className="relative flex h-full min-h-0 w-full flex-col items-center justify-center gap-2 px-3 py-2">
@@ -770,9 +772,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
             </SpinnerLayoutSlot>
           </div>
         </div>
-        {phase === 'revealed' && showOverlayRevealName ? (
-          <div className="w-full shrink-0 px-1">{namePanel}</div>
-        ) : null}
+        {mobileNameRevealSlot}
       </div>
     ) : (
       <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
