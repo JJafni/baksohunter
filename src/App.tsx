@@ -7,6 +7,7 @@ import type { CrateHuntContext } from './components/CrateHunt'
 import CoopWeaponPanel, { PlayerCountToolbarSpacer } from './components/CoopWeaponPanel'
 import GalleryBackdropOverlay from './components/GalleryBackdropOverlay'
 import LandingPage from './components/LandingPage'
+import MobileCoopHuntLayout from './components/MobileCoopHuntLayout'
 import MobileSoloHuntLayout from './components/MobileSoloHuntLayout'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
 import MonsterPoolSlideshow from './components/MonsterPoolSlideshow'
@@ -53,6 +54,7 @@ function HuntLayout({
   const weaponGalleryEmphasized = weaponHunt.phase === 'revealed' && weaponHunt.spinnerUiVisible
   const isMobile = useIsMobileLayout()
   const weaponCoopMode = weaponPlayerCount > 1
+  const useMobileCoopLayout = isMobile && weaponCoopMode
   const useUnifiedMobileLayout = isMobile && !weaponCoopMode
   const [monsterPreviewPool, setMonsterPreviewPool] = useState<CrateEntry[]>([])
   const showMonsterPreviewSlideshow = monsterHunt.phase === 'idle' && monsterPreviewPool.length > 0
@@ -101,6 +103,17 @@ function HuntLayout({
     ) : (
       <div className="h-full w-full bg-wilds-950" aria-hidden="true" />
     )
+
+  if (useMobileCoopLayout) {
+    return (
+      <MobileCoopHuntLayout
+        playerCount={weaponPlayerCount}
+        onPlayerCountChange={onWeaponPlayerCountChange}
+        onMonsterHuntChange={onMonsterHuntChange}
+        onWeaponHuntChange={onWeaponHuntChange}
+      />
+    )
+  }
 
   if (useUnifiedMobileLayout) {
     return (
