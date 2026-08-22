@@ -26,6 +26,7 @@ import {
 import { buildReelSequence } from '../lib/reelSequence'
 import Reel from './Reel'
 import RevealPanel from './RevealPanel'
+import MobileHuntResultIcon from './MobileHuntResultIcon'
 import { StatefulButton } from './ui/stateful-button'
 
 type Phase = 'idle' | 'spinning' | 'revealed'
@@ -402,13 +403,16 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const actionsPadding =
     phase === 'idle' ? 'pt-0' : useStackedLayout ? 'pt-2' : 'pt-4'
 
+  const useMobileOverlayLayout = isMobile && overlayMode
+  const useMobileOverlayChromeSheet = useMobileOverlayLayout && !useCompactOverlayChrome
+
   const poolLine = (
     <p
       aria-hidden={!poolCountLabel}
-      className={`mt-3 flex items-center justify-center whitespace-nowrap text-center uppercase tracking-[0.18em] text-wilds-muted ${
-        useStackedLayout ? 'px-2 text-[10px]' : 'text-[10px] sm:text-xs'
+      className={`flex items-center justify-center whitespace-nowrap text-center uppercase tracking-[0.18em] text-wilds-muted ${
+        useMobileOverlayChromeSheet ? 'mt-2 text-[9px]' : useStackedLayout ? 'mt-3 px-2 text-[10px]' : 'mt-3 text-[10px] sm:text-xs'
       }`}
-      style={{ minHeight: FOOTER_ROW_H }}
+      style={{ minHeight: useMobileOverlayChromeSheet ? '2rem' : FOOTER_ROW_H }}
     >
       {poolCountLabel}
     </p>
@@ -427,7 +431,11 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const filtersDisabled = phase === 'spinning'
 
   const filterRow = filters ? (
-    <div className="mb-2 flex w-full items-center justify-center overflow-visible max-lg:px-2 lg:px-1">
+    <div
+      className={`flex w-full items-center justify-center overflow-visible lg:px-1 ${
+        useMobileOverlayChromeSheet ? 'mb-1' : 'mb-2 max-lg:px-2'
+      }`}
+    >
       <div className="mx-auto w-fit max-w-full">{filters({ disabled: filtersDisabled, layout: 'bar' })}</div>
     </div>
   ) : null
@@ -460,6 +468,13 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     </div>
   )
 
+  const showMobileResultIcon =
+    useMobileOverlayLayout &&
+    phase === 'revealed' &&
+    Boolean(result) &&
+    !showSpinnerUi &&
+    showOverlayRevealName
+
   const namePanel = (
     <RevealPanel
       result={result}
@@ -469,6 +484,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       align={useStackedLayout ? 'center' : reelSide === 'left' ? 'right' : 'left'}
       variant={isMobile ? 'mobile' : 'desktop'}
       layout={revealLayout}
+      compact={useMobileOverlayLayout}
       showMonsterInfo={showMonsterInfo}
       huntStar={pickRandomHuntStar ? huntStar : null}
       questType={questTypeEnabled && pickRandomQuestType ? questType : null}
@@ -480,7 +496,9 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   )
 
   const stackedRevealSlot =
-    !useStackedLayout || useCenterOverlayReveal
+    useMobileOverlayLayout
+      ? null
+      : !useStackedLayout || useCenterOverlayReveal
       ? null
       : isMobile && !overlayMode
         ? (
@@ -558,6 +576,30 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     phase === 'idle' ? (
       <div className="h-full min-h-0" aria-hidden="true" />
     ) : useCenterOverlayReveal ? (
+      useMobileOverlayLayout ? (
+        <div className="relative flex h-full min-h-0 w-full flex-col items-center justify-center gap-2 px-3 py-2">
+          <div className="relative flex min-h-[180px] w-full flex-1 items-center justify-center">
+            {showMobileResultIcon && result ? (
+              <MobileHuntResultIcon entry={result} visible visualRarity={visualRarity} />
+            ) : null}
+            <div
+              className={`absolute inset-0 flex items-center justify-center overflow-hidden ${overlaySpinnerInset} ${
+                showMobileResultIcon ? 'pointer-events-none opacity-0' : ''
+              }`}
+              aria-hidden={showMobileResultIcon}
+            >
+              <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
+                <SpinnerUiFade visible={showSpinnerUi}>
+                  {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
+                </SpinnerUiFade>
+              </SpinnerLayoutSlot>
+            </div>
+          </div>
+          {phase === 'revealed' && showOverlayRevealName ? (
+            <div className="w-full shrink-0 px-1">{namePanel}</div>
+          ) : null}
+        </div>
+      ) : (
       <div className="relative h-full min-h-0 w-full">
         <div
           className={`absolute flex h-full w-full items-center justify-center overflow-hidden ${overlaySpinnerInset}`}
@@ -577,6 +619,30 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
           {phase === 'revealed' ? namePanel : null}
         </motion.div>
       </div>
+      )
+    ) : useMobileOverlayLayout ? (
+      <div className="relative flex h-full min-h-0 w-full flex-col items-center justify-center gap-2 px-3 py-2">
+        <div className="relative flex min-h-[180px] w-full flex-1 items-center justify-center">
+          {showMobileResultIcon && result ? (
+            <MobileHuntResultIcon entry={result} visible visualRarity={visualRarity} />
+          ) : null}
+          <div
+            className={`absolute inset-0 flex items-center justify-center overflow-hidden ${
+              showMobileResultIcon ? 'pointer-events-none opacity-0' : ''
+            }`}
+            aria-hidden={showMobileResultIcon}
+          >
+            <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
+              <SpinnerUiFade visible={showSpinnerUi}>
+                {reelSlot ? <div className="w-full shrink-0">{reelSlot}</div> : null}
+              </SpinnerUiFade>
+            </SpinnerLayoutSlot>
+          </div>
+        </div>
+        {phase === 'revealed' && showOverlayRevealName ? (
+          <div className="w-full shrink-0 px-1">{namePanel}</div>
+        ) : null}
+      </div>
     ) : (
       <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
         <SpinnerUiFade visible={showSpinnerUi}>
@@ -588,7 +654,9 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   if (useStackedLayout) {
     const overlayControls = (
       <div
-        className="mx-auto flex w-full flex-col items-center gap-3 max-lg:px-2"
+        className={`mx-auto flex w-full flex-col items-center ${
+          useMobileOverlayChromeSheet ? 'gap-2 px-3' : 'gap-3 max-lg:px-2'
+        }`}
         style={huntColumnWidthStyle}
       >
         {stackedRevealSlot}
@@ -641,10 +709,12 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
             </div>
           ) : isMobile ? (
             <div className="relative mx-auto flex h-full min-h-0 w-full flex-col">
-              <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden">
+              <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
                 {overlaySpinnerPane}
               </div>
-              <div className="shrink-0">{overlayControlsCollapsible}</div>
+              <div className="mobile-hunt-controls shrink-0 border-t border-wilds-gold/10 bg-wilds-950/92 backdrop-blur-md">
+                {overlayControlsCollapsible}
+              </div>
               {immersiveRestoreButton}
             </div>
           ) : (

@@ -15,6 +15,7 @@ import type { CrateEntry } from './data/types'
 import { WEAPON_POOL } from './data/weapons'
 import { useAppReady } from './hooks/useAppReady'
 import { useHeaderVisibility } from './hooks/useHeaderVisibility'
+import { useIsMobileLayout } from './hooks/useIsMobileLayout'
 
 function AppBackground() {
   return (
@@ -49,15 +50,18 @@ function HuntLayout({
     !monsterHunt.immersiveView
   const monsterGalleryImmersive = monsterHunt.phase === 'revealed' && Boolean(monsterHunt.immersiveView)
   const weaponGalleryEmphasized = weaponHunt.phase === 'revealed' && weaponHunt.spinnerUiVisible
+  const isMobile = useIsMobileLayout()
   const [monsterPreviewPool, setMonsterPreviewPool] = useState<CrateEntry[]>([])
   const showMonsterPreviewSlideshow = monsterHunt.phase === 'idle' && monsterPreviewPool.length > 0
   const showWeaponPreviewSlideshow =
     !weaponCoopMode && weaponHunt.phase === 'idle' && WEAPON_POOL.length > 0
+  const showMonsterBackdropGallery = !isMobile && monsterHunt.phase === 'revealed'
+  const showWeaponBackdropGallery = !isMobile && weaponHunt.phase === 'revealed'
 
   const monsterBackdrop =
     showMonsterPreviewSlideshow ? (
       <MonsterPoolSlideshow pool={monsterPreviewPool} />
-    ) : (
+    ) : showMonsterBackdropGallery ? (
       <>
         <MonsterGalleryImage
           result={monsterHunt.result}
@@ -71,12 +75,14 @@ function HuntLayout({
           immersive={monsterGalleryImmersive}
         />
       </>
+    ) : (
+      <div className="h-full w-full bg-wilds-950" aria-hidden="true" />
     )
 
   const weaponBackdrop =
     showWeaponPreviewSlideshow ? (
       <WeaponPoolSlideshow pool={WEAPON_POOL} />
-    ) : (
+    ) : showWeaponBackdropGallery ? (
       <>
         <WeaponGalleryImage
           result={weaponHunt.result}
@@ -89,6 +95,8 @@ function HuntLayout({
           emphasized={weaponGalleryEmphasized}
         />
       </>
+    ) : (
+      <div className="h-full w-full bg-wilds-950" aria-hidden="true" />
     )
 
   return (

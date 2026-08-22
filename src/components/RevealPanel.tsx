@@ -30,6 +30,8 @@ type RevealPanelProps = {
   /** Show eye toggle beside monster type metadata (monster overlay hunts). */
   showImmersiveToggle?: boolean
   onHideOverlayChrome?: () => void
+  /** Tighter mobile overlay layout — smaller type, no full-height stretch. */
+  compact?: boolean
 }
 
 const RARITY_TEXT = RARITY_TEXT_CLASS
@@ -97,6 +99,7 @@ function RevealPanel({
   nameOverride = null,
   showImmersiveToggle = false,
   onHideOverlayChrome,
+  compact = false,
 }: RevealPanelProps) {
   const [infoOpen, setInfoOpen] = useState(false)
   const isMobile = variant === 'mobile'
@@ -124,6 +127,9 @@ function RevealPanel({
   const nameSizeClassFor = (entry: CrateEntry) => {
     const label = nameOverride ?? entry.name
     const isLongName = label.length >= 8
+    if (compact) {
+      return isLongName ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
+    }
     if (isMobile) {
       return isLongName ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'
     }
@@ -133,6 +139,9 @@ function RevealPanel({
   const inlineNameSizeClassFor = (entry: CrateEntry) => {
     const label = nameOverride ?? entry.name
     const isLongName = label.length >= 10
+    if (compact) {
+      return isLongName ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
+    }
     if (isMobile) {
       return isLongName ? 'text-4xl sm:text-5xl' : 'text-5xl sm:text-6xl'
     }
@@ -232,7 +241,7 @@ function RevealPanel({
 
     if (isMobile) {
       return (
-        <div className="wilds-legibility-text flex flex-col items-center gap-1.5 text-center">
+        <div className={`wilds-legibility-text flex flex-col items-center text-center ${compact ? 'gap-1' : 'gap-1.5'}`}>
           {nameRow(entry, titleUpdateLabel, nameSizeClassFor(entry))}
           {hasMetadata ? metadataRow(visualRarity, rarityLabel) : null}
           {monsterInfo ? (
@@ -267,7 +276,7 @@ function RevealPanel({
     <div
       className={`flex shrink-0 flex-col justify-center ${
         isMobile
-          ? `h-full w-full px-2 ${alignClass}`
+          ? `w-full px-2 ${compact ? 'py-0' : 'h-full px-2'} ${alignClass}`
           : `min-h-[4rem] sm:min-h-[6rem] ${align === 'center' ? 'w-full max-w-[620px]' : 'w-[150px] sm:w-[185px]'} ${alignClass}`
       }`}
     >

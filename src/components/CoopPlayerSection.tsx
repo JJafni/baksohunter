@@ -139,7 +139,7 @@ function CoopPlayerSection({
         Player {playerIndex + 1}
       </span>
 
-      {hasDraw ? (
+      {hasDraw && !isMobile ? (
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <WeaponGalleryImage
             result={draw.result}
