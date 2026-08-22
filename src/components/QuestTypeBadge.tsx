@@ -13,6 +13,8 @@ type QuestTypeBadgeProps = {
   variant?: 'overlay' | 'inline'
   /** When true, show only the quest icon (mobile space saving). */
   iconOnly?: boolean
+  /** Overlay corner placement (mobile full-section hunts). */
+  corner?: 'left' | 'right'
 }
 
 function QuestTypeBadge({
@@ -21,6 +23,7 @@ function QuestTypeBadge({
   revealKey = 0,
   variant = 'overlay',
   iconOnly = false,
+  corner = 'right',
 }: QuestTypeBadgeProps) {
   const [showBadge, setShowBadge] = useState(false)
   const quest = questType ? QUEST_TYPE_BY_ID[questType] : null
@@ -61,7 +64,7 @@ function QuestTypeBadge({
           className={
             isInline
               ? 'inline-flex shrink-0 overflow-hidden'
-              : 'pointer-events-none absolute top-2 right-2 z-20'
+              : `pointer-events-none absolute top-2 z-20 ${corner === 'left' ? 'left-2' : 'right-2'}`
           }
         >
           <div

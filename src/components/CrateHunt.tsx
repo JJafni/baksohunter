@@ -655,6 +655,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       revealKey={spinKey}
       variant="overlay"
       iconOnly
+      corner="left"
     />
   ) : null
 

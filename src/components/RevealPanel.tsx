@@ -138,6 +138,9 @@ function RevealPanel({
   const nameSizeClassFor = (entry: CrateEntry) => {
     const label = nameOverride ?? entry.name
     const isLongName = label.length >= 8
+    if (compact && showMonsterInfo) {
+      return isLongName ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'
+    }
     if (compact) {
       return isLongName ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
     }
@@ -147,9 +150,21 @@ function RevealPanel({
     return isLongName ? 'text-4xl sm:text-5xl lg:text-[3rem]' : 'text-5xl sm:text-6xl lg:text-[3.75rem]'
   }
 
+  const mobileMonsterStarClass = compact && showMonsterInfo ? 'text-2xl sm:text-3xl' : 'text-sm sm:text-base'
+
+  const mobileRarityClass =
+    compact && showMonsterInfo
+      ? 'text-sm sm:text-base'
+      : isMobile
+        ? 'text-[10px] sm:text-xs'
+        : 'text-sm sm:text-base'
+
   const inlineNameSizeClassFor = (entry: CrateEntry) => {
     const label = nameOverride ?? entry.name
     const isLongName = label.length >= 10
+    if (compact && showMonsterInfo) {
+      return isLongName ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'
+    }
     if (compact) {
       return isLongName ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
     }
@@ -162,7 +177,8 @@ function RevealPanel({
   const nameRow = (entry: CrateEntry, titleUpdateLabel: string | null, nameClass: string) => {
     const displayName = nameOverride ?? entry.name
     const showWeaponIcon = useInlineLayout && !showMonsterInfo && !isMobile
-    const rowClass = `inline-flex max-w-full items-center gap-2 sm:gap-3 ${nameRowClass}`
+    const showStarBesideName = isMobile && showMonsterInfo && huntStar
+    const rowClass = `inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 sm:gap-3 ${nameRowClass}`
     const showInlineInfoButton = monsterInfo && !overlayInfoButton
     const content = (
       <>
@@ -185,6 +201,13 @@ function RevealPanel({
         >
           {displayName}
         </h2>
+        {showStarBesideName ? (
+          <span
+            className={`shrink-0 font-black tracking-[0.08em] text-wilds-gold-light ${mobileMonsterStarClass}`}
+          >
+            {formatHuntStar(huntStar)}
+          </span>
+        ) : null}
         {titleUpdateLabel ? (
           <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.24em] text-wilds-gold-light/90 sm:text-[10px]">
             {titleUpdateLabel}
@@ -205,6 +228,7 @@ function RevealPanel({
   }
 
   const metadataRow = (visualRarity: ReturnType<typeof getVisualRarity>, rarityLabel: string) => {
+    const showStarInMetadata = huntStar && !(isMobile && showMonsterInfo)
     const row = (
       <motion.div
         layout={!isMobile}
@@ -222,16 +246,16 @@ function RevealPanel({
         <motion.span layout={!isMobile} transition={METADATA_LAYOUT_MOTION} className="inline-flex items-center gap-x-1.5">
           {rarityLabel ? (
             <span
-              className={`font-bold uppercase tracking-[0.14em] ${isMobile ? 'text-[10px] sm:text-xs' : 'text-sm sm:text-base'} ${RARITY_TEXT[visualRarity]}`}
+              className={`font-bold uppercase tracking-[0.14em] ${mobileRarityClass} ${RARITY_TEXT[visualRarity]}`}
             >
               {rarityLabel}
             </span>
           ) : null}
-          {huntStar ? (
+          {showStarInMetadata ? (
             <span
-              className={`font-black tracking-[0.08em] text-wilds-gold-light ${isMobile ? 'text-sm sm:text-base' : 'text-base sm:text-lg'}`}
+              className={`font-black tracking-[0.08em] text-wilds-gold-light ${isMobile ? mobileMonsterStarClass : 'text-base sm:text-lg'}`}
             >
-              {formatHuntStar(huntStar)}
+              {formatHuntStar(huntStar!)}
             </span>
           ) : null}
           {showImmersiveToggle && onHideOverlayChrome && !isMobile ? (
