@@ -308,7 +308,7 @@ function MobileCoopHuntLayout({
                 ariaLabel={`Draw weapon for player ${rowIndex + 1}`}
                 disabled={weaponPhase === 'spinning'}
                 onSpin={() => weaponRefs.current[player.id]?.startSpin()}
-                className={`relative flex min-h-0 flex-col ${rowBorder}`}
+                className={`relative flex min-h-0 flex-col overflow-hidden ${rowBorder}`}
                 style={{ gridColumn: 2, gridRow: rowIndex + 1 }}
               >
                 <span
@@ -343,6 +343,7 @@ function MobileCoopHuntLayout({
                     overlayMode
                     revealLayout="inline"
                     unifiedMobileColumn
+                    coopRowMode
                     hidePrimaryButton
                     hideMobileChrome
                     initialContext={weaponInitialContext}

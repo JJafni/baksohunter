@@ -63,6 +63,8 @@ type RevealPanelProps = {
   overlayInfoButton?: boolean
   /** Match footer height/vertical centering with the paired hunt column on mobile. */
   mobilePairedFooter?: boolean
+  /** Compact co-op weapon row — smaller name text. */
+  coopRow?: boolean
 }
 
 const RARITY_TEXT = RARITY_TEXT_CLASS
@@ -114,6 +116,7 @@ function RevealPanel({
   compact = false,
   overlayInfoButton = false,
   mobilePairedFooter = false,
+  coopRow = false,
 }: RevealPanelProps) {
   const [infoOpen, setInfoOpen] = useState(false)
   const isMobile = variant === 'mobile'
@@ -165,6 +168,9 @@ function RevealPanel({
   const inlineNameSizeClassFor = (entry: CrateEntry) => {
     const label = nameOverride ?? entry.name
     const isLongName = label.length >= 10
+    if (coopRow) {
+      return isLongName ? 'text-sm sm:text-base' : 'text-base sm:text-lg'
+    }
     if (compact && showMonsterInfo) {
       return isLongName ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'
     }

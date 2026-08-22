@@ -86,6 +86,8 @@ type CrateHuntProps = {
   hideMobileChrome?: boolean
   /** Compact side-by-side mobile column — vertical reel fills column height. */
   unifiedMobileColumn?: boolean
+  /** Short co-op weapon row — avoids solo full-section icon sizing. */
+  coopRowMode?: boolean
   /** Override the revealed entry name (e.g. specific monster weapon). */
   nameOverride?: string | null
   /** Restore a previous hunt session (e.g. solo after co-op). */
@@ -229,6 +231,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     hidePrimaryButton = false,
     hideMobileChrome = false,
     unifiedMobileColumn = false,
+    coopRowMode = false,
     nameOverride = null,
     initialContext = null,
     overlaySpinnerCentered = false,
@@ -403,7 +406,15 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 
   const useMobileOverlayLayout = isMobile && overlayMode
   const useFullSectionReel =
-    useMobileOverlayLayout && unifiedMobileColumn && reelOrientation === 'vertical'
+    useMobileOverlayLayout &&
+    unifiedMobileColumn &&
+    reelOrientation === 'vertical' &&
+    !coopRowMode
+  const useCoopRowReel =
+    useMobileOverlayLayout &&
+    unifiedMobileColumn &&
+    reelOrientation === 'vertical' &&
+    coopRowMode
 
   const blockWidth =
     useFullSectionReel || (unifiedMobileColumn && reelOrientation === 'vertical')
@@ -531,7 +542,8 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     phase === 'revealed' &&
     Boolean(result) &&
     !showSpinnerUi &&
-    showOverlayRevealName
+    showOverlayRevealName &&
+    !coopRowMode
 
   const namePanel = (
     <RevealPanel
@@ -552,6 +564,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       onHideOverlayChrome={hideOverlayChrome}
       overlayInfoButton={useFullSectionReel && showMonsterInfo}
       mobilePairedFooter={useFullSectionReel}
+      coopRow={coopRowMode}
     />
   )
 
@@ -625,8 +638,13 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
           landed={phase === 'revealed'}
           rarity={visualRarity}
           orientation={reelOrientation}
-          compactVertical={unifiedMobileColumn && reelOrientation === 'vertical' && !useFullSectionReel}
-          fillSection={useFullSectionReel}
+          compactVertical={
+            unifiedMobileColumn &&
+            reelOrientation === 'vertical' &&
+            !useFullSectionReel &&
+            !coopRowMode
+          }
+          fillSection={useFullSectionReel || useCoopRowReel}
         />
       </motion.div>
     )
@@ -726,7 +744,33 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       </div>
       )
     ) : useMobileOverlayLayout && unifiedMobileColumn ? (
-      useFullSectionReel ? (
+      coopRowMode ? (
+        <motion.div
+          key={`coop-row-${spinKey}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={MOBILE_APPEAR_TRANSITION}
+          className="relative flex h-full min-h-0 w-full flex-col overflow-hidden"
+        >
+          <div className="relative flex min-h-0 w-full flex-1 items-center justify-center overflow-hidden">
+            <div
+              className={`absolute inset-0 flex items-center justify-center overflow-hidden transition-opacity duration-700 ease-in-out ${
+                showSpinnerUi ? 'opacity-100' : 'pointer-events-none opacity-0'
+              }`}
+              aria-hidden={!showSpinnerUi}
+            >
+              <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
+                <SpinnerUiFade visible={showSpinnerUi}>{reelSlot}</SpinnerUiFade>
+              </SpinnerLayoutSlot>
+            </div>
+            {phase === 'revealed' && showOverlayRevealName ? (
+              <div className="pointer-events-none relative z-10 flex w-full items-center justify-center px-6 py-1">
+                {namePanel}
+              </div>
+            ) : null}
+          </div>
+        </motion.div>
+      ) : useFullSectionReel ? (
         <motion.div
           key={`full-section-${spinKey}`}
           initial={{ opacity: 0 }}
