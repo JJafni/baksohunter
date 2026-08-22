@@ -184,7 +184,7 @@ function RevealPanel({
 
   const nameRow = (entry: CrateEntry, titleUpdateLabel: string | null, nameClass: string) => {
     const displayName = nameOverride ?? entry.name
-    const showWeaponIcon = useInlineLayout && !showMonsterInfo
+    const showWeaponIcon = useInlineLayout && !showMonsterInfo && !isMobile
     const rowClass = `inline-flex max-w-full items-center gap-2 sm:gap-3 ${nameRowClass}`
     const content = (
       <>
