@@ -243,6 +243,7 @@ function MobileSoloHuntLayout({
               <MonstersPickerButton
                 excludedCount={excludedMonsters.size}
                 disabled={filtersDisabled}
+                large
                 onClick={() => setMonsterModalOpen(true)}
               />
               <MonsterRarityFilter

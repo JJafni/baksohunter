@@ -309,7 +309,7 @@ function MonsterRarityFilter({
             aria-haspopup="dialog"
             aria-expanded={modalOpen}
             onClick={() => setModalOpen(true)}
-            className={`filter-chip min-h-[2.35rem] w-full ${
+            className={`filter-chip min-h-[4.7rem] w-full ${
               filtersCustomized
                 ? 'border-wilds-gold/50 bg-wilds-gold/10 text-wilds-gold-light'
                 : 'border-wilds-gold/25 bg-wilds-950/75 text-wilds-parchment/85 hover:border-wilds-gold/40 hover:text-wilds-parchment'
