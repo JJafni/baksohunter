@@ -6,11 +6,18 @@ type MobileHuntResultIconProps = {
   entry: CrateEntry
   visible: boolean
   visualRarity?: VisualRarity
+  /** Larger icon for full-section mobile columns. */
+  large?: boolean
 }
 
 const APPEAR_TRANSITION = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }
 
-function MobileHuntResultIcon({ entry, visible, visualRarity = 'normal' }: MobileHuntResultIconProps) {
+function MobileHuntResultIcon({
+  entry,
+  visible,
+  visualRarity = 'normal',
+  large = false,
+}: MobileHuntResultIconProps) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.85 }}
@@ -29,7 +36,11 @@ function MobileHuntResultIcon({ entry, visible, visualRarity = 'normal' }: Mobil
         src={entry.icon}
         alt=""
         draggable={false}
-        className="relative z-10 size-36 object-contain drop-shadow-[0_10px_28px_rgba(0,0,0,0.65)] sm:size-40"
+        className={
+          large
+            ? 'relative z-10 max-h-[min(52vw,42vh)] max-w-[min(70vw,88%)] object-contain drop-shadow-[0_10px_28px_rgba(0,0,0,0.65)]'
+            : 'relative z-10 size-36 object-contain drop-shadow-[0_10px_28px_rgba(0,0,0,0.65)] sm:size-40'
+        }
       />
     </motion.div>
   )

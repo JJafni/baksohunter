@@ -527,7 +527,6 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 
   const showMobileResultIcon =
     useMobileOverlayLayout &&
-    !useFullSectionReel &&
     phase === 'revealed' &&
     Boolean(result) &&
     !showSpinnerUi &&
@@ -732,11 +731,24 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
           className="relative h-full min-h-0 w-full"
         >
           {questTypeCornerBadge}
+          <div className="absolute inset-0 flex items-center justify-center pb-24">
+            <AnimatePresence mode="wait">
+              {showMobileResultIcon && result ? (
+                <MobileHuntResultIcon
+                  key={`icon-${result.slug}-${spinKey}`}
+                  entry={result}
+                  visible
+                  visualRarity={visualRarity}
+                  large
+                />
+              ) : null}
+            </AnimatePresence>
+          </div>
           <div
             className={`absolute inset-0 overflow-hidden transition-opacity duration-700 ease-in-out ${
-              showSpinnerUi ? 'opacity-100' : 'pointer-events-none opacity-0'
+              showMobileResultIcon ? 'pointer-events-none opacity-0' : showSpinnerUi ? 'opacity-100' : 'pointer-events-none opacity-0'
             }`}
-            aria-hidden={!showSpinnerUi}
+            aria-hidden={!showSpinnerUi || showMobileResultIcon}
           >
             <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
               <SpinnerUiFade visible={showSpinnerUi}>{reelSlot}</SpinnerUiFade>
