@@ -38,7 +38,7 @@ function MobileHuntResultIcon({
         draggable={false}
         className={
           large
-            ? 'relative z-10 max-h-[min(52vw,42vh)] max-w-[min(70vw,88%)] object-contain drop-shadow-[0_10px_28px_rgba(0,0,0,0.65)]'
+            ? 'relative z-10 max-h-[min(52vw,42vh)] max-w-[min(88%,46vw)] object-contain drop-shadow-[0_10px_28px_rgba(0,0,0,0.65)]'
             : 'relative z-10 size-36 object-contain drop-shadow-[0_10px_28px_rgba(0,0,0,0.65)] sm:size-40'
         }
       />

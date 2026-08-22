@@ -733,17 +733,17 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
           className="relative h-full min-h-0 w-full"
         >
           {questTypeCornerBadge}
+          {showMonsterInfo && showMobileResultIcon && result ? (
+            <MonsterInfoTrigger
+              slug={result.slug}
+              icon={result.icon}
+              visible={showOverlayRevealName}
+              revealKey={spinKey}
+              className="pointer-events-auto absolute right-2 top-11 z-30 sm:top-12"
+            />
+          ) : null}
           <div className="absolute inset-0 flex items-center justify-center pb-24">
             <div className="relative flex items-center justify-center">
-              {showMonsterInfo && showMobileResultIcon && result ? (
-                <MonsterInfoTrigger
-                  slug={result.slug}
-                  icon={result.icon}
-                  visible={showOverlayRevealName}
-                  revealKey={spinKey}
-                  className="pointer-events-auto absolute -right-1 top-1 z-30 translate-x-1/3 sm:-right-2 sm:top-2"
-                />
-              ) : null}
               <AnimatePresence mode="wait">
                 {showMobileResultIcon && result ? (
                   <MobileHuntResultIcon
