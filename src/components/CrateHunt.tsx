@@ -400,14 +400,18 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const reelColClass = reelOnLeft ? 'col-start-1' : 'col-start-2'
   const nameColClass = reelOnLeft ? 'col-start-2' : 'col-start-1'
 
+  const useMobileOverlayLayout = isMobile && overlayMode
+  const useFullSectionReel =
+    useMobileOverlayLayout && unifiedMobileColumn && reelOrientation === 'vertical'
+
   const blockWidth =
-    unifiedMobileColumn && reelOrientation === 'vertical'
+    useFullSectionReel || (unifiedMobileColumn && reelOrientation === 'vertical')
       ? '100%'
       : useStackedLayout
         ? '100%'
         : REEL_WIDTH
   const stretchClass =
-    phase !== 'idle' && !useCompactOverlayChrome
+    phase !== 'idle' && !useCompactOverlayChrome && !useFullSectionReel
       ? reelOrientation === 'horizontal'
         ? 'animate-hunt-reel-stretch-x'
         : 'animate-hunt-reel-stretch-y'
@@ -416,7 +420,6 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   const actionsPadding =
     phase === 'idle' ? 'pt-0' : useStackedLayout ? 'pt-2' : 'pt-4'
 
-  const useMobileOverlayLayout = isMobile && overlayMode
   const useMobileOverlayChromeSheet =
     useMobileOverlayLayout && !useCompactOverlayChrome && !hideMobileChrome
 
@@ -524,6 +527,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
 
   const showMobileResultIcon =
     useMobileOverlayLayout &&
+    !useFullSectionReel &&
     phase === 'revealed' &&
     Boolean(result) &&
     !showSpinnerUi &&
@@ -595,19 +599,21 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     phase === 'idle' || sequence.length === 0 || skipReelMountRef.current ? null : (
       <motion.div
         key={spinKey}
-        initial={{ opacity: 0, scale: 0.88 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={useFullSectionReel ? { opacity: 0 } : { opacity: 0, scale: 0.88 }}
+        animate={useFullSectionReel ? { opacity: 1 } : { opacity: 1, scale: 1 }}
         transition={OPEN_TRANSITION}
-        className={`w-full ${unifiedMobileColumn && reelOrientation === 'vertical' ? 'h-full' : ''} ${stretchClass}`}
+        className={`${useFullSectionReel || (unifiedMobileColumn && reelOrientation === 'vertical') ? 'h-full w-full' : 'w-full'} ${stretchClass}`}
         style={{
           width: blockWidth,
-          height: unifiedMobileColumn && reelOrientation === 'vertical' ? '100%' : undefined,
+          height: useFullSectionReel || (unifiedMobileColumn && reelOrientation === 'vertical') ? '100%' : undefined,
           maxWidth:
-            unifiedMobileColumn && reelOrientation === 'vertical'
-              ? REEL_WIDTH
-              : isMobile && overlayMode
-                ? undefined
-                : columnMaxWidth,
+            useFullSectionReel
+              ? undefined
+              : unifiedMobileColumn && reelOrientation === 'vertical'
+                ? REEL_WIDTH
+                : isMobile && overlayMode
+                  ? undefined
+                  : columnMaxWidth,
         }}
       >
         <Reel
@@ -617,7 +623,8 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
           landed={phase === 'revealed'}
           rarity={visualRarity}
           orientation={reelOrientation}
-          compactVertical={unifiedMobileColumn && reelOrientation === 'vertical'}
+          compactVertical={unifiedMobileColumn && reelOrientation === 'vertical' && !useFullSectionReel}
+          fillSection={useFullSectionReel}
         />
       </motion.div>
     )
@@ -716,6 +723,30 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       </div>
       )
     ) : useMobileOverlayLayout && unifiedMobileColumn ? (
+      useFullSectionReel ? (
+        <motion.div
+          key={`full-section-${spinKey}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={MOBILE_APPEAR_TRANSITION}
+          className="relative h-full min-h-0 w-full"
+        >
+          {questTypeCornerBadge}
+          <div
+            className={`absolute inset-0 overflow-hidden transition-opacity duration-700 ease-in-out ${
+              showSpinnerUi ? 'opacity-100' : 'pointer-events-none opacity-0'
+            }`}
+            aria-hidden={!showSpinnerUi}
+          >
+            <SpinnerLayoutSlot holdLayout={spinnerHoldLayout}>
+              <SpinnerUiFade visible={showSpinnerUi}>{reelSlot}</SpinnerUiFade>
+            </SpinnerLayoutSlot>
+          </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-wilds-950 via-wilds-950/92 to-transparent px-1 pb-1 pt-10">
+            <div className="pointer-events-auto">{mobileNameRevealSlot}</div>
+          </div>
+        </motion.div>
+      ) : (
       <motion.div
         key={`unified-${spinKey}`}
         initial={{ opacity: 0, scale: 0.94 }}
@@ -752,6 +783,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
         </div>
         {mobileNameRevealSlot}
       </motion.div>
+      )
     ) : useMobileOverlayLayout ? (
       <div className="relative flex h-full min-h-0 w-full flex-col items-center justify-center gap-2 px-3 py-2">
         {questTypeCornerBadge}

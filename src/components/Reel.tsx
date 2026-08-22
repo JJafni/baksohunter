@@ -18,6 +18,27 @@ import {
 
 export type ReelOrientation = 'vertical' | 'horizontal'
 
+type CardMetrics = {
+  cardSize: number
+  gap: number
+  slot: number
+}
+
+const DEFAULT_METRICS: CardMetrics = {
+  cardSize: CARD_SIZE,
+  gap: CARD_GAP,
+  slot: SLOT,
+}
+
+function metricsForSection(width: number, height: number): CardMetrics {
+  const cardSize = Math.max(
+    104,
+    Math.min(Math.floor(width * 0.92), Math.floor(height * 0.82), 360),
+  )
+  const gap = Math.max(14, Math.round(cardSize * 0.12))
+  return { cardSize, gap, slot: cardSize + gap }
+}
+
 type ReelProps = {
   sequence: CrateEntry[]
   onDone: () => void
@@ -26,6 +47,8 @@ type ReelProps = {
   orientation?: ReelOrientation
   /** Fill parent height instead of using the full desktop vertical viewport. */
   compactVertical?: boolean
+  /** Edge-to-edge reel that fills the entire hunt section (mobile columns). */
+  fillSection?: boolean
 }
 
 function Reel({
@@ -35,6 +58,7 @@ function Reel({
   rarity,
   orientation = 'vertical',
   compactVertical = false,
+  fillSection = false,
 }: ReelProps) {
   const isHorizontal = orientation === 'horizontal'
   const containerRef = useRef<HTMLDivElement>(null)
@@ -43,6 +67,7 @@ function Reel({
   const [viewportSize, setViewportSize] = useState(
     isHorizontal ? MOBILE_REEL_MAX_WIDTH : compactVertical ? MOBILE_VERTICAL_REEL_MIN_HEIGHT : VIEWPORT_HEIGHT,
   )
+  const [metrics, setMetrics] = useState<CardMetrics>(DEFAULT_METRICS)
   const doneRef = useRef(onDone)
   doneRef.current = onDone
 
@@ -51,18 +76,30 @@ function Reel({
     if (!el) return
 
     const updateSize = () => {
-      const measured = isHorizontal ? el.clientWidth : el.clientHeight
-      setViewportSize(Math.max(measured, isHorizontal ? 0 : MOBILE_VERTICAL_REEL_MIN_HEIGHT))
+      if (isHorizontal) {
+        setViewportSize(Math.max(el.clientWidth, 0))
+        setMetrics(DEFAULT_METRICS)
+        return
+      }
+
+      const height = Math.max(el.clientHeight, MOBILE_VERTICAL_REEL_MIN_HEIGHT)
+      setViewportSize(height)
+
+      if (fillSection) {
+        setMetrics(metricsForSection(el.clientWidth, height))
+      } else {
+        setMetrics(DEFAULT_METRICS)
+      }
     }
     updateSize()
 
     const observer = new ResizeObserver(updateSize)
     observer.observe(el)
     return () => observer.disconnect()
-  }, [isHorizontal, compactVertical])
+  }, [isHorizontal, compactVertical, fillSection])
 
   useEffect(() => {
-    const finalOffset = viewportSize / 2 - (CENTER_INDEX * SLOT + CARD_SIZE / 2)
+    const finalOffset = viewportSize / 2 - (CENTER_INDEX * metrics.slot + metrics.cardSize / 2)
     const raf = requestAnimationFrame(() => {
       setSpinning(true)
       setTranslate(finalOffset)
@@ -74,7 +111,7 @@ function Reel({
     }
     // Runs once per mount; parent remounts this component (via key) for each new spin.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewportSize, isHorizontal])
+  }, [viewportSize, metrics.slot, metrics.cardSize, isHorizontal])
 
   const trackStyle = isHorizontal
     ? {
@@ -84,7 +121,7 @@ function Reel({
         display: 'flex',
         flexDirection: 'row' as const,
         alignItems: 'center',
-        gap: CARD_GAP,
+        gap: metrics.gap,
         transform: `translateX(${translate}px)`,
       }
     : {
@@ -94,24 +131,30 @@ function Reel({
         display: 'flex',
         flexDirection: 'column' as const,
         alignItems: 'center',
-        gap: CARD_GAP,
+        gap: metrics.gap,
         transform: `translateY(${translate}px)`,
       }
+
+  const frameClass = fillSection
+    ? 'relative h-full w-full overflow-hidden'
+    : isHorizontal
+      ? `relative w-full overflow-hidden rounded-2xl ${WILDS_REEL_FRAME}`
+      : `relative overflow-hidden rounded-2xl ${WILDS_REEL_FRAME}`
+
+  const fadeSize = fillSection ? 'h-[22%]' : 'h-28'
 
   return (
     <div
       ref={containerRef}
-      className={
-        isHorizontal
-          ? `relative w-full overflow-hidden rounded-2xl ${WILDS_REEL_FRAME}`
-          : `relative overflow-hidden rounded-2xl ${WILDS_REEL_FRAME}`
-      }
+      className={frameClass}
       style={
         isHorizontal
           ? { height: MOBILE_REEL_HEIGHT }
-          : compactVertical
-            ? { height: '100%', width: '100%', minHeight: MOBILE_VERTICAL_REEL_MIN_HEIGHT, maxWidth: CARD_SIZE + 40 }
-            : { height: VIEWPORT_HEIGHT, width: CARD_SIZE + 40 }
+          : fillSection
+            ? { height: '100%', width: '100%', minHeight: MOBILE_VERTICAL_REEL_MIN_HEIGHT }
+            : compactVertical
+              ? { height: '100%', width: '100%', minHeight: MOBILE_VERTICAL_REEL_MIN_HEIGHT, maxWidth: CARD_SIZE + 40 }
+              : { height: VIEWPORT_HEIGHT, width: CARD_SIZE + 40 }
       }
     >
       <CenterMarkerGlow active={landed} rarity={rarity} orientation={orientation} />
@@ -126,7 +169,13 @@ function Reel({
         }}
       >
         {sequence.map((entry, i) => (
-          <CrateCard key={i} entry={entry} winner={landed && i === CENTER_INDEX} />
+          <CrateCard
+            key={i}
+            entry={entry}
+            winner={landed && i === CENTER_INDEX}
+            size={metrics.cardSize}
+            compact={fillSection}
+          />
         ))}
       </div>
 
@@ -137,8 +186,8 @@ function Reel({
         </>
       ) : (
         <>
-          <div className={`pointer-events-none absolute inset-x-0 top-0 z-10 h-28 bg-gradient-to-b ${WILDS_REEL_FADE} to-transparent`} />
-          <div className={`pointer-events-none absolute inset-x-0 bottom-0 z-10 h-28 bg-gradient-to-t ${WILDS_REEL_FADE} to-transparent`} />
+          <div className={`pointer-events-none absolute inset-x-0 top-0 z-10 ${fadeSize} bg-gradient-to-b ${WILDS_REEL_FADE} to-transparent`} />
+          <div className={`pointer-events-none absolute inset-x-0 bottom-0 z-10 ${fadeSize} bg-gradient-to-t ${WILDS_REEL_FADE} to-transparent`} />
         </>
       )}
 
