@@ -388,7 +388,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   }, [result, questType, huntStar, phase, spinnerUiVisible, overlayChromeHidden, onHuntChange])
 
   const showImmersiveToggle =
-    showMonsterInfo && overlayMode && phase === 'revealed' && showOverlayRevealName
+    showMonsterInfo && overlayMode && phase === 'revealed' && showOverlayRevealName && !isMobile
   const hideOverlayChrome = useCallback(() => setOverlayChromeHidden(true), [])
 
   const visualRarity: VisualRarity = result ? getVisualRarity(result) : 'normal'
