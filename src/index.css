@@ -123,7 +123,7 @@
   .mobile-hunt-controls-stacked > button,
   .mobile-hunt-controls-stacked .filter-chip {
     width: 100%;
-    min-height: 4.7rem;
+    min-height: 100px;
     height: auto;
   }
 
