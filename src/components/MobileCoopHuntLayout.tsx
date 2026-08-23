@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { CrateHuntContext } from './CrateHunt'
-import CrateHunt, { restoredRevealContext, type CrateHuntHandle } from './CrateHunt'
+import CrateHunt, { type CrateHuntHandle } from './CrateHunt'
 import type { PlayerDraw } from './CoopPlayerSection'
 import MonsterExcludeModal from './MonsterExcludeModal'
 import MonsterRarityFilter from './MonsterRarityFilter'
@@ -71,8 +71,6 @@ type MobileCoopHuntLayoutProps = {
   onPlayerCountChange: (count: number) => void
   onMonsterHuntChange?: (ctx: CrateHuntContext) => void
   onWeaponHuntChange?: (ctx: CrateHuntContext) => void
-  initialMonsterHunt?: CrateHuntContext
-  initialWeaponHunt?: CrateHuntContext
 }
 
 function PlayerCountControls({
@@ -114,8 +112,6 @@ function MobileCoopHuntLayout({
   onPlayerCountChange,
   onMonsterHuntChange,
   onWeaponHuntChange,
-  initialMonsterHunt,
-  initialWeaponHunt,
 }: MobileCoopHuntLayoutProps) {
   const [players, setPlayers] = useState<PlayerSlot[]>(() =>
     Array.from({ length: Math.min(Math.max(playerCount, 1), MAX_PLAYERS) }, (_, index) => ({
@@ -131,29 +127,10 @@ function MobileCoopHuntLayout({
   const [monsterModalOpen, setMonsterModalOpen] = useState(false)
   const [monsterPreviewPool, setMonsterPreviewPool] = useState<CrateEntry[]>([])
 
-  const [monsterPhase, setMonsterPhase] = useState<CrateHuntContext['phase']>(
-    () => initialMonsterHunt?.phase ?? 'idle',
-  )
-  const [monsterContext, setMonsterContext] = useState<CrateHuntContext | null>(() =>
-    restoredRevealContext(initialMonsterHunt),
-  )
-  const [weaponDraws, setWeaponDraws] = useState<Record<number, PlayerDraw>>(() => {
-    const restored = restoredRevealContext(initialWeaponHunt)
-    if (!restored?.result) return {}
-    const draws: Record<number, PlayerDraw> = {
-      1: {
-        result: restored.result,
-        spinnerUiVisible: false,
-      },
-    }
-    return draws
-  })
-  const [weaponPhases, setWeaponPhases] = useState<Record<number, CrateHuntContext['phase']>>(() => {
-    const restored = restoredRevealContext(initialWeaponHunt)
-    if (!restored) return {}
-    const phases: Record<number, CrateHuntContext['phase']> = { 1: 'revealed' }
-    return phases
-  })
+  const [monsterPhase, setMonsterPhase] = useState<CrateHuntContext['phase']>('idle')
+  const [monsterContext, setMonsterContext] = useState<CrateHuntContext | null>(null)
+  const [weaponDraws, setWeaponDraws] = useState<Record<number, PlayerDraw>>({})
+  const [weaponPhases, setWeaponPhases] = useState<Record<number, CrateHuntContext['phase']>>({})
 
   const monsterRef = useRef<CrateHuntHandle>(null)
   const weaponRefs = useRef<Record<number, CrateHuntHandle | null>>({})
@@ -310,6 +287,7 @@ function MobileCoopHuntLayout({
             const weaponPhase = weaponPhases[player.id] ?? 'idle'
             const weaponDraw = weaponDraws[player.id]
             const rowBorder = rowIndex < players.length - 1 ? `border-b ${SECTION_BORDER}` : ''
+            const isCoopRow = players.length > 1
             const isActive = weaponPhase !== 'idle' || Boolean(weaponDraw)
             const labelColorClass = isActive
               ? (PLAYER_LABEL_COLORS_ACTIVE[rowIndex] ?? PLAYER_LABEL_COLORS_ACTIVE[0])
@@ -335,7 +313,7 @@ function MobileCoopHuntLayout({
                 style={{ gridColumn: 2, gridRow: rowIndex + 1 }}
               >
                 <span
-                  className={`wilds-legibility-text pointer-events-none absolute left-0 top-0 z-20 px-1.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] ${labelColorClass}`}
+                  className={`wilds-legibility-text pointer-events-none absolute left-0 top-0 z-20 px-1.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] ${labelColorClass} ${isCoopRow ? '' : 'hidden'}`}
                 >
                   P{rowIndex + 1}
                 </span>
@@ -366,7 +344,7 @@ function MobileCoopHuntLayout({
                     overlayMode
                     revealLayout="inline"
                     unifiedMobileColumn
-                    coopRowMode
+                    coopRowMode={isCoopRow}
                     hidePrimaryButton
                     hideMobileChrome
                     initialContext={weaponInitialContext}
