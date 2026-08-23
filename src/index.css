@@ -128,6 +128,18 @@
 
   .mobile-hunt-controls-grid {
     align-items: stretch;
+    gap: 0;
+  }
+
+  .mobile-hunt-controls-grid > div:first-child > div:first-child button {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right-width: 0;
+  }
+
+  .mobile-hunt-controls-grid > div:last-child button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 
   .mobile-hunt-controls-grid .filter-chip,
