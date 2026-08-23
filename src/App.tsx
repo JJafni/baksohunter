@@ -111,6 +111,8 @@ function HuntLayout({
         onPlayerCountChange={onWeaponPlayerCountChange}
         onMonsterHuntChange={onMonsterHuntChange}
         onWeaponHuntChange={onWeaponHuntChange}
+        initialMonsterHunt={monsterHunt}
+        initialWeaponHunt={weaponHunt}
       />
     )
   }
@@ -122,6 +124,8 @@ function HuntLayout({
         onWeaponHuntChange={onWeaponHuntChange}
         playerCount={weaponPlayerCount}
         onPlayerCountChange={onWeaponPlayerCountChange}
+        initialMonsterHunt={monsterHunt}
+        initialWeaponHunt={weaponHunt}
       />
     )
   }

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { CrateHuntContext } from './CrateHunt'
-import CrateHunt, { type CrateHuntHandle } from './CrateHunt'
+import CrateHunt, { restoredRevealContext, type CrateHuntHandle } from './CrateHunt'
 import MonsterExcludeModal from './MonsterExcludeModal'
 import MonsterRarityFilter from './MonsterRarityFilter'
 import MonstersPickerButton from './MonstersPickerButton'
@@ -52,6 +52,8 @@ type MobileSoloHuntLayoutProps = {
   onWeaponHuntChange?: (ctx: CrateHuntContext) => void
   playerCount: number
   onPlayerCountChange: (count: number) => void
+  initialMonsterHunt?: CrateHuntContext
+  initialWeaponHunt?: CrateHuntContext
 }
 
 function PlayerCountControls({
@@ -93,7 +95,12 @@ function MobileSoloHuntLayout({
   onWeaponHuntChange,
   playerCount,
   onPlayerCountChange,
+  initialMonsterHunt,
+  initialWeaponHunt,
 }: MobileSoloHuntLayoutProps) {
+  const monsterInitialContext = restoredRevealContext(initialMonsterHunt)
+  const weaponInitialContext = restoredRevealContext(initialWeaponHunt)
+
   const monsterRef = useRef<CrateHuntHandle>(null)
   const weaponRef = useRef<CrateHuntHandle>(null)
 
@@ -102,8 +109,12 @@ function MobileSoloHuntLayout({
   const [questTypeEnabled, setQuestTypeEnabled] = useState(true)
   const [excludedMonsters, setExcludedMonsters] = useState<MonsterExcludeState>(() => new Set())
   const [monsterModalOpen, setMonsterModalOpen] = useState(false)
-  const [monsterPhase, setMonsterPhase] = useState<CrateHuntContext['phase']>('idle')
-  const [weaponPhase, setWeaponPhase] = useState<CrateHuntContext['phase']>('idle')
+  const [monsterPhase, setMonsterPhase] = useState<CrateHuntContext['phase']>(
+    () => initialMonsterHunt?.phase ?? 'idle',
+  )
+  const [weaponPhase, setWeaponPhase] = useState<CrateHuntContext['phase']>(
+    () => initialWeaponHunt?.phase ?? 'idle',
+  )
   const [monsterPreviewPool, setMonsterPreviewPool] = useState<CrateEntry[]>([])
 
   const monsterSpecies = useMemo(() => uniqueMonsterSpecies(MONSTER_POOL), [])
@@ -193,6 +204,7 @@ function MobileSoloHuntLayout({
                 hidePrimaryButton
                 hideMobileChrome
                 showMonsterInfo
+                initialContext={monsterInitialContext}
                 onHuntChange={handleMonsterHuntChange}
               />
             </div>
@@ -231,6 +243,7 @@ function MobileSoloHuntLayout({
                 unifiedMobileColumn
                 hidePrimaryButton
                 hideMobileChrome
+                initialContext={weaponInitialContext}
                 onHuntChange={handleWeaponHuntChange}
               />
             </div>

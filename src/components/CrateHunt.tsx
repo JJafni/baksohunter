@@ -103,6 +103,14 @@ export type CrateHuntHandle = {
   startSpin: () => Promise<void>
 }
 
+/** Restore a revealed hunt when remounting after layout/mode switches. */
+export function restoredRevealContext(
+  ctx: CrateHuntContext | null | undefined,
+): CrateHuntContext | null {
+  if (!ctx || ctx.phase !== 'revealed' || !ctx.result) return null
+  return { ...ctx, spinnerUiVisible: false }
+}
+
 /** Shared row heights so monster and weapon columns line up horizontally. */
 const FOOTER_ROW_H = '2.75rem'
 /** Fixed mobile reveal row — keeps filters/button from jumping when the name appears. */

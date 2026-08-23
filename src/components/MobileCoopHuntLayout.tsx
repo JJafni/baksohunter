@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { CrateHuntContext } from './CrateHunt'
-import CrateHunt, { type CrateHuntHandle } from './CrateHunt'
+import CrateHunt, { restoredRevealContext, type CrateHuntHandle } from './CrateHunt'
 import type { PlayerDraw } from './CoopPlayerSection'
 import MonsterExcludeModal from './MonsterExcludeModal'
 import MonsterRarityFilter from './MonsterRarityFilter'
@@ -71,6 +71,8 @@ type MobileCoopHuntLayoutProps = {
   onPlayerCountChange: (count: number) => void
   onMonsterHuntChange?: (ctx: CrateHuntContext) => void
   onWeaponHuntChange?: (ctx: CrateHuntContext) => void
+  initialMonsterHunt?: CrateHuntContext
+  initialWeaponHunt?: CrateHuntContext
 }
 
 function PlayerCountControls({
@@ -112,6 +114,8 @@ function MobileCoopHuntLayout({
   onPlayerCountChange,
   onMonsterHuntChange,
   onWeaponHuntChange,
+  initialMonsterHunt,
+  initialWeaponHunt,
 }: MobileCoopHuntLayoutProps) {
   const [players, setPlayers] = useState<PlayerSlot[]>(() =>
     Array.from({ length: Math.min(Math.max(playerCount, 1), MAX_PLAYERS) }, (_, index) => ({
@@ -127,10 +131,29 @@ function MobileCoopHuntLayout({
   const [monsterModalOpen, setMonsterModalOpen] = useState(false)
   const [monsterPreviewPool, setMonsterPreviewPool] = useState<CrateEntry[]>([])
 
-  const [monsterPhase, setMonsterPhase] = useState<CrateHuntContext['phase']>('idle')
-  const [monsterContext, setMonsterContext] = useState<CrateHuntContext | null>(null)
-  const [weaponDraws, setWeaponDraws] = useState<Record<number, PlayerDraw>>({})
-  const [weaponPhases, setWeaponPhases] = useState<Record<number, CrateHuntContext['phase']>>({})
+  const [monsterPhase, setMonsterPhase] = useState<CrateHuntContext['phase']>(
+    () => initialMonsterHunt?.phase ?? 'idle',
+  )
+  const [monsterContext, setMonsterContext] = useState<CrateHuntContext | null>(() =>
+    restoredRevealContext(initialMonsterHunt),
+  )
+  const [weaponDraws, setWeaponDraws] = useState<Record<number, PlayerDraw>>(() => {
+    const restored = restoredRevealContext(initialWeaponHunt)
+    if (!restored?.result) return {}
+    const draws: Record<number, PlayerDraw> = {
+      1: {
+        result: restored.result,
+        spinnerUiVisible: false,
+      },
+    }
+    return draws
+  })
+  const [weaponPhases, setWeaponPhases] = useState<Record<number, CrateHuntContext['phase']>>(() => {
+    const restored = restoredRevealContext(initialWeaponHunt)
+    if (!restored) return {}
+    const phases: Record<number, CrateHuntContext['phase']> = { 1: 'revealed' }
+    return phases
+  })
 
   const monsterRef = useRef<CrateHuntHandle>(null)
   const weaponRefs = useRef<Record<number, CrateHuntHandle | null>>({})
