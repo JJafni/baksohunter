@@ -470,7 +470,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   ) : null
 
   const mobileChromeButtonGrid = useMobileOverlayChromeSheet ? (
-    <div className="mobile-hunt-controls-grid flex min-h-[10.5rem] w-full gap-2">
+    <div className="mobile-hunt-controls-grid flex min-h-[10.5rem] w-full">
       <div className="flex min-h-0 w-[30%] max-w-[7.5rem] shrink-0 flex-col gap-2">
         {companionButton ? (
           <div className="flex min-h-0 flex-1">{companionButton({ disabled: filtersDisabled })}</div>
