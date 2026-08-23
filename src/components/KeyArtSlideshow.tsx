@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import { KEY_ART_SLIDES } from '../data/keyArtUrls'
+import { useIsMobileLayout } from '../hooks/useIsMobileLayout'
 
-/** Total time each slide is the primary focus (pan + overlap fade). */
-const SLIDE_CYCLE_MS = 11_000
-/** Crossfade overlap — begins this long before the cycle ends. */
-const FADE_DURATION_MS = 3_400
-/** Pan animation runs the full cycle so movement continues through the fade. */
-const PAN_DURATION_MS = SLIDE_CYCLE_MS
+const MOBILE_SLIDE_CYCLE_MS = 22_000
+const MOBILE_FADE_DURATION_MS = 6_000
+const DESKTOP_SLIDE_CYCLE_MS = 60_000
+const DESKTOP_FADE_DURATION_MS = 10_000
 
 type KeyArtSlideshowProps = {
   className?: string
 }
 
 function KeyArtSlideshow({ className = '' }: KeyArtSlideshowProps) {
+  const isMobile = useIsMobileLayout()
+  const slideCycleMs = isMobile ? MOBILE_SLIDE_CYCLE_MS : DESKTOP_SLIDE_CYCLE_MS
+  const fadeDurationMs = isMobile ? MOBILE_FADE_DURATION_MS : DESKTOP_FADE_DURATION_MS
+  const panDurationMs = slideCycleMs
   const [activeIndex, setActiveIndex] = useState(0)
   const [exitingIndex, setExitingIndex] = useState<number | null>(null)
   const [activationCounts, setActivationCounts] = useState<number[]>(() =>
@@ -34,13 +37,13 @@ function KeyArtSlideshow({ className = '' }: KeyArtSlideshowProps) {
           }
           fadeTimerRef.current = window.setTimeout(() => {
             setExitingIndex(null)
-          }, FADE_DURATION_MS)
+          }, fadeDurationMs)
 
           return next
         })
 
         scheduleCycle()
-      }, SLIDE_CYCLE_MS - FADE_DURATION_MS)
+      }, slideCycleMs - fadeDurationMs)
     }
 
     scheduleCycle()
@@ -49,7 +52,7 @@ function KeyArtSlideshow({ className = '' }: KeyArtSlideshowProps) {
       if (cycleTimerRef.current !== null) window.clearTimeout(cycleTimerRef.current)
       if (fadeTimerRef.current !== null) window.clearTimeout(fadeTimerRef.current)
     }
-  }, [])
+  }, [slideCycleMs, fadeDurationMs])
 
   useEffect(() => {
     if (skipInitialActivationRef.current) {
@@ -82,7 +85,7 @@ function KeyArtSlideshow({ className = '' }: KeyArtSlideshowProps) {
             key={slide.url}
             className="key-art-slide-layer"
             data-state={layerState}
-            style={{ transitionDuration: `${FADE_DURATION_MS}ms` }}
+            style={{ transitionDuration: `${fadeDurationMs}ms` }}
           >
             {hasPlayed ? (
               <img
@@ -92,7 +95,7 @@ function KeyArtSlideshow({ className = '' }: KeyArtSlideshowProps) {
                 referrerPolicy="no-referrer"
                 className={`key-art-slide-image key-art-slide-image--pan-${panDirection}`}
                 style={{
-                  animationDuration: `${PAN_DURATION_MS}ms`,
+                  animationDuration: `${panDurationMs}ms`,
                   animationPlayState: isVisible ? 'running' : 'paused',
                 }}
                 decoding="async"

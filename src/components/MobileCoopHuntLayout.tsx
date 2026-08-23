@@ -241,6 +241,7 @@ function MobileCoopHuntLayout({
           <MobileTapSpinSection
             ariaLabel="Hunt for monster"
             disabled={monsterSpinning || filteredPool.length === 0}
+            showHint={monsterPhase === 'idle'}
             onSpin={() => monsterRef.current?.startSpin()}
             className={`relative flex min-h-0 flex-col border-r ${SECTION_BORDER}`}
             style={{ gridRow: `1 / span ${players.length}` }}
@@ -287,6 +288,7 @@ function MobileCoopHuntLayout({
             const weaponPhase = weaponPhases[player.id] ?? 'idle'
             const weaponDraw = weaponDraws[player.id]
             const rowBorder = rowIndex < players.length - 1 ? `border-b ${SECTION_BORDER}` : ''
+            const isCoopRow = players.length > 1
             const isActive = weaponPhase !== 'idle' || Boolean(weaponDraw)
             const labelColorClass = isActive
               ? (PLAYER_LABEL_COLORS_ACTIVE[rowIndex] ?? PLAYER_LABEL_COLORS_ACTIVE[0])
@@ -307,12 +309,13 @@ function MobileCoopHuntLayout({
                 key={player.id}
                 ariaLabel={`Draw weapon for player ${rowIndex + 1}`}
                 disabled={weaponPhase === 'spinning'}
+                showHint={weaponPhase === 'idle' && !weaponDraw}
                 onSpin={() => weaponRefs.current[player.id]?.startSpin()}
                 className={`relative flex min-h-0 flex-col overflow-hidden ${rowBorder}`}
                 style={{ gridColumn: 2, gridRow: rowIndex + 1 }}
               >
                 <span
-                  className={`wilds-legibility-text pointer-events-none absolute left-0 top-0 z-20 px-1.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] ${labelColorClass}`}
+                  className={`wilds-legibility-text pointer-events-none absolute left-0 top-0 z-20 px-1.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] ${labelColorClass} ${isCoopRow ? '' : 'hidden'}`}
                 >
                   P{rowIndex + 1}
                 </span>
@@ -343,7 +346,7 @@ function MobileCoopHuntLayout({
                     overlayMode
                     revealLayout="inline"
                     unifiedMobileColumn
-                    coopRowMode
+                    coopRowMode={isCoopRow}
                     hidePrimaryButton
                     hideMobileChrome
                     initialContext={weaponInitialContext}
@@ -357,7 +360,7 @@ function MobileCoopHuntLayout({
 
         <div className="mobile-hunt-controls shrink-0 border-t border-wilds-gold/10 bg-wilds-950/92 px-3 py-2 backdrop-blur-md">
           <div className="mx-auto flex w-full max-w-lg flex-col gap-2">
-            <div className="mobile-hunt-controls-stacked flex flex-col gap-2">
+            <div className="mobile-hunt-controls-stacked flex flex-col">
               <MonstersPickerButton
                 excludedCount={excludedMonsters.size}
                 disabled={filtersDisabled}

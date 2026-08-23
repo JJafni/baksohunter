@@ -11,6 +11,9 @@ export type HuntStarFilterState = {
 
 export const SELECTABLE_STARS: SelectableStar[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
+export const LOW_RANK_STARS = SELECTABLE_STARS.filter((s) => s <= 4)
+export const HIGH_RANK_STARS = SELECTABLE_STARS.filter((s) => s >= 5)
+
 export const DEFAULT_HUNT_STAR_FILTER: HuntStarFilterState = {
   stars: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true, 10: true },
   lowRank: true,
@@ -42,6 +45,46 @@ export function isDefaultStarFilter(filter: HuntStarFilterState): boolean {
     filter.highRank &&
     SELECTABLE_STARS.every((s) => filter.stars[s])
   )
+}
+
+export function setLowRankEnabled(
+  filter: HuntStarFilterState,
+  enabled: boolean,
+): HuntStarFilterState {
+  const stars = { ...filter.stars }
+
+  for (const star of SELECTABLE_STARS) {
+    if (star <= 4) stars[star] = enabled
+  }
+
+  return { ...filter, lowRank: enabled, stars }
+}
+
+export function setHighRankEnabled(
+  filter: HuntStarFilterState,
+  enabled: boolean,
+): HuntStarFilterState {
+  const stars = { ...filter.stars }
+
+  for (const star of SELECTABLE_STARS) {
+    if (star >= 5) stars[star] = enabled
+  }
+
+  return { ...filter, highRank: enabled, stars }
+}
+
+export function toggleStarInFilter(
+  filter: HuntStarFilterState,
+  star: SelectableStar,
+): HuntStarFilterState {
+  const stars = { ...filter.stars, [star]: !filter.stars[star] }
+
+  return {
+    ...filter,
+    stars,
+    lowRank: star <= 4 ? LOW_RANK_STARS.some((s) => stars[s]) : filter.lowRank,
+    highRank: star >= 5 ? HIGH_RANK_STARS.some((s) => stars[s]) : filter.highRank,
+  }
 }
 
 export function filterPoolByStars<T extends CrateEntry>(pool: T[], filter: HuntStarFilterState): T[] {

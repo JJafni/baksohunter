@@ -470,7 +470,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
   ) : null
 
   const mobileChromeButtonGrid = useMobileOverlayChromeSheet ? (
-    <div className="mobile-hunt-controls-grid flex min-h-[10.5rem] w-full gap-2">
+    <div className="mobile-hunt-controls-grid flex min-h-[10.5rem] w-full">
       <div className="flex min-h-0 w-[30%] max-w-[7.5rem] shrink-0 flex-col gap-2">
         {companionButton ? (
           <div className="flex min-h-0 flex-1">{companionButton({ disabled: filtersDisabled })}</div>
@@ -614,15 +614,20 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     phase === 'idle' || sequence.length === 0 || skipReelMountRef.current ? null : (
       <motion.div
         key={spinKey}
-        initial={useFullSectionReel ? { opacity: 0 } : { opacity: 0, scale: 0.88 }}
-        animate={useFullSectionReel ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+        initial={useFullSectionReel || useCoopRowReel ? { opacity: 0 } : { opacity: 0, scale: 0.88 }}
+        animate={useFullSectionReel || useCoopRowReel ? { opacity: 1 } : { opacity: 1, scale: 1 }}
         transition={OPEN_TRANSITION}
-        className={`${useFullSectionReel || (unifiedMobileColumn && reelOrientation === 'vertical') ? 'h-full w-full' : 'w-full'} ${stretchClass}`}
+        className={`${useFullSectionReel || useCoopRowReel || (unifiedMobileColumn && reelOrientation === 'vertical') ? 'h-full w-full' : 'w-full'} ${stretchClass}`}
         style={{
           width: blockWidth,
-          height: useFullSectionReel || (unifiedMobileColumn && reelOrientation === 'vertical') ? '100%' : undefined,
+          height:
+            useFullSectionReel ||
+            useCoopRowReel ||
+            (unifiedMobileColumn && reelOrientation === 'vertical')
+              ? '100%'
+              : undefined,
           maxWidth:
-            useFullSectionReel
+            useFullSectionReel || useCoopRowReel
               ? undefined
               : unifiedMobileColumn && reelOrientation === 'vertical'
                 ? REEL_WIDTH
