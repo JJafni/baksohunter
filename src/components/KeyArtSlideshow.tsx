@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { KEY_ART_SLIDES } from '../data/keyArtUrls'
 
 /** Total time each slide is the primary focus (pan + overlap fade). */
-const SLIDE_CYCLE_MS = 11_000
+const SLIDE_CYCLE_MS = 22_000
 /** Crossfade overlap — begins this long before the cycle ends. */
-const FADE_DURATION_MS = 3_400
+const FADE_DURATION_MS = 6_000
 /** Pan animation runs the full cycle so movement continues through the fade. */
 const PAN_DURATION_MS = SLIDE_CYCLE_MS
 
