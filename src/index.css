@@ -576,6 +576,31 @@
   }
 }
 
+@media (min-width: 1024px) {
+  .key-art-slide-image--pan-ltr,
+  .key-art-slide-image--pan-rtl {
+    animation-timing-function: ease-in-out;
+  }
+
+  @keyframes key-art-pan-ltr {
+    from {
+      transform: scale(1.14) translateX(-2.5%);
+    }
+    to {
+      transform: scale(1.14) translateX(2.5%);
+    }
+  }
+
+  @keyframes key-art-pan-rtl {
+    from {
+      transform: scale(1.14) translateX(2.5%);
+    }
+    to {
+      transform: scale(1.14) translateX(-2.5%);
+    }
+  }
+}
+
 .key-art-slideshow-dim {
   pointer-events: none;
   position: absolute;
