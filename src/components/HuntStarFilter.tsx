@@ -10,6 +10,7 @@ import {
   SELECTABLE_STARS,
   setHighRankEnabled,
   setLowRankEnabled,
+  toggleStarInFilter,
   type HuntStarFilterState,
   type SelectableStar,
 } from '../lib/starFilter'
@@ -69,7 +70,7 @@ type StarFilterPanelProps = {
 
 export function StarFilterPanel({ value, onChange, large = false, layout = 'dropdown' }: StarFilterPanelProps) {
   const toggleStar = (star: SelectableStar) => {
-    onChange({ ...value, stars: { ...value.stars, [star]: !value.stars[star] } })
+    onChange(toggleStarInFilter(value, star))
   }
 
   const isDefault = isDefaultStarFilter(value)
