@@ -44,6 +44,38 @@ export function isDefaultStarFilter(filter: HuntStarFilterState): boolean {
   )
 }
 
+export function setLowRankEnabled(
+  filter: HuntStarFilterState,
+  enabled: boolean,
+): HuntStarFilterState {
+  if (enabled) {
+    return { ...filter, lowRank: true }
+  }
+
+  const stars = { ...filter.stars }
+  for (const star of SELECTABLE_STARS) {
+    if (star <= 4) stars[star] = false
+  }
+
+  return { ...filter, lowRank: false, stars }
+}
+
+export function setHighRankEnabled(
+  filter: HuntStarFilterState,
+  enabled: boolean,
+): HuntStarFilterState {
+  if (enabled) {
+    return { ...filter, highRank: true }
+  }
+
+  const stars = { ...filter.stars }
+  for (const star of SELECTABLE_STARS) {
+    if (star >= 5) stars[star] = false
+  }
+
+  return { ...filter, highRank: false, stars }
+}
+
 export function filterPoolByStars<T extends CrateEntry>(pool: T[], filter: HuntStarFilterState): T[] {
   const effective = getEffectiveStarFilter(filter)
   if (effective.length === 0) return []

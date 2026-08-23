@@ -8,6 +8,8 @@ import {
   formatStarFilterLabel,
   isDefaultStarFilter,
   SELECTABLE_STARS,
+  setHighRankEnabled,
+  setLowRankEnabled,
   type HuntStarFilterState,
   type SelectableStar,
 } from '../lib/starFilter'
@@ -79,7 +81,7 @@ export function StarFilterPanel({ value, onChange, large = false, layout = 'drop
         <button
           type="button"
           aria-pressed={value.lowRank}
-          onClick={() => onChange({ ...value, lowRank: !value.lowRank })}
+          onClick={() => onChange(setLowRankEnabled(value, !value.lowRank))}
           className={rankToggleClass(value.lowRank, large)}
         >
           Low Rank
@@ -87,7 +89,7 @@ export function StarFilterPanel({ value, onChange, large = false, layout = 'drop
         <button
           type="button"
           aria-pressed={value.highRank}
-          onClick={() => onChange({ ...value, highRank: !value.highRank })}
+          onClick={() => onChange(setHighRankEnabled(value, !value.highRank))}
           className={highRankToggleClass(value.highRank, large)}
         >
           High Rank
@@ -150,17 +152,20 @@ export function StarFilterPanel({ value, onChange, large = false, layout = 'drop
         </div>
       )}
 
-      {!isDefault ? (
-        <button
-          type="button"
-          onClick={() => onChange(DEFAULT_HUNT_STAR_FILTER)}
-          className={`mt-3 w-full cursor-pointer rounded-md border border-wilds-gold/20 font-bold uppercase tracking-[0.1em] text-wilds-muted transition hover:border-wilds-gold/35 hover:text-wilds-parchment ${
-            large ? 'py-2.5 text-sm' : 'py-1 text-[9px] sm:text-[10px]'
-          }`}
-        >
-          Reset
-        </button>
-      ) : null}
+      <button
+        type="button"
+        disabled={isDefault}
+        onClick={() => onChange(DEFAULT_HUNT_STAR_FILTER)}
+        className={`mt-3 w-full rounded-md border border-wilds-gold/20 font-bold uppercase tracking-[0.1em] transition ${
+          large ? 'py-2.5 text-sm' : 'py-1 text-[9px] sm:text-[10px]'
+        } ${
+          isDefault
+            ? 'cursor-not-allowed text-wilds-muted/45 opacity-50'
+            : 'cursor-pointer text-wilds-muted hover:border-wilds-gold/35 hover:text-wilds-parchment'
+        }`}
+      >
+        Reset
+      </button>
     </>
   )
 }
