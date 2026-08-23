@@ -6,6 +6,8 @@ type MobileTapSpinSectionProps = {
   onSpin: () => void
   className?: string
   style?: CSSProperties
+  /** Show centered tap hint while the section is idle. */
+  showHint?: boolean
   children: ReactNode
 }
 
@@ -22,6 +24,7 @@ function MobileTapSpinSection({
   onSpin,
   className = '',
   style,
+  showHint = false,
   children,
 }: MobileTapSpinSectionProps) {
   const handleActivate = () => {
@@ -53,6 +56,13 @@ function MobileTapSpinSection({
       className={`${className} ${disabled ? 'cursor-default' : 'cursor-pointer'}`}
       style={style}
     >
+      {showHint ? (
+        <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center px-4">
+          <p className="wilds-legibility-text max-w-[12rem] text-center text-[11px] font-bold uppercase leading-snug tracking-[0.18em] text-wilds-parchment/75 sm:text-xs">
+            Tap to spin
+          </p>
+        </div>
+      ) : null}
       {children}
     </section>
   )

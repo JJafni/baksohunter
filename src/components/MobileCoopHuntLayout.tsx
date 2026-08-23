@@ -241,6 +241,7 @@ function MobileCoopHuntLayout({
           <MobileTapSpinSection
             ariaLabel="Hunt for monster"
             disabled={monsterSpinning || filteredPool.length === 0}
+            showHint={monsterPhase === 'idle'}
             onSpin={() => monsterRef.current?.startSpin()}
             className={`relative flex min-h-0 flex-col border-r ${SECTION_BORDER}`}
             style={{ gridRow: `1 / span ${players.length}` }}
@@ -308,6 +309,7 @@ function MobileCoopHuntLayout({
                 key={player.id}
                 ariaLabel={`Draw weapon for player ${rowIndex + 1}`}
                 disabled={weaponPhase === 'spinning'}
+                showHint={weaponPhase === 'idle' && !weaponDraw}
                 onSpin={() => weaponRefs.current[player.id]?.startSpin()}
                 className={`relative flex min-h-0 flex-col overflow-hidden ${rowBorder}`}
                 style={{ gridColumn: 2, gridRow: rowIndex + 1 }}
