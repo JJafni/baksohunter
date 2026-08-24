@@ -9,6 +9,7 @@ import GalleryBackdropOverlay from './components/GalleryBackdropOverlay'
 import LandingPage from './components/LandingPage'
 import MobileCoopHuntLayout from './components/MobileCoopHuntLayout'
 import CurseModeSection from './components/CurseModeSection'
+import CurseBlessedStrip from './components/CurseBlessedStrip'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
 import MonsterPoolSlideshow from './components/MonsterPoolSlideshow'
 import WeaponGalleryImage from './components/WeaponGalleryImage'
@@ -174,18 +175,25 @@ function AppContent() {
 
   return (
     <>
-      <main className="relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-x-hidden max-lg:min-h-0 max-lg:px-0 max-lg:py-0 lg:min-h-0 lg:overflow-hidden lg:px-0 lg:py-0">
-        <HuntLayout
-          monsterHunt={monsterHunt}
-          onMonsterHuntChange={setMonsterHunt}
-          weaponHunt={weaponHunt}
-          onWeaponHuntChange={setWeaponHunt}
-          weaponPlayerCount={weaponPlayerCount}
-          onWeaponPlayerCountChange={setWeaponPlayerCount}
-        />
-      </main>
+      <div className="relative flex min-h-0 w-full flex-1 flex-col lg:h-svh lg:min-h-0 lg:shrink-0 lg:overflow-hidden">
+        <main className="relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-x-hidden max-lg:min-h-0 max-lg:px-0 max-lg:py-0 lg:min-h-0 lg:px-0 lg:py-0">
+          <HuntLayout
+            monsterHunt={monsterHunt}
+            onMonsterHuntChange={setMonsterHunt}
+            weaponHunt={weaponHunt}
+            onWeaponHuntChange={setWeaponHunt}
+            weaponPlayerCount={weaponPlayerCount}
+            onWeaponPlayerCountChange={setWeaponPlayerCount}
+          />
+        </main>
+      </div>
 
-      {!isMobile ? <CurseModeSection /> : null}
+      {!isMobile ? (
+        <>
+          <CurseModeSection />
+          <CurseBlessedStrip />
+        </>
+      ) : null}
 
       <footer className="relative z-10 shrink-0 border-t border-wilds-gold/10 px-6 py-6 text-center text-[11px] text-wilds-muted lg:py-3">
         Fan-made tool for Monster Hunter Wilds &middot; Monster &amp; weapon icons &copy; Capcom &middot; Not
@@ -240,10 +248,10 @@ function App() {
           <section
             ref={huntSectionRef}
             id="hunt-section"
-            className="relative flex min-h-svh scroll-mt-[4.5rem] flex-col border-t border-wilds-gold/10 lg:h-svh lg:scroll-mt-16"
+            className="relative flex min-h-svh scroll-mt-[4.5rem] flex-col border-t border-wilds-gold/10 lg:min-h-svh lg:scroll-mt-16"
           >
             <AppBackground />
-            <div className="relative flex min-h-svh flex-col lg:h-full lg:min-h-0">
+            <div className="relative flex flex-col">
               <AppContent />
             </div>
           </section>
