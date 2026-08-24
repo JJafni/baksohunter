@@ -8,6 +8,7 @@ import CoopWeaponPanel, { PlayerCountToolbarSpacer } from './components/CoopWeap
 import GalleryBackdropOverlay from './components/GalleryBackdropOverlay'
 import LandingPage from './components/LandingPage'
 import MobileCoopHuntLayout from './components/MobileCoopHuntLayout'
+import CurseModeSection from './components/CurseModeSection'
 import MonsterGalleryImage from './components/MonsterGalleryImage'
 import MonsterPoolSlideshow from './components/MonsterPoolSlideshow'
 import WeaponGalleryImage from './components/WeaponGalleryImage'
@@ -153,6 +154,7 @@ function HuntLayout({
 }
 
 function AppContent() {
+  const isMobile = useIsMobileLayout()
   const [monsterHunt, setMonsterHunt] = useState<CrateHuntContext>({
     result: null,
     questType: null,
@@ -182,6 +184,8 @@ function AppContent() {
           onWeaponPlayerCountChange={setWeaponPlayerCount}
         />
       </main>
+
+      {!isMobile ? <CurseModeSection /> : null}
 
       <footer className="relative z-10 shrink-0 border-t border-wilds-gold/10 px-6 py-6 text-center text-[11px] text-wilds-muted lg:py-3">
         Fan-made tool for Monster Hunter Wilds &middot; Monster &amp; weapon icons &copy; Capcom &middot; Not

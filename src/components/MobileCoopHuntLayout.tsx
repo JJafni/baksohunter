@@ -31,6 +31,7 @@ import {
   type HuntStarFilterState,
 } from '../lib/starFilter'
 import MobileTapSpinSection from './MobileTapSpinSection'
+import CurseModeSection from './CurseModeSection'
 
 const MAX_PLAYERS = 4
 
@@ -357,6 +358,8 @@ function MobileCoopHuntLayout({
             )
           })}
         </div>
+
+        <CurseModeSection />
 
         <div className="mobile-hunt-controls shrink-0 border-t border-wilds-gold/10 bg-wilds-950/92 px-3 py-2 backdrop-blur-md">
           <div className="mx-auto flex w-full max-w-lg flex-col gap-2">
