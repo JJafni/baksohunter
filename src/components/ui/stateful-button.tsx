@@ -11,8 +11,6 @@ interface StatefulButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
   /** When set, a random label is shown while loading. Omit for a static label. */
   loadingLabels?: string[]
   icon?: 'sword' | 'shield'
-  /** Hunt uses sandblasted matte; Draw uses grey shiny gradient. */
-  surface?: 'matte' | 'shiny'
 }
 
 export function StatefulButton({
@@ -22,7 +20,6 @@ export function StatefulButton({
   layout,
   loadingLabels,
   icon = 'sword',
-  surface = 'matte',
   disabled = false,
   ...props
 }: StatefulButtonProps) {
@@ -77,13 +74,12 @@ export function StatefulButton({
   const isButtonDisabled = disabled || isLoading
   const label = isLoading && useSpinLabels ? loadingLabel : children
 
-  const isShiny = surface === 'shiny'
   const motionLayoutProps =
     layout === false ? ({ layout: false } as const) : layoutId ? ({ layoutId } as const) : {}
 
   const labelContent = (
     <>
-      <IconSlot icon={icon} tone={isShiny ? 'silver' : 'gold'} />
+      <IconSlot icon={icon} />
       {useSpinLabels ? (
         <span className="relative inline-block overflow-hidden text-center">
           <AnimatePresence mode="wait" initial={false}>
@@ -112,31 +108,24 @@ export function StatefulButton({
       aria-busy={isLoading}
       disabled={isButtonDisabled}
       className={cn(
-        'group relative flex w-full max-w-full items-center justify-center whitespace-nowrap rounded-lg text-sm font-bold uppercase tracking-[0.12em] ring-offset-2 ring-offset-wilds-950 transition-[border-color,color,box-shadow,filter] duration-200',
-        isShiny
-          ? 'wilds-shiny-button gap-0 border-0 p-[1px] text-[#e5e5e5] enabled:cursor-pointer enabled:hover:text-white disabled:cursor-not-allowed disabled:text-[#6b6b6b]'
-          : 'wilds-spin-matte gap-2 border-2 px-6 py-3.5 border-[#7a3030] text-[#f0e0e0] enabled:cursor-pointer enabled:hover:border-[#9a4040] enabled:hover:text-[#faf0f0] disabled:cursor-not-allowed disabled:border-[#3a2020] disabled:text-[#7a6060] disabled:hover:border-[#3a2020]',
-        !isShiny && isLoading && 'cursor-wait enabled:hover:border-[#9a4040]',
-        isShiny && isLoading && 'cursor-wait',
+        'group relative flex w-full max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-lg border px-6 py-3.5 text-sm font-bold uppercase tracking-[0.12em] ring-offset-2 ring-offset-wilds-950 transition-colors duration-200',
+        'border-wilds-gold/50 bg-wilds-gold/15 text-wilds-gold-light',
+        'enabled:cursor-pointer enabled:hover:border-wilds-gold/70 enabled:hover:bg-wilds-gold/25 enabled:hover:text-wilds-parchment',
+        'disabled:cursor-not-allowed disabled:border-wilds-gold/15 disabled:bg-wilds-gold/5 disabled:text-wilds-muted',
+        isLoading && 'cursor-wait',
         className,
       )}
       {...buttonProps}
       onClick={handleClick}
     >
-      {isShiny ? (
-        <span className="wilds-shiny-inner gap-2 px-6 py-3.5">{labelContent}</span>
-      ) : (
-        <span className="relative z-10 inline-flex items-center justify-center gap-1.5">{labelContent}</span>
-      )}
+      <span className="relative inline-flex items-center justify-center gap-1.5">{labelContent}</span>
     </motion.button>
   )
 }
 
-function IconSlot({ icon, tone }: { icon: 'sword' | 'shield'; tone: 'gold' | 'silver' }) {
+function IconSlot({ icon }: { icon: 'sword' | 'shield' }) {
   const iconClass =
-    tone === 'silver'
-      ? 'text-[#c8c8c8] transition-colors duration-200 group-disabled:text-[#5c5c5c]'
-      : 'text-[#e88888] transition-colors duration-200 group-disabled:text-[#5c4040]'
+    'text-wilds-gold-light transition-colors duration-200 group-disabled:text-wilds-muted'
   return (
     <div className="relative h-[18px] w-[18px] shrink-0" aria-hidden="true">
       <motion.div className="button-icon absolute inset-0" initial={{ opacity: 1, scale: 1 }}>

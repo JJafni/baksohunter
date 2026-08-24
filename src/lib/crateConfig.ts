@@ -27,3 +27,7 @@ export const DESKTOP_OVERLAY_REEL_MAX_WIDTH = HUNT_COLUMN_MAX_WIDTH
 export const DESKTOP_OVERLAY_ACTIONS_MIN_HEIGHT = '13.25rem'
 /** Taller mobile overlay footer — keeps large pool filter chips at full size. */
 export const MOBILE_OVERLAY_ACTIONS_MIN_HEIGHT = '17rem'
+/** Desktop hunt band height (spinner row / curse mode row) — one viewport minus in-section footer. */
+export const DESKTOP_HUNT_BAND_HEIGHT = 'calc(100svh - 3.25rem)'
+/** Mobile curse-mode band — approximates spinner grid height without stealing from it. */
+export const MOBILE_CURSE_BAND_MIN_HEIGHT = 'min(50svh, 28rem)'
