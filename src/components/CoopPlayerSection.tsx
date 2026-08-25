@@ -182,7 +182,6 @@ function CoopPlayerSection({
               reelSide="right"
               spinLabels={['Drawing']}
               buttonIcon="shield"
-              buttonSurface="shiny"
               externalGallery={overlayMode}
               overlayMode={overlayMode}
               overlaySpinnerCentered={useCenterReveal}
@@ -195,15 +194,14 @@ function CoopPlayerSection({
           </div>
         </div>
 
-        <div className="relative z-20 shrink-0 px-2 pb-2 pt-1 sm:px-3 sm:pb-3">
+        <div className="relative z-20 flex shrink-0 justify-center px-2 pb-2 pt-1 sm:px-3 sm:pb-3">
           <StatefulButton
             layout={false}
             loadingLabels={['Drawing']}
             icon="shield"
-            surface="shiny"
             disabled={spinning}
             onClick={handleDraw}
-            className={`w-full ${isMobile ? 'text-sm tracking-[0.12em]' : ''} ${isActive && !spinning ? 'ring-1 ring-wilds-gold/50' : ''}`}
+            className={`w-3/4 min-w-0 ${isMobile ? 'text-sm tracking-[0.12em]' : ''} ${isActive && !spinning ? 'ring-1 ring-wilds-gold/50' : ''}`}
           >
             P{playerIndex + 1} DRAW
           </StatefulButton>

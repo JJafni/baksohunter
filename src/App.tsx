@@ -5,6 +5,7 @@ import AppSkeleton from './components/AppSkeleton'
 import CrateOpener from './components/CrateOpener'
 import type { CrateHuntContext } from './components/CrateHunt'
 import CoopWeaponPanel, { PlayerCountToolbarSpacer } from './components/CoopWeaponPanel'
+import CurseModeSection from './components/CurseModeSection'
 import GalleryBackdropOverlay from './components/GalleryBackdropOverlay'
 import LandingPage from './components/LandingPage'
 import MobileCoopHuntLayout from './components/MobileCoopHuntLayout'
@@ -14,6 +15,7 @@ import WeaponGalleryImage from './components/WeaponGalleryImage'
 import WeaponPoolSlideshow from './components/WeaponPoolSlideshow'
 import type { CrateEntry } from './data/types'
 import { WEAPON_POOL } from './data/weapons'
+import { DESKTOP_HUNT_BAND_HEIGHT } from './lib/crateConfig'
 import { useAppReady } from './hooks/useAppReady'
 import { useHeaderVisibility } from './hooks/useHeaderVisibility'
 import { useIsMobileLayout } from './hooks/useIsMobileLayout'
@@ -113,42 +115,52 @@ function HuntLayout({
   }
 
   return (
-    <div className="grid h-full min-h-0 w-full grid-cols-1 gap-8 max-lg:flex max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:gap-0 lg:grid-cols-2 lg:items-stretch lg:gap-0">
-      <section className="relative flex min-h-0 w-full max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:border-b max-lg:border-wilds-gold/15 lg:items-stretch lg:justify-center lg:border-r lg:border-wilds-gold/15">
-        <div className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
-          {monsterBackdrop}
-        </div>
-        <div
-          className={`pointer-events-none absolute inset-0 overflow-hidden lg:hidden ${showMonsterPreviewSlideshow || monsterHunt.phase !== 'idle' ? '' : 'hidden'}`}
-        >
-          {showMonsterPreviewSlideshow || monsterHunt.phase !== 'idle' ? monsterBackdrop : null}
-        </div>
+    <>
+      <div
+        className="grid h-full min-h-0 w-full shrink-0 grid-cols-1 gap-8 max-lg:flex max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:gap-0 lg:grid-cols-2 lg:items-stretch lg:gap-0"
+        style={{ height: DESKTOP_HUNT_BAND_HEIGHT, minHeight: DESKTOP_HUNT_BAND_HEIGHT }}
+      >
+        <section className="relative flex min-h-0 w-full max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:border-b max-lg:border-wilds-gold/15 lg:items-stretch lg:justify-center lg:border-r lg:border-wilds-gold/15">
+          <div className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
+            {monsterBackdrop}
+          </div>
+          <div
+            className={`pointer-events-none absolute inset-0 overflow-hidden lg:hidden ${showMonsterPreviewSlideshow || monsterHunt.phase !== 'idle' ? '' : 'hidden'}`}
+          >
+            {showMonsterPreviewSlideshow || monsterHunt.phase !== 'idle' ? monsterBackdrop : null}
+          </div>
 
-        <div className="relative z-10 flex h-full min-h-0 w-full flex-col overflow-visible lg:px-8">
-          <PlayerCountToolbarSpacer />
-          <div className="flex h-full min-h-0 w-full flex-1 flex-col self-stretch">
-            <CrateOpener
-              onHuntChange={onMonsterHuntChange}
-              onFilteredPoolChange={setMonsterPreviewPool}
+          <div className="relative z-10 flex h-full min-h-0 w-full flex-col overflow-visible lg:px-8">
+            <PlayerCountToolbarSpacer />
+            <div className="flex h-full min-h-0 w-full flex-1 flex-col self-stretch">
+              <CrateOpener
+                onHuntChange={onMonsterHuntChange}
+                onFilteredPoolChange={setMonsterPreviewPool}
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="relative flex min-h-0 w-full max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col lg:items-stretch lg:overflow-hidden">
+          {!weaponCoopMode ? (
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">{weaponBackdrop}</div>
+          ) : null}
+
+          <div className="relative z-10 flex h-full min-h-0 w-full flex-col max-lg:flex-1 max-lg:self-stretch lg:p-0">
+            <CoopWeaponPanel
+              onHuntChange={onWeaponHuntChange}
+              initialPlayerCount={weaponPlayerCount}
+              onPlayerCountChange={onWeaponPlayerCountChange}
             />
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      <section className="relative flex min-h-0 w-full max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col lg:items-stretch lg:overflow-hidden">
-        {!weaponCoopMode ? (
-          <div className="pointer-events-none absolute inset-0 overflow-hidden">{weaponBackdrop}</div>
-        ) : null}
-
-        <div className="relative z-10 flex h-full min-h-0 w-full flex-col max-lg:flex-1 max-lg:self-stretch lg:p-0">
-          <CoopWeaponPanel
-            onHuntChange={onWeaponHuntChange}
-            initialPlayerCount={weaponPlayerCount}
-            onPlayerCountChange={onWeaponPlayerCountChange}
-          />
-        </div>
-      </section>
-    </div>
+      <CurseModeSection
+        className="shrink-0"
+        style={{ height: DESKTOP_HUNT_BAND_HEIGHT, minHeight: DESKTOP_HUNT_BAND_HEIGHT }}
+      />
+    </>
   )
 }
 
@@ -172,7 +184,7 @@ function AppContent() {
 
   return (
     <>
-      <main className="relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-x-hidden max-lg:min-h-0 max-lg:px-0 max-lg:py-0 lg:min-h-0 lg:overflow-hidden lg:px-0 lg:py-0">
+      <main className="relative z-10 flex w-full shrink-0 flex-col overflow-x-hidden max-lg:min-h-0 max-lg:px-0 max-lg:py-0 lg:px-0 lg:py-0">
         <HuntLayout
           monsterHunt={monsterHunt}
           onMonsterHuntChange={setMonsterHunt}
@@ -236,10 +248,10 @@ function App() {
           <section
             ref={huntSectionRef}
             id="hunt-section"
-            className="relative flex min-h-svh scroll-mt-[4.5rem] flex-col border-t border-wilds-gold/10 lg:h-svh lg:scroll-mt-16"
+            className="relative flex min-h-svh scroll-mt-[4.5rem] flex-col border-t border-wilds-gold/10 lg:min-h-svh lg:scroll-mt-16"
           >
             <AppBackground />
-            <div className="relative flex min-h-svh flex-col lg:h-full lg:min-h-0">
+            <div className="relative flex min-h-svh flex-col">
               <AppContent />
             </div>
           </section>

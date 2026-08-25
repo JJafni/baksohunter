@@ -66,8 +66,6 @@ type CrateHuntProps = {
   /** Random labels shown on the button while spinning. Omit for a static label. */
   spinLabels?: string[]
   buttonIcon?: 'sword' | 'shield'
-  /** Hunt = sandblasted matte; Draw = grey shiny gradient. */
-  buttonSurface?: 'matte' | 'shiny'
   reelOrientation?: 'horizontal' | 'vertical'
   belowReel?: (ctx: CrateHuntContext) => ReactNode
   /** When true, gallery is rendered elsewhere (desktop left panel). */
@@ -220,7 +218,6 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     filters,
     spinLabels,
     buttonIcon = 'sword',
-    buttonSurface = 'matte',
     reelOrientation = 'horizontal',
     belowReel,
     externalGallery = false,
@@ -487,10 +484,9 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
             layoutId={buttonLayoutId}
             loadingLabels={spinLabels}
             icon={buttonIcon}
-            surface={buttonSurface}
             onClick={startHunt}
             disabled={phase === 'spinning' || !canSpin}
-            className="h-full min-h-0 self-stretch py-0"
+            className="h-full min-h-0 w-full self-stretch py-0"
           >
             {buttonLabel}
           </StatefulButton>
@@ -513,24 +509,36 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
       ) : (
         <>
           {filterRow}
-          <div className="flex w-full gap-2">
-            {companionButton ? (
+          {companionButton ? (
+            <div className="flex w-full gap-2 px-2 sm:px-3">
               <div className="w-1/4 min-w-0 shrink-0">{companionButton({ disabled: filtersDisabled })}</div>
-            ) : null}
-            {hidePrimaryButton ? null : (
+              {hidePrimaryButton ? null : (
+                <StatefulButton
+                  layoutId={buttonLayoutId}
+                  loadingLabels={spinLabels}
+                  icon={buttonIcon}
+                  onClick={startHunt}
+                  disabled={phase === 'spinning' || !canSpin}
+                  className="min-w-0 flex-[3]"
+                >
+                  {buttonLabel}
+                </StatefulButton>
+              )}
+            </div>
+          ) : hidePrimaryButton ? null : (
+            <div className="flex w-full justify-center px-2 sm:px-3">
               <StatefulButton
                 layoutId={buttonLayoutId}
                 loadingLabels={spinLabels}
                 icon={buttonIcon}
-                surface={buttonSurface}
                 onClick={startHunt}
                 disabled={phase === 'spinning' || !canSpin}
-                className={companionButton ? 'min-w-0 flex-[3]' : 'w-full'}
+                className="w-3/4 min-w-0"
               >
                 {buttonLabel}
               </StatefulButton>
-            )}
-          </div>
+            </div>
+          )}
           {poolLine}
         </>
       )}
@@ -894,7 +902,7 @@ const CrateHunt = forwardRef<CrateHuntHandle, CrateHuntProps>(function CrateHunt
     const overlayControls = (
       <div
         className={`mx-auto flex w-full flex-col items-center ${
-          useMobileOverlayChromeSheet ? 'gap-2 px-3' : 'gap-3 max-lg:px-2'
+          useMobileOverlayChromeSheet ? 'gap-2 px-3' : 'gap-3 px-3 sm:px-4'
         }`}
         style={huntColumnWidthStyle}
       >
